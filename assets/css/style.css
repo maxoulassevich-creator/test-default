@@ -468,6 +468,26 @@ svg [fill^="url("] { stroke: none; }
   pointer-events: none;
 }
 
+/* Opt-in artwork background: add `hero--image` to the section and the two
+   CSS-drawn layers step aside for the exported file. The CSS version stays the
+   default — it costs no request and needs no raster at any density. The SVG is
+   the same artwork at 2 KB; PNG/WebP exports live beside it for places that
+   cannot take SVG (page builders, OG images, email). */
+.hero--image .hero__glow,
+.hero--image .hero__grid-bg { display: none; }
+
+.hero--image {
+  background-color: var(--c-bg);
+  background-image: url("../img/hero-bg.svg");
+  background-position: top right;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 640px) {
+  .hero--image { background-image: url("../img/hero-bg-mobile.svg"); }
+}
+
 .hero__inner {
   display: grid;
   gap: clamp(2.5rem, 1rem + 6vw, 4rem);

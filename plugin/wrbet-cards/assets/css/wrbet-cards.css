@@ -1,0 +1,360 @@
+/* =========================================================================
+   Wrbet Cards — front-end styles
+
+   Two rules keep this safe inside an unknown theme:
+   1. the reset uses :where(), so it adds no specificity and never beats a
+      component rule below it;
+   2. component rules are written as `.wrbet .wrbet-x` (0,2,0), which outranks
+      the `.entry-content p` style selectors themes typically ship.
+
+   Sizes come from --wrbet-fs, so one scale knob resizes a whole card.
+   ========================================================================= */
+
+.wrbet {
+  /* Fallbacks; the plugin overrides these with a settings-derived block. */
+  --wrbet-accent: #00FFF7;
+  --wrbet-ink: #1B1B1B;
+  --wrbet-text: #f2f2f2;
+  --wrbet-muted: rgba(242, 242, 242, .66);
+  --wrbet-faint: rgba(242, 242, 242, .58);
+  --wrbet-card-bg: #202020;
+  --wrbet-card-bg-2: #1B1B1B;
+  --wrbet-border: rgba(242, 242, 242, .18);
+  --wrbet-gray: #494949;
+  --wrbet-danger: #8D0203;
+  --wrbet-danger-text: #ff8f8f;
+  --wrbet-radius: 24px;
+  --wrbet-padding: 22px;
+  --wrbet-max: 460px;
+  --wrbet-scale: 1;
+  --wrbet-font-head: 'Sora', system-ui, -apple-system, sans-serif;
+  --wrbet-font-body: 'Public Sans', system-ui, -apple-system, sans-serif;
+
+  --wrbet-fs: calc(16px * var(--wrbet-scale));
+
+  /* No background of any kind — the card sits on whatever is behind it. */
+  background: none;
+  display: block;
+  width: 100%;
+  max-width: var(--wrbet-max);
+  margin: 0;
+  font-family: var(--wrbet-font-body);
+  font-size: var(--wrbet-fs);
+  color: var(--wrbet-text);
+  line-height: 1.5;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+/* Zero-specificity reset: undoes theme defaults without shadowing our own rules. */
+.wrbet :where(div, p, span, b, strong, svg, circle, path) {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wrbet :where(svg) { display: block; max-width: 100%; }
+
+/* ---------- card surface ---------- */
+.wrbet .wrbet-card {
+  padding: var(--wrbet-padding);
+  background: linear-gradient(160deg, var(--wrbet-card-bg) 0%, var(--wrbet-card-bg-2) 100%);
+  border: 1px solid var(--wrbet-border);
+  border-radius: var(--wrbet-radius);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .45);
+}
+
+.wrbet--bare .wrbet-card {
+  padding: 0;
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.wrbet--flat .wrbet-card { box-shadow: none; }
+
+/* ---------- odds card: head ---------- */
+.wrbet .wrbet-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  margin-bottom: calc(var(--wrbet-fs) * 1);
+  font-size: calc(var(--wrbet-fs) * .78);
+  color: var(--wrbet-faint);
+}
+
+.wrbet .wrbet-live {
+  display: inline-flex;
+  align-items: center;
+  gap: .45em;
+  color: var(--wrbet-accent);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.wrbet .wrbet-live__dot {
+  width: .5em;
+  height: .5em;
+  flex: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.wrbet .wrbet-live__dot.is-pulsing { animation: wrbet-pulse 1.8s ease-in-out infinite; }
+
+@keyframes wrbet-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 247, .55); }
+  50%      { box-shadow: 0 0 0 .5em rgba(0, 255, 247, 0); }
+}
+
+.wrbet .wrbet-card__meta { color: var(--wrbet-faint); }
+
+/* ---------- odds card: teams ---------- */
+.wrbet .wrbet-teams {
+  display: grid;
+  gap: calc(var(--wrbet-fs) * .6);
+  margin-bottom: calc(var(--wrbet-fs) * 1.1);
+}
+
+.wrbet .wrbet-team {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--wrbet-fs) * .7);
+  font-size: calc(var(--wrbet-fs) * .93);
+  font-weight: 600;
+}
+
+.wrbet .wrbet-team__badge {
+  display: grid;
+  place-items: center;
+  width: calc(var(--wrbet-fs) * 1.9);
+  height: calc(var(--wrbet-fs) * 1.9);
+  flex: none;
+  border-radius: calc(var(--wrbet-fs) * .56);
+  background: var(--wrbet-gray);
+  color: var(--wrbet-text);
+  font-size: calc(var(--wrbet-fs) * .64);
+  font-weight: 800;
+  letter-spacing: .04em;
+  line-height: 1;
+}
+
+.wrbet .wrbet-team__badge--alt {
+  background: color-mix(in srgb, var(--wrbet-accent) 18%, transparent);
+  color: var(--wrbet-accent);
+}
+
+.wrbet .wrbet-team__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wrbet .wrbet-team__score {
+  font-family: var(--wrbet-font-head);
+  font-size: calc(var(--wrbet-fs) * 1.05);
+  font-weight: 700;
+}
+
+/* ---------- odds card: prices ---------- */
+.wrbet .wrbet-odds {
+  display: grid;
+  grid-template-columns: repeat(var(--wrbet-cols, 3), minmax(0, 1fr));
+  gap: calc(var(--wrbet-fs) * .5);
+}
+
+.wrbet .wrbet-odd {
+  display: grid;
+  gap: .15em;
+  padding: calc(var(--wrbet-fs) * .7) calc(var(--wrbet-fs) * .4);
+  background: rgba(242, 242, 242, .05);
+  border: 1px solid rgba(242, 242, 242, .1);
+  border-radius: calc(var(--wrbet-radius) * .42);
+  text-align: center;
+  transition: border-color .25s ease, background-color .25s ease;
+}
+
+.wrbet .wrbet-odd__label {
+  font-size: calc(var(--wrbet-fs) * .68);
+  color: var(--wrbet-faint);
+  letter-spacing: .08em;
+  line-height: 1.3;
+}
+
+.wrbet .wrbet-odd__value {
+  font-family: var(--wrbet-font-head);
+  font-size: var(--wrbet-fs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  transition: color .3s ease;
+}
+
+.wrbet .wrbet-odd.is-active {
+  border-color: color-mix(in srgb, var(--wrbet-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--wrbet-accent) 14%, transparent);
+}
+
+.wrbet .wrbet-odd.is-active .wrbet-odd__value { color: var(--wrbet-accent); }
+
+/* price drift: a short flash when a value changes */
+.wrbet .wrbet-odd.is-drifting { border-color: color-mix(in srgb, var(--wrbet-accent) 45%, transparent); }
+.wrbet .wrbet-odd.is-drifting .wrbet-odd__value { color: var(--wrbet-accent); }
+
+/* ---------- shared note ---------- */
+.wrbet .wrbet-note {
+  margin-top: calc(var(--wrbet-fs) * .9);
+  font-size: calc(var(--wrbet-fs) * .68);
+  line-height: 1.5;
+  color: var(--wrbet-faint);
+}
+
+/* ---------- crash card ---------- */
+.wrbet .wrbet-crash__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1em;
+  margin-bottom: calc(var(--wrbet-fs) * .35);
+}
+
+.wrbet .wrbet-crash__label {
+  font-size: calc(var(--wrbet-fs) * .78);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--wrbet-faint);
+}
+
+.wrbet .wrbet-crash__mult {
+  font-family: var(--wrbet-font-head);
+  font-weight: 800;
+  font-size: calc(var(--wrbet-fs) * 1.5);
+  line-height: 1.1;
+  color: var(--wrbet-accent);
+  font-variant-numeric: tabular-nums;
+  transition: color .2s ease, transform .2s ease;
+}
+
+.wrbet--full .wrbet-crash__mult {
+  font-size: calc(var(--wrbet-fs) * 2.4);
+  text-shadow: 0 0 24px color-mix(in srgb, var(--wrbet-accent) 35%, transparent);
+}
+
+.wrbet .wrbet-crash__mult.is-bust {
+  color: var(--wrbet-danger-text);
+  text-shadow: none;
+  transform: scale(.94);
+}
+
+.wrbet .wrbet-crash__chart {
+  width: 100%;
+  height: auto;
+  margin-top: calc(var(--wrbet-fs) * .35);
+}
+
+.wrbet .wrbet-crash__grid path {
+  fill: none;
+  stroke: rgba(242, 242, 242, .07);
+  stroke-width: 1;
+}
+
+.wrbet .wrbet-crash__line {
+  fill: none;
+  stroke: var(--wrbet-accent);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke .2s ease;
+}
+
+.wrbet--full .wrbet-crash__line { stroke-width: 3; }
+
+.wrbet .wrbet-crash__area { stroke: none; }
+
+.wrbet .wrbet-crash__dot {
+  fill: var(--wrbet-accent);
+  stroke: none;
+  transition: fill .2s ease;
+}
+
+.wrbet .wrbet-crash__dot.is-pulsing { animation: wrbet-pulse 1.8s ease-in-out infinite; }
+
+.wrbet.is-bust .wrbet-crash__line { stroke: var(--wrbet-danger-text); }
+.wrbet.is-bust .wrbet-crash__dot { fill: var(--wrbet-danger-text); }
+
+/* ---------- history chips ---------- */
+.wrbet .wrbet-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--wrbet-fs) * .35);
+  margin-top: calc(var(--wrbet-fs) * .8);
+}
+
+.wrbet .wrbet-chip {
+  padding: .3em .65em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--wrbet-accent) 10%, transparent);
+  color: var(--wrbet-accent);
+  font-size: calc(var(--wrbet-fs) * .7);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.wrbet .wrbet-chip.is-bust {
+  background: color-mix(in srgb, var(--wrbet-danger) 32%, transparent);
+  color: var(--wrbet-danger-text);
+}
+
+.wrbet .wrbet-chip.is-hot { background: color-mix(in srgb, var(--wrbet-accent) 22%, transparent); }
+
+.wrbet .wrbet-chip.is-new { animation: wrbet-chip-in .35s ease both; }
+
+@keyframes wrbet-chip-in {
+  from { opacity: 0; transform: translateX(-6px) scale(.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- reveal on scroll ---------- */
+.wrbet--reveal.is-armed {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .6s cubic-bezier(.22, .8, .28, 1), transform .6s cubic-bezier(.22, .8, .28, 1);
+}
+
+.wrbet--reveal.is-armed.is-visible { opacity: 1; transform: none; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 380px) {
+  .wrbet { --wrbet-fs: calc(15px * var(--wrbet-scale)); }
+  .wrbet .wrbet-card { padding: calc(var(--wrbet-padding) * .8); }
+}
+
+/* ---------- browsers without color-mix() ---------- */
+@supports not (color: color-mix(in srgb, red 50%, transparent)) {
+  .wrbet .wrbet-team__badge--alt { background: rgba(0, 255, 247, .18); }
+  .wrbet .wrbet-odd.is-active {
+    border-color: rgba(0, 255, 247, .28);
+    background: rgba(0, 255, 247, .14);
+  }
+  .wrbet .wrbet-odd.is-drifting { border-color: rgba(0, 255, 247, .45); }
+  .wrbet .wrbet-chip { background: rgba(0, 255, 247, .1); }
+  .wrbet .wrbet-chip.is-hot { background: rgba(0, 255, 247, .22); }
+  .wrbet .wrbet-chip.is-bust { background: rgba(141, 2, 3, .32); }
+  .wrbet--full .wrbet-crash__mult { text-shadow: 0 0 24px rgba(0, 255, 247, .35); }
+}
+
+/* ---------- reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .wrbet *,
+  .wrbet *::before,
+  .wrbet *::after {
+    animation: none !important;
+    transition-duration: .001ms !important;
+  }
+  .wrbet--reveal.is-armed { opacity: 1; transform: none; }
+}

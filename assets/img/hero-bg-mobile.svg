@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 780"
+     width="430" height="780" preserveAspectRatio="xMidYMid slice" role="img"
+     aria-label="Dark background with a fading grid and a turquoise glow">
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none"
+            stroke="#f2f2f2" stroke-opacity="0.11" stroke-width="1"/>
+    </pattern>
+
+    <radialGradient id="fade" gradientUnits="userSpaceOnUse"
+                    cx="215.0" cy="15.6" r="318.2"
+                    gradientTransform="translate(215.0 15.6) scale(1 0.74) translate(-215.0 -15.6)">
+      <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
+      <stop offset="45%"  stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="72%"  stop-color="#fff" stop-opacity="0.38"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+
+    <mask id="gridMask">
+      <rect width="430" height="780" fill="url(#fade)"/>
+    </mask>
+
+    <radialGradient id="glow" gradientUnits="userSpaceOnUse" cx="395.6" cy="156.0" r="172.0">
+      <stop offset="0%"   stop-color="rgb(0,255,247)" stop-opacity="0.24"/>
+      <stop offset="22%"  stop-color="rgb(0,255,247)" stop-opacity="0.11"/>
+      <stop offset="48%"  stop-color="rgb(0,255,247)" stop-opacity="0.032"/>
+      <stop offset="100%" stop-color="rgb(0,255,247)" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="glow2" gradientUnits="userSpaceOnUse" cx="430.0" cy="717.6" r="111.8">
+      <stop offset="0%"   stop-color="rgb(0,255,247)" stop-opacity="0.05"/>
+      <stop offset="55%"  stop-color="rgb(0,255,247)" stop-opacity="0.014"/>
+      <stop offset="100%" stop-color="rgb(0,255,247)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="430" height="780" fill="#141414"/>
+  <rect width="430" height="780" fill="url(#grid)" mask="url(#gridMask)"/>
+  <rect width="430" height="780" fill="url(#glow2)"/>
+  <rect width="430" height="780" fill="url(#glow)"/>
+</svg>
