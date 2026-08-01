@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"
-     width="1920" height="1080" preserveAspectRatio="xMidYMid slice" role="img"
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 880"
+     width="1920" height="880" preserveAspectRatio="xMidYMid slice" role="img"
      aria-label="Dark background with a fading grid and a turquoise glow">
   <defs>
     <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
@@ -8,34 +8,38 @@
     </pattern>
 
     <radialGradient id="fade" gradientUnits="userSpaceOnUse"
-                    cx="960.0" cy="21.6" r="1420.8"
-                    gradientTransform="translate(960.0 21.6) scale(1 0.74) translate(-960.0 -21.6)">
+                    cx="960.0" cy="17.6" r="1459.2"
+                    gradientTransform="translate(960.0 17.6) scale(1 0.88) translate(-960.0 -17.6)">
       <stop offset="0%"   stop-color="#fff" stop-opacity="1"/>
-      <stop offset="45%"  stop-color="#fff" stop-opacity="0.85"/>
-      <stop offset="72%"  stop-color="#fff" stop-opacity="0.38"/>
+      <stop offset="45%"  stop-color="#fff" stop-opacity="0.82"/>
+      <stop offset="72%"  stop-color="#fff" stop-opacity="0.34"/>
       <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
     </radialGradient>
 
     <mask id="gridMask">
-      <rect width="1920" height="1080" fill="url(#fade)"/>
+      <rect width="1920" height="880" fill="url(#fade)"/>
     </mask>
 
-    <radialGradient id="glow" gradientUnits="userSpaceOnUse" cx="1766.4" cy="216.0" r="768.0">
+    <radialGradient id="glow" gradientUnits="userSpaceOnUse" cx="1766.4" cy="193.6" r="768.0">
       <stop offset="0%"   stop-color="rgb(0,255,247)" stop-opacity="0.24"/>
       <stop offset="22%"  stop-color="rgb(0,255,247)" stop-opacity="0.11"/>
       <stop offset="48%"  stop-color="rgb(0,255,247)" stop-opacity="0.032"/>
       <stop offset="100%" stop-color="rgb(0,255,247)" stop-opacity="0"/>
     </radialGradient>
 
-    <radialGradient id="glow2" gradientUnits="userSpaceOnUse" cx="1920.0" cy="993.6" r="499.20000000000005">
-      <stop offset="0%"   stop-color="rgb(0,255,247)" stop-opacity="0.05"/>
-      <stop offset="55%"  stop-color="rgb(0,255,247)" stop-opacity="0.014"/>
-      <stop offset="100%" stop-color="rgb(0,255,247)" stop-opacity="0"/>
-    </radialGradient>
+    <!-- Everything above resolves back into the flat base colour, so the
+         bottom edge is exactly #141414 and tiles into the next section. -->
+    <linearGradient id="settle" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#141414" stop-opacity="0"/>
+      <stop offset="42%"  stop-color="#141414" stop-opacity="0.12"/>
+      <stop offset="70%"  stop-color="#141414" stop-opacity="0.48"/>
+      <stop offset="88%"  stop-color="#141414" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#141414" stop-opacity="1"/>
+    </linearGradient>
   </defs>
 
-  <rect width="1920" height="1080" fill="#141414"/>
-  <rect width="1920" height="1080" fill="url(#grid)" mask="url(#gridMask)"/>
-  <rect width="1920" height="1080" fill="url(#glow2)"/>
-  <rect width="1920" height="1080" fill="url(#glow)"/>
+  <rect width="1920" height="880" fill="#141414"/>
+  <rect width="1920" height="880" fill="url(#grid)" mask="url(#gridMask)"/>
+  <rect width="1920" height="880" fill="url(#glow)"/>
+  <rect width="1920" height="880" fill="url(#settle)"/>
 </svg>

@@ -77,10 +77,15 @@ layout holds between breakpoints rather than only at them.
 
 ## Hero background
 
-The first section's backdrop — grid dissolving into flat colour, turquoise glow
-in the top-right — exists in two interchangeable forms.
+The first section's backdrop — a 64px grid dissolving into flat colour, one
+turquoise glow in the top-right, everything settling back into solid `#141414`
+towards the bottom so the image joins the next section with no visible seam
+(the bottom row is exactly `#141414` across the full width). Desktop frame is
+1920 × 880, a 2.18:1 band rather than a full 16:9 screen.
 
-**CSS (default).** Two layers inside `.hero`: `.hero__grid-bg` draws a 64px grid
+It exists in two interchangeable forms.
+
+**CSS (default).** Two layers inside `.hero`: `.hero__grid-bg` draws the grid
 masked by a radial ellipse anchored to the top edge, `.hero__glow` adds the
 corner light. No requests, no raster at any density.
 
@@ -91,13 +96,14 @@ a file:
 <section class="hero hero--image">
 ```
 
-| File | Use |
-|---|---|
-| `hero-bg.svg` (2 KB) | what `hero--image` loads; scales to any size |
-| `hero-bg-mobile.svg` | portrait crop, swapped in under 640px |
-| `hero-bg-3840x2160.png` / `.webp` | 4K raster — 792 KB vs **26 KB** as WebP |
-| `hero-bg-2560x1440.*`, `hero-bg-1920x1080.*` | 1440p and 1080p |
-| `hero-bg-mobile-1290x2340.*` | portrait raster at 3× |
+| File | Size | Use |
+|---|---|---|
+| `hero-bg.svg` | 2 KB | what `hero--image` loads; scales to any size |
+| `hero-bg-mobile.svg` | 2 KB | 430 × 660 portrait crop, swapped in under 640px |
+| `hero-bg-3840.*` | 3840 × 1760 | 841 KB as PNG, **21 KB** as WebP |
+| `hero-bg-2560.*` | 2560 × 1173 | 427 KB / 10 KB |
+| `hero-bg-1920.*` | 1920 × 880 | 258 KB / 6 KB |
+| `hero-bg-mobile-1290.*` | 1290 × 1980 | portrait raster at 3× |
 
 WebP is the one to ship if you need a raster — smooth gradients compress to a
 fraction of the PNG. The rasters exist for places that cannot take SVG: some
