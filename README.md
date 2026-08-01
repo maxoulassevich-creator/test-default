@@ -96,18 +96,53 @@ a file:
 <section class="hero hero--image">
 ```
 
-| File | Size | Use |
+| File | Size | PNG / WebP |
 |---|---|---|
-| `hero-bg.svg` | 2 KB | what `hero--image` loads; scales to any size |
-| `hero-bg-mobile.svg` | 2 KB | 430 × 660 portrait crop, swapped in under 640px |
-| `hero-bg-3840.*` | 3840 × 1760 | 841 KB as PNG, **21 KB** as WebP |
-| `hero-bg-2560.*` | 2560 × 1173 | 427 KB / 10 KB |
-| `hero-bg-1920.*` | 1920 × 880 | 258 KB / 6 KB |
-| `hero-bg-mobile-1290.*` | 1290 × 1980 | portrait raster at 3× |
+| `hero-bg.svg` | vector | 2 KB — what `hero--image` loads |
+| `hero-bg-mobile.svg` | vector | 2 KB — 430 × 660 portrait, under 640px |
+| `hero-bg-3840.*` | 3840 × 1760 | 841 KB / **23 KB** |
+| `hero-bg-2560.*` | 2560 × 1173 | 427 KB / 11 KB |
+| `hero-bg-1920.*` | 1920 × 880 | 258 KB / 7 KB |
+| `hero-bg-mobile-1290.*` | 1290 × 1980 | 173 KB / 8 KB |
 
 WebP is the one to ship if you need a raster — smooth gradients compress to a
 fraction of the PNG. The rasters exist for places that cannot take SVG: some
 page builders, OG images, email.
+
+### The two layers, separately
+
+The composite is also split, so the light can be moved, resized or animated
+independently of the grid.
+
+| File | What it is |
+|---|---|
+| `hero-grid.svg` / `-mobile.svg` | **opaque**: base colour, grid, settle to solid. No glow — every pixel is neutral grey. |
+| `hero-grid-1920.*`, `-3840.*`, `-mobile-1290.*` | 24 / 78 / 24 KB as PNG, 4 / 17 / 6 KB as WebP |
+| `hero-glow.svg` | **transparent**: the corner light alone, positioned as in the composite |
+| `hero-glow-blob.svg` | the same light centred in a 1600 × 1600 square, for free positioning |
+| `hero-glow-1920.*`, `-3840.*`, `-blob-1600.*` | 34 / 87 / 61 KB as PNG, 15 / 35 / 19 KB as WebP |
+
+Stacked as two backgrounds, glow on top:
+
+```css
+.hero {
+  background:
+    url("../img/hero-glow.svg") top right / 100% auto no-repeat,
+    url("../img/hero-grid.svg") top center / cover no-repeat,
+    #141414;
+}
+```
+
+The glow rasters are generated arithmetically rather than screenshotted: the
+light is one colour at varying opacity, so only the alpha channel carries
+information. Skipping the browser's gradient dithering took the 1920 PNG from
+203 KB to 34 KB, and its WebP from 177 KB to 15 KB, while matching the SVG's
+own rendering to within 1/255.
+
+Stacking the two layers reproduces the packaged composite to within 6/255 — in
+the composite the glow sits *under* the settle gradient and is damped slightly
+in the lower half, which a manual stack cannot reproduce. It is not visible;
+use the composite if you want it exact.
 
 ## WordPress plugin
 
