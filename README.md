@@ -23,6 +23,24 @@ Everything is static — open `index.html` directly, or serve the folder
 (`python3 -m http.server`) if you want the fonts to load, since browsers block
 `file://` font requests as cross-origin.
 
+## Single-file build
+
+`wrbet-kenya-landing.html` is the whole landing page in one file: styles,
+script, both variable fonts and the hero background inlined as data URIs. It
+makes **zero external requests**, so it opens straight off a disk with the real
+typography — the data URIs sidestep the cross-origin font block that affects the
+multi-file version under `file://`.
+
+```
+python3 tools/build-single-file.py
+```
+
+198 KB, most of it the two fonts. The build drops the legacy
+`format("woff2-variations")` entries, which name the same files a second time —
+free over the network, but they would have embedded every font twice.
+
+Edit the sources and rebuild; do not edit the generated file.
+
 ## Prototypes
 
 One content structure, three layout modes. `prototypes/index.html` shows them
