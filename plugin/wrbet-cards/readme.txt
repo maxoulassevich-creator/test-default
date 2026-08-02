@@ -4,26 +4,29 @@ Tags: shortcode, widget, betting, animation
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Two animated betting widgets — a live odds card and a crash-round card — output
+Animated betting widgets — a live odds card and two crash-round cards — output
 through shortcodes, with text, fonts, colours and animation all configurable.
 
 == Description ==
 
-The plugin ships the two visuals from the Wrbet Kenya landing page as reusable
+The plugin ships the visuals from the Wrbet Kenya landing page as reusable
 shortcodes:
 
 * `[wrbet_odds]` — a live match card: pulsing LIVE label, two teams with badges
   and scores, a row of odds with one selected, and a note line. With drift
   enabled an unselected price nudges every few seconds the way a live market
   moves.
-* `[wrbet_crash]` — a crash round: the multiplier climbs from 1.00x while the
-  curve draws itself in sync, the round busts, the result is pushed onto the
-  history strip, and a new round starts. Two variants: `compact` and `full`
-  (adds the chart grid, the marker dot and a larger multiplier).
+* `[wrbet_crash]` — a compact crash round: the multiplier climbs from 1.00x
+  while the curve draws itself in sync, the round busts, the result is pushed
+  onto the history strip, and a new round starts.
+* `[wrbet_aviator]` — the same widget in its full layout: chart grid, marker dot
+  travelling along the curve, a much larger multiplier and a wider card. It
+  keeps **its own** label, static multiplier, history, note and width, so both
+  crash cards can sit on one page without sharing content.
 
 **Neither card paints a background behind itself.** The wrapper is transparent
 and only the card surface is drawn, so both sit on whatever section background
@@ -42,7 +45,8 @@ Every setting key doubles as a shortcode attribute, so one instance can differ
 from the site defaults without changing them:
 
     [wrbet_odds accent="#ff2d55" teams="AR|Arsenal|2, CH|Chelsea|1" odds="1|1.42*, X|4.60, 2|6.20"]
-    [wrbet_crash variant="full" speed="1.6" crash_max="24" max_width="560"]
+    [wrbet_aviator av_label="Round in progress" speed="1.6" crash_max="24"]
+    [wrbet_aviator av_max_width="720" av_grid="0" accent="#ff2d55"]
     [wrbet_crash surface="0" animate="0"]
 
 Colour attributes: `accent`, `text`, `muted`, `faint`, `card_bg`, `card_bg2`,
@@ -54,6 +58,9 @@ Animation: `animate`, `pulse`, `reveal`, `speed`, `crash_min`, `crash_max`,
 Odds content: `live_label`, `meta`, `teams`, `odds`, `odds_note`.
 Crash content: `variant`, `crash_label`, `static_mult`, `grid`, `history`,
 `crash_note`.
+Aviator content: `av_label`, `av_static`, `av_grid`, `av_history`, `av_note`,
+`av_max_width`. On `[wrbet_aviator]` the generic names above also work as
+aliases; when both are given the `av_` one wins.
 
 = Content field syntax =
 
@@ -95,6 +102,15 @@ No. Everything on both cards is illustrative — the plugin has no data source
 and connects to nothing. The default note under the odds says so, and it should
 stay there or be replaced with equivalent wording.
 
+= What is the difference between [wrbet_crash] and [wrbet_aviator]? =
+
+The layout and the settings they read. `[wrbet_crash]` is the compact card —
+label, curve, history. `[wrbet_aviator]` is the full one — chart grid, a marker
+dot on the curve, a much larger multiplier, wider by default — and it has its
+own content fields, so putting both on a page gives you two independently
+configured cards. `[wrbet_crash variant="full"]` still renders the full layout,
+but reads the compact card's content.
+
 = Can I use them outside post content? =
 
 Yes. `do_shortcode( '[wrbet_odds]' )` works in a template; the shortcode
@@ -106,6 +122,13 @@ Yes. The full markup is rendered server-side and the card reads as a completed
 round. JavaScript only adds the motion.
 
 == Changelog ==
+
+= 1.1.0 =
+* New `[wrbet_aviator]` shortcode: the crash card's full layout with its own
+  content fields and settings section, so it no longer shares copy with
+  `[wrbet_crash]`.
+* `[wrbet_crash variant="full"]` still works and still reads the compact card's
+  content.
 
 = 1.0.0 =
 * Initial release: `[wrbet_odds]` and `[wrbet_crash]`, settings screen with live

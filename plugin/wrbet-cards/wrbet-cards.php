@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Wrbet Cards
  * Plugin URI:        https://github.com/maxoulassevich-creator/test-default
- * Description:       Two animated betting widgets — a live odds card and a crash-round card — rendered through shortcodes. Text, fonts, colours and animation are all configurable, and the widgets paint no background of their own.
- * Version:           1.0.0
+ * Description:       Animated betting widgets — a live odds card and two crash-round cards — rendered through shortcodes. Text, fonts, colours and animation are all configurable, and the widgets paint no background of their own.
+ * Version:           1.1.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
  * Author:            Wrbet
@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WRBET_CARDS_VERSION', '1.0.0' );
+define( 'WRBET_CARDS_VERSION', '1.1.0' );
 define( 'WRBET_CARDS_FILE', __FILE__ );
 define( 'WRBET_CARDS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WRBET_CARDS_URL', plugin_dir_url( __FILE__ ) );
@@ -88,6 +88,17 @@ function wrbet_cards_defaults() {
 		// Shown whenever the card is not animating: the curve is drawn in full,
 		// so the number beside it has to read as a completed round, not 1.00x.
 		'static_mult' => '3.20',
+
+		/* ---- aviator card content ----
+		 * [wrbet_aviator] is the same widget in its full layout, but it carries
+		 * its own copy of every content field so the two can be placed on one
+		 * page and configured independently. Animation settings stay shared. */
+		'av_label'     => 'Round in progress',
+		'av_static'    => '3.20',
+		'av_grid'      => '1',
+		'av_history'   => '2.14, 1.02!, 5.60, 1.37, 18.42^, 1.94',
+		'av_note'      => 'Illustration of a crash round. Not a playable game.',
+		'av_max_width' => '560',
 	);
 }
 

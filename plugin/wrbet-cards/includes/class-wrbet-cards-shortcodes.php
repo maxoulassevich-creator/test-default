@@ -37,6 +37,7 @@ class Wrbet_Cards_Shortcodes {
 	public static function init() {
 		add_shortcode( 'wrbet_odds', array( __CLASS__, 'render_odds' ) );
 		add_shortcode( 'wrbet_crash', array( __CLASS__, 'render_crash' ) );
+		add_shortcode( 'wrbet_aviator', array( __CLASS__, 'render_aviator' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_assets' ) );
 	}
 
@@ -81,7 +82,8 @@ class Wrbet_Cards_Shortcodes {
 		}
 
 		return has_shortcode( $post->post_content, 'wrbet_odds' )
-			|| has_shortcode( $post->post_content, 'wrbet_crash' );
+			|| has_shortcode( $post->post_content, 'wrbet_crash' )
+			|| has_shortcode( $post->post_content, 'wrbet_aviator' );
 	}
 
 	/**
@@ -458,22 +460,84 @@ class Wrbet_Cards_Shortcodes {
 	}
 
 	/* ------------------------------------------------------------------ *
-	 *  [wrbet_crash]
+	 *  [wrbet_crash]  and  [wrbet_aviator]
 	 * ------------------------------------------------------------------ */
 
 	/**
-	 * Render the crash-round card.
+	 * Render the compact crash-round card.
+	 *
+	 * Honours `variant="full"` for the layout, but keeps reading the compact
+	 * card's content fields — use [wrbet_aviator] for a full card with its own
+	 * label, history and note.
 	 *
 	 * @param array $atts Shortcode attributes.
 	 * @return string
 	 */
 	public static function render_crash( $atts ) {
+		return self::crash_card( $atts, 'crash' );
+	}
+
+	/**
+	 * Render the aviator card: the same widget locked to the full layout, with
+	 * its own set of content settings.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
+	 */
+	public static function render_aviator( $atts ) {
+		return self::crash_card( $atts, 'aviator' );
+	}
+
+	/**
+	 * Shared renderer behind both crash shortcodes.
+	 *
+	 * @param array  $atts Shortcode attributes.
+	 * @param string $mode 'crash' or 'aviator'.
+	 * @return string
+	 */
+	private static function crash_card( $atts, $mode ) {
 		self::enqueue();
 
 		$raw = is_array( $atts ) ? $atts : array();
-		$a   = self::merge( $raw );
+		$o   = wrbet_cards_options();
 
-		$full    = 'full' === strtolower( (string) $a['variant'] );
+		$forced = array();
+
+		// This card's own fields map onto the generic ones the renderer reads.
+		$alias = array(
+			'av_label'     => 'crash_label',
+			'av_static'    => 'static_mult',
+			'av_grid'      => 'grid',
+			'av_history'   => 'history',
+			'av_note'      => 'crash_note',
+			'av_max_width' => 'max_width',
+		);
+
+		if ( 'aviator' === $mode ) {
+			// Settings first, so a plain crash_* attribute still works as an alias.
+			foreach ( $alias as $from => $to ) {
+				$o[ $to ] = $o[ $from ];
+			}
+		}
+
+		$a = array_merge( $o, $raw );
+
+		if ( 'aviator' === $mode ) {
+			// av_* is the documented attribute name for this shortcode, so it
+			// takes precedence over the generic alias when both are given.
+			foreach ( $alias as $from => $to ) {
+				if ( isset( $raw[ $from ] ) ) {
+					$a[ $to ] = $raw[ $from ];
+				}
+			}
+
+			// Width reaches the markup as a CSS variable, and inline_vars() only
+			// emits attributes the author passed — hand it the resolved value.
+			$forced['max_width'] = $a['max_width'];
+		}
+
+		$full = ( 'aviator' === $mode ) || 'full' === strtolower( (string) $a['variant'] );
+
 		$animate = self::flag( $a['animate'] );
 		$chips   = self::parse_history( $a['history'] );
 		$uid     = 'wrbet-' . wp_unique_id();
@@ -489,7 +553,7 @@ class Wrbet_Cards_Shortcodes {
 
 		ob_start();
 		?>
-		<div class="<?php echo esc_attr( self::wrapper_class( $a, 'crash' ) ); ?><?php echo $full ? ' wrbet--full' : ' wrbet--compact'; ?>"<?php echo self::inline_vars( $raw ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in inline_vars(). ?>
+		<div class="<?php echo esc_attr( self::wrapper_class( $a, 'crash' ) ); ?><?php echo $full ? ' wrbet--full' : ' wrbet--compact'; ?>"<?php echo self::inline_vars( array_merge( $raw, $forced ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in inline_vars(). ?>
 			data-wrbet-crash
 			data-animate="<?php echo $animate ? '1' : '0'; ?>"
 			data-speed="<?php echo esc_attr( wrbet_cards_sanitize_number( $a['speed'], 0.2, 5, 1 ) ); ?>"

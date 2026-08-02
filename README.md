@@ -15,7 +15,7 @@ prototypes/index.html       side-by-side viewer for all three prototypes
 prototypes/{mobile,tablet,desktop}.html
 prototypes/wireframe.css    layout modes selected by body[data-device]
 prototypes/proto.js         shared wireframe markup
-plugin/wrbet-cards/         WordPress plugin: the two cards as shortcodes
+plugin/wrbet-cards/         WordPress plugin: the cards as shortcodes
 Wrbet Kenya Standalone.html original uploaded prototype (untouched)
 ```
 
@@ -164,14 +164,22 @@ use the composite if you want it exact.
 
 ## WordPress plugin
 
-`plugin/wrbet-cards/` packages the hero's two visuals as shortcodes:
-`[wrbet_odds]` (live match card) and `[wrbet_crash]` (crash round, `compact` and
-`full` variants). Settings → Wrbet Cards controls text, fonts, colours and
-animation, with a live preview; every setting also works as a per-instance
-shortcode attribute:
+`plugin/wrbet-cards/` packages the hero's visuals as three shortcodes:
+
+| Shortcode | Card |
+|---|---|
+| `[wrbet_odds]` | live match card — teams, scores, odds row |
+| `[wrbet_crash]` | compact crash round — label, curve, history |
+| `[wrbet_aviator]` | full crash round — chart grid, marker dot, large multiplier |
+
+`[wrbet_aviator]` carries its own label, static multiplier, history, note and
+width, so both crash cards can sit on one page without sharing content.
+
+Settings → Wrbet Cards controls text, fonts, colours and animation, with a live
+preview; every setting also works as a per-instance shortcode attribute:
 
 ```
-[wrbet_crash variant="full" accent="#ff2d55" speed="1.6" max_width="560"]
+[wrbet_aviator av_label="Round in progress" accent="#ff2d55" speed="1.6"]
 ```
 
 Neither card paints a background behind itself, so both drop onto an existing

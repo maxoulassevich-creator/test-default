@@ -121,6 +121,18 @@ class Wrbet_Cards_Settings {
 					'crash_note'  => array( 'textarea', __( 'Note', 'wrbet-cards' ), '' ),
 				),
 			),
+			'aviator'   => array(
+				'title'  => __( 'Aviator card content', 'wrbet-cards' ),
+				'desc'   => __( 'Shortcode: <code>[wrbet_aviator]</code> — the same widget locked to the full layout, with its own content so both crash cards can sit on one page. Animation settings above apply to both.', 'wrbet-cards' ),
+				'fields' => array(
+					'av_label'     => array( 'text', __( 'Label', 'wrbet-cards' ), '' ),
+					'av_static'    => array( 'text', __( 'Static multiplier', 'wrbet-cards' ), __( 'Shown when the card is not animating, so it should read as a finished round.', 'wrbet-cards' ) ),
+					'av_max_width' => array( 'number', __( 'Max width (px)', 'wrbet-cards' ), __( 'This card is wider than the compact one by default.', 'wrbet-cards' ), array( 'min' => 160, 'max' => 1200 ) ),
+					'av_grid'      => array( 'toggle', __( 'Chart grid', 'wrbet-cards' ), '' ),
+					'av_history'   => array( 'text', __( 'History chips', 'wrbet-cards' ), __( 'Same syntax as above: <code>!</code> for a bust, <code>^</code> to highlight.', 'wrbet-cards' ) ),
+					'av_note'      => array( 'textarea', __( 'Note', 'wrbet-cards' ), '' ),
+				),
+			),
 		);
 	}
 
@@ -193,7 +205,7 @@ class Wrbet_Cards_Settings {
 		$out      = array();
 
 		$colors  = array( 'accent', 'ink', 'text', 'muted', 'faint', 'card_bg', 'card_bg2', 'border', 'gray', 'danger', 'danger_text' );
-		$toggles = array( 'surface', 'shadow', 'animate', 'pulse', 'reveal', 'live_odds', 'grid' );
+		$toggles = array( 'surface', 'shadow', 'animate', 'pulse', 'reveal', 'live_odds', 'grid', 'av_grid' );
 		$numbers = array(
 			'radius'     => array( 0, 80 ),
 			'padding'    => array( 0, 80 ),
@@ -202,6 +214,7 @@ class Wrbet_Cards_Settings {
 			'speed'      => array( 0.2, 5 ),
 			'crash_min'  => array( 1.01, 100 ),
 			'crash_max'  => array( 1.02, 1000 ),
+			'av_max_width' => array( 160, 1200 ),
 		);
 
 		foreach ( $defaults as $key => $default ) {
@@ -347,8 +360,8 @@ class Wrbet_Cards_Settings {
 
 			<div class="wrbet-admin__intro notice notice-info inline">
 				<p>
-					<?php esc_html_e( 'Drop either card anywhere shortcodes run:', 'wrbet-cards' ); ?>
-					<code>[wrbet_odds]</code> <?php esc_html_e( 'and', 'wrbet-cards' ); ?> <code>[wrbet_crash]</code>.
+					<?php esc_html_e( 'Drop any of the three cards anywhere shortcodes run:', 'wrbet-cards' ); ?>
+					<code>[wrbet_odds]</code>, <code>[wrbet_crash]</code>, <code>[wrbet_aviator]</code>.
 				</p>
 				<p>
 					<?php
@@ -375,7 +388,8 @@ class Wrbet_Cards_Settings {
 						<?php
 						// Output of our own shortcodes, already escaped during rendering.
 						echo do_shortcode( '[wrbet_odds]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-						echo do_shortcode( '[wrbet_crash variant="full"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo do_shortcode( '[wrbet_crash]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo do_shortcode( '[wrbet_aviator]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 						?>
 					</div>
 				</aside>
