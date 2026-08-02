@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720"
+     width="1280" height="720" preserveAspectRatio="xMidYMid slice" role="img"
+     aria-label="Red glow on transparency, anchored to the top-right corner">
+  <defs>
+    <radialGradient id="glow" gradientUnits="userSpaceOnUse"
+                    cx="1280" cy="0" r="1152" gradientTransform="translate(1280 0) scale(1 0.75) translate(-1280 -0)">
+      <stop offset="0%" stop-color="rgb(141,2,3)" stop-opacity="0.28"/>
+      <stop offset="62%" stop-color="rgb(141,2,3)" stop-opacity="0"/>
+      <stop offset="100%" stop-color="rgb(141,2,3)" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="720" fill="url(#glow)"/>
+</svg>

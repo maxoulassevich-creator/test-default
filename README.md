@@ -151,16 +151,38 @@ Stacked as two backgrounds, glow on top:
 }
 ```
 
-The glow rasters are generated arithmetically rather than screenshotted: the
-light is one colour at varying opacity, so only the alpha channel carries
-information. Skipping the browser's gradient dithering took the 1920 PNG from
-203 KB to 34 KB, and its WebP from 177 KB to 15 KB, while matching the SVG's
-own rendering to within 1/255.
-
 Stacking the two layers reproduces the packaged composite to within 6/255 — in
 the composite the glow sits *under* the settle gradient and is damped slightly
 in the lower half, which a manual stack cannot reproduce. It is not visible;
 use the composite if you want it exact.
+
+### Red glow
+
+The wash behind the responsible-gambling panel, split out the same way. Unlike
+the turquoise light this one is an **ellipse pinned to the top-right corner** —
+`radial-gradient(90% 120% at 100% 0%, rgba(141,2,3,.28), transparent 62%)`.
+
+| File | What it is |
+|---|---|
+| `glow-red.svg` | the corner ellipse on transparency, 1280 × 720 panel frame |
+| `glow-red-1280.*`, `-2560.*` | 23 / 61 KB as PNG, 8 / 21 KB as WebP |
+| `glow-red-blob.svg` | the same light centred in a 1600 × 1600 square |
+| `glow-red-blob-1600.*` | 60 KB as PNG, 18 KB as WebP |
+
+Composited over `#1B1B1B` the SVG matches the panel's own CSS gradient to
+within 1/255, and the PNG to within 2/255 — the 8-bit alpha step.
+
+### Regenerating
+
+```
+python3 tools/make-glow.py
+```
+
+One script owns every glow layer, turquoise and red. The rasters are computed
+arithmetically rather than screenshotted: a glow is one colour at varying
+opacity, so only alpha carries information, and skipping the browser's gradient
+dithering took the turquoise 1920 PNG from 203 KB to 34 KB and its WebP from
+177 KB to 15 KB — while still reproducing the SVG's own stops to within 1/255.
 
 ## WordPress plugin
 
