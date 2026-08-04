@@ -1,0 +1,174 @@
+/* =========================================================================
+   Instant Skeleton UX — reworked renderer (drop-in for assets/css/frontend.css)
+
+   Three changes carry most of the fix:
+     1. the overlay is OPAQUE, filled with the page's own background, so real
+        content can never show through a gap between shapes;
+     2. shapes are neutral — the palette is decided once for the page and never
+        sampled from an element, so a turquoise button cannot produce a
+        turquoise skeleton;
+     3. text is drawn as centred bars, not as full line boxes.
+   ========================================================================= */
+
+/* ---------- tokens ---------- */
+:root {
+  --sk-backdrop: #ffffff;   /* set at runtime from the page's own background */
+  --sk-surface:  rgba(0, 0, 0, .05);
+  --sk-block:    rgba(0, 0, 0, .10);
+  --sk-hi:       rgba(255, 255, 255, .45);
+  --sk-radius:   10px;
+  --sk-speed:    1500ms;
+  --sk-progress: #6c5ce7;
+  --sk-progress-height: 3px;
+  --sk-fade:     200ms;
+}
+
+/* The page is never hidden. If the script fails, the visitor sees the site —
+   the previous build blanked <body> and relied on a timeout to bring it back. */
+html.sk-loading,
+html.sk-navigating { cursor: progress; }
+
+body.sk-scroll-locked {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+/* ---------- overlay ---------- */
+.sk-overlay,
+.sk-overlay * { box-sizing: border-box; }
+
+.sk-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  overflow: hidden;
+  pointer-events: none;
+  /* opaque: this is what stops content leaking through */
+  background: var(--sk-backdrop);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--sk-fade) ease, visibility var(--sk-fade) ease;
+}
+
+.sk-overlay[hidden] { display: none !important; }
+
+.sk-overlay.is-hiding {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sk-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* ---------- shapes ---------- */
+.sk-shape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--sk-block);
+  border-radius: var(--sk-shape-radius, var(--sk-radius));
+  transform: translate3d(var(--sk-x, 0), var(--sk-y, 0), 0);
+  /* No will-change here: it would promote every shape to its own compositor
+     layer. Only the sweeping highlight below needs one. */
+  contain: paint;
+}
+
+/* A card keeps its footprint but sits quieter than the blocks inside it. */
+.sk-shape[data-kind="surface"] { background: var(--sk-surface); }
+.sk-shape[data-kind="text"]    { border-radius: 999px; }
+.sk-shape[data-kind="pill"]    { border-radius: 999px; }
+
+/* ---------- shimmer ---------- */
+html.sk-anim-shimmer .sk-shape::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-130%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 30%,
+    var(--sk-hi) 50%,
+    transparent 70%,
+    transparent 100%
+  );
+  animation: sk-sweep var(--sk-speed) linear infinite;
+  will-change: transform;
+}
+
+html.sk-anim-pulse .sk-shape {
+  animation: sk-pulse var(--sk-speed) ease-in-out infinite alternate;
+}
+
+html.sk-paused .sk-shape,
+html.sk-paused .sk-shape::after { animation-play-state: paused !important; }
+
+@keyframes sk-sweep { to { transform: translateX(130%); } }
+@keyframes sk-pulse { from { opacity: .62; } to { opacity: 1; } }
+
+/* ---------- progress ---------- */
+.sk-progress {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  height: var(--sk-progress-height);
+  overflow: hidden;
+  transition: opacity 160ms ease;
+}
+
+.sk-overlay.no-progress .sk-progress { opacity: 0; }
+
+.sk-progress > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--sk-progress);
+  transition: width 220ms ease;
+}
+
+/* ---------- debug ---------- */
+.sk-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 4;
+  display: none;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: rgba(15, 17, 21, .88);
+  border: 1px solid rgba(255, 255, 255, .2);
+  color: #fff;
+  font: 600 12px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.sk-overlay.is-debug .sk-badge { display: block; }
+
+.sk-sr {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sk-shape,
+  .sk-shape::after,
+  .sk-overlay,
+  .sk-progress > span {
+    animation: none !important;
+    transition-duration: .01ms !important;
+  }
+}
