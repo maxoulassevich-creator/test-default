@@ -17,19 +17,29 @@ Measured on the Wrbet landing at 1440 × 900, with the plugin's own defaults:
 
 Four defects, in the order they matter.
 
-### 1. The overlay was transparent
+### 1. Content was covered, not hidden
 
-`.isux-overlay { background: transparent }`. The skeleton was assembled only
-from "atomic" elements plus raw text rects, so everything the scan did not
+`.isux-overlay { background: transparent }`, and the skeleton was assembled
+only from "atomic" elements plus raw text rects. Everything the scan did not
 match stayed fully visible: card borders, gradients, chips, SVG strokes,
 `::before`/`::after`, and every gap between two shapes. That is why the
 screenshot reads as the real page with grey rectangles scattered over it —
 "LIVE", the team names, the scores, the history chips and the note line were
 never covered at all.
 
-An opaque canvas fixes this outright, and it changes what the scan is *for*:
-it no longer has to race to hide content, it only has to describe the layout.
-Everything below follows from that.
+Covering the page with an opaque sheet would fix the leak but destroy the
+thing the plugin exists to protect: section backgrounds, gradients and
+decorative layers would all be painted over.
+
+So the content is hidden **at source** instead. Every leaf the scan describes
+gets `visibility: hidden` through a class, and a shape is drawn in its place.
+`visibility` keeps the layout box, so nothing reflows and undoing it is just
+dropping the class — verified across 184 sampled elements: zero computed-style
+differences after the skeleton hides.
+
+Containers are deliberately left alone. A card keeps painting its own
+background, border and radius; only its contents become bars. That is why the
+skeleton now looks like the site rather than like a grey sheet.
 
 ### 2. Colours were sampled from the element itself
 
@@ -39,8 +49,10 @@ button's own fill, so the skeleton for that button was turquoise. The same
 path produced the red chips and — because `rgba(242,242,242,.05)` reads as a
 "light" backdrop by luminance — near-white boxes on a near-black page.
 
-The palette is now computed **once** for the page from the document
-background, and every shape uses it.
+The walk now starts at the element's **parent**. What a shape sits on is the
+background behind it, never its own fill. Local adaptation is kept, so a light
+card on a dark page still gets light placeholders; only the element's own
+colour is excluded.
 
 ### 3. Text was drawn at full line-box height
 
@@ -65,6 +77,14 @@ which is exactly what the skeleton needs; only `display: none`,
 I hit this in my own first pass — it rendered the header and nothing else —
 which is a good sign of how easily it bites.
 
+### 5. Real backgrounds
+
+Restored as a consequence of hiding rather than covering: the hero grid, the
+corner glow, alternating section fills, card borders and every `::before`
+decoration keep rendering. Verified on the landing — `.hero__grid-bg`,
+`.hero__glow`, `.odds-card` and `.section--alt` all still paint their own
+backgrounds while the skeleton is up.
+
 ## Also changed
 
 - **The page is never blanked.** 2.0.0 sets `html.isux-booting body { opacity: 0 }`
@@ -84,9 +104,17 @@ which is a good sign of how easily it bites.
   `childList/subtree/attributes` while `stabilizeElement()` wrote inline styles
   onto images inside that same scope — a rebuild loop waiting to happen.
   Rebuilds now happen on resize only, debounced.
-- **A card is a card.** A single `border-top` no longer promotes a ruled group
-  (a stats row, a section divider) into a filled panel; a frame on all four
-  sides with a radius does.
+- **Cards are not drawn at all.** There is no "surface" shape any more —
+  the real card shows through, which is both more accurate and fewer shapes.
+- **Loose text is handled.** Text sitting directly inside a container that
+  also has element children — `<div><svg/> Label</div>` — was the one thing
+  that stayed readable. It cannot take a class without wrapping it, so the
+  container's inherited colour is dropped instead.
+- **Collapsed boxes are rebuilt.** An element caught mid-entrance can report a
+  zero-size rect: a `scale(0)` reveal, a lazy image with no dimensions. The box
+  is reconstructed from the layout size, so the same class of animation that
+  used to empty the skeleton through `opacity` cannot empty it through
+  `transform` either.
 
 ## Upgrading from 2.0
 
@@ -110,6 +138,30 @@ working. Settings were removed and added:
 subtree.
 
 Stale values left in the database are harmless — they are simply not read.
+
+## Navigation: the prerender mode
+
+2.1 adds `navigation_mode = prerender`. Speculation Rules let the browser build
+the next page in full ahead of the click, and cross-document view transitions
+animate the swap — both without JavaScript intercepting anything.
+
+This is mutually exclusive with the AJAX mode: `preventDefault()` on the click
+means no real navigation happens, so the prerendered document is never
+activated. Prerender is the better trade for most sites — it replaces the
+asset-loading, head-merging and script-re-execution machinery with markup the
+browser understands natively, and where it is unsupported everything falls back
+to ordinary navigation with the skeleton.
+
+Two safety points are built in. URL exclusions are compiled into
+`[href*="..."]` attribute selectors rather than URL Pattern strings, which
+reproduces the PHP side's `strpos()` semantics exactly and avoids the failure
+mode where one malformed pattern voids the whole rule set. And links carrying a
+query string are excluded by default: a prerendered page really does execute,
+so `?add-to-cart=` would genuinely add to the cart.
+
+The skeleton stays as the fallback and appears only if the navigation is still
+unfinished after `transition_delay` (400 ms by default), so an instant
+activation never flashes it.
 
 ## One thing worth deciding
 

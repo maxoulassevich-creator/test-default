@@ -57,6 +57,10 @@ final class ISUX_Settings {
 			'preserve_selectors'         => '[data-isux-preserve], .isux-preserve, .elementor-background-overlay, .elementor-shape, .elementor-shape-top, .elementor-shape-bottom, .wp-block-cover__background, .wp-block-cover__image-background',
 			'exclude_skeleton_selectors' => 'script, style, noscript, template, link, meta, [hidden], .screen-reader-text, .sr-only, .skip-link, #wpadminbar, #isux-overlay',
 			'navigation_mode'            => 'native',
+			'prerender_eagerness'        => 'moderate',
+			'prerender_skip_query'       => 1,
+			'transition_delay'           => 400,
+			'view_transitions'           => 1,
 			'content_selector'           => 'main, #primary, .site-main, #content',
 			'ajax_timeout'               => 12000,
 			'load_new_assets'            => 1,
@@ -108,7 +112,7 @@ final class ISUX_Settings {
 
 		$booleans = array(
 			'enabled', 'initial_loader', 'transition_loader', 'logged_in', 'lock_scroll',
-			'respect_radius', 'wait_fonts', 'progress_bar',
+			'respect_radius', 'wait_fonts', 'progress_bar', 'prerender_skip_query', 'view_transitions',
 			'load_new_assets', 'update_head', 'run_inline_scripts', 'focus_content',
 			'network_aware', 'pause_hidden', 'woocommerce_adapter', 'elementor_adapter', 'debug',
 		);
@@ -123,12 +127,14 @@ final class ISUX_Settings {
 		$out['shimmer_speed']   = $this->clamp_int( $input, 'shimmer_speed', 500, 5000, $defaults['shimmer_speed'] );
 		$out['radius']          = $this->clamp_int( $input, 'radius', 0, 60, $defaults['radius'] );
 		$out['progress_height'] = $this->clamp_int( $input, 'progress_height', 1, 8, $defaults['progress_height'] );
-		$out['ajax_timeout']    = $this->clamp_int( $input, 'ajax_timeout', 3000, 30000, $defaults['ajax_timeout'] );
+		$out['ajax_timeout']     = $this->clamp_int( $input, 'ajax_timeout', 3000, 30000, $defaults['ajax_timeout'] );
+		$out['transition_delay'] = $this->clamp_int( $input, 'transition_delay', 0, 3000, $defaults['transition_delay'] );
 
 		$out['reveal_event']    = $this->enum( $input, 'reveal_event', array( 'dom', 'load' ), $defaults['reveal_event'] );
 		$out['theme_mode']      = $this->enum( $input, 'theme_mode', array( 'auto', 'light', 'dark' ), $defaults['theme_mode'] );
 		$out['animation']       = $this->enum( $input, 'animation', array( 'shimmer', 'pulse', 'none' ), $defaults['animation'] );
-		$out['navigation_mode'] = $this->enum( $input, 'navigation_mode', array( 'native', 'ajax' ), $defaults['navigation_mode'] );
+		$out['navigation_mode'] = $this->enum( $input, 'navigation_mode', array( 'native', 'ajax', 'prerender' ), $defaults['navigation_mode'] );
+		$out['prerender_eagerness'] = $this->enum( $input, 'prerender_eagerness', array( 'conservative', 'moderate', 'eager' ), $defaults['prerender_eagerness'] );
 		$out['scroll_mode']     = $this->enum( $input, 'scroll_mode', array( 'top', 'preserve', 'smooth' ), $defaults['scroll_mode'] );
 
 		$color                   = isset( $input['progress_color'] ) ? sanitize_hex_color( $input['progress_color'] ) : '';
@@ -250,7 +256,7 @@ final class ISUX_Settings {
 						<?php $this->textarea( 'forced_selectors', 'Принудительно делать skeleton', $o, 'CSS-селекторы. Для отдельного элемента можно использовать data-isux-skeleton="box", "text" или "circle".' ); ?>
 						<?php $this->textarea( 'preserve_selectors', 'Всегда оставлять настоящими', $o, 'Фоны, декор, логотипы или другие элементы, которые нельзя заменять. Поддерживается data-isux-preserve.' ); ?>
 						<?php $this->textarea( 'exclude_skeleton_selectors', 'Полностью игнорировать', $o, 'Технические и невидимые элементы, которые не участвуют в построении skeleton.' ); ?>
-						<div class="isux-notice"><strong>Как строится skeleton в 2.1.</strong> Слой непрозрачный и залит собственным фоном страницы, поэтому реальный контент не проступает между заглушками. Обход идёт сверху вниз и останавливается, как только ветка описана: медиа и элементы управления — прямоугольником, текст — полосами по строкам, карточка — своей рамкой. Элементы с opacity:0 больше не пропускаются: так работают анимации появления, и раньше они опустошали skeleton.</div>
+						<div class="isux-notice"><strong>Как строится skeleton в 2.1.</strong> Контент скрывается на месте через visibility, а не закрывается непрозрачным слоем. Поэтому фоны секций, градиенты, декоративные слои и рамки карточек остаются настоящими — заменяется только содержимое: медиа и элементы управления прямоугольником, текст полосами по строкам. Раскладка не меняется, восстановление — просто снятие класса. Элементы с opacity:0 больше не пропускаются: так работают анимации появления, и раньше они опустошали skeleton.</div>
 					</section>
 
 					<section class="isux-panel" data-panel="visual">
@@ -268,7 +274,14 @@ final class ISUX_Settings {
 
 					<section class="isux-panel" data-panel="navigation">
 						<h2>Переходы между страницами</h2>
-						<?php $this->select( 'navigation_mode', 'Режим переходов', array( 'native' => 'Надёжный: обычный переход', 'ajax' => 'Частичная AJAX-навигация' ), $o, 'Для Elementor, WooCommerce и кастомных скриптов сначала проверьте AJAX на тестовой копии.' ); ?>
+						<?php $this->select( 'navigation_mode', 'Режим переходов', array( 'prerender' => 'Предзагрузка страницы браузером (рекомендуется)', 'native' => 'Надёжный: обычный переход', 'ajax' => 'Частичная AJAX-навигация' ), $o, 'Prerender и AJAX взаимоисключающие: AJAX перехватывает клик, поэтому предзагруженный документ не активируется никогда.' ); ?>
+						<div class="isux-notice"><strong>Режим предзагрузки.</strong> Браузер заранее строит следующую страницу целиком, клик активирует уже готовый документ. Скелет остаётся запасным вариантом и появляется, только если переход всё-таки занял время. Там, где Speculation Rules не поддерживаются, всё честно откатывается на обычную навигацию со скелетом.</div>
+						<div class="isux-grid-2">
+							<?php $this->select( 'prerender_eagerness', 'Когда предзагружать', array( 'conservative' => 'По нажатию', 'moderate' => 'По наведению', 'eager' => 'Сразу для всех ссылок' ), $o, 'eager расходует трафик посетителя — на мобильных не рекомендуется.' ); ?>
+							<?php $this->number( 'transition_delay', 'Задержка до скелета, мс', 0, 3000, 50, $o, 'Мгновенная активация не успевает показать скелет.' ); ?>
+						</div>
+						<?php $this->checkbox( 'prerender_skip_query', 'Не предзагружать ссылки с параметрами', 'Предзагруженная страница действительно выполняется. Ссылка вида ?add-to-cart= реально добавит товар в корзину, поэтому по умолчанию такие ссылки исключены.', $o ); ?>
+						<?php $this->checkbox( 'view_transitions', 'Плавный переход между страницами', 'Кросс-документные View Transitions: браузер сам делает переход без единой строки JavaScript. Работает и в режиме предзагрузки, и при обычной навигации.', $o ); ?>
 						<?php $this->text( 'content_selector', 'Основной контейнер для AJAX', $o, 'Берётся первый найденный селектор.' ); ?>
 						<div class="isux-grid-2"><?php $this->number( 'ajax_timeout', 'Тайм-аут, мс', 3000, 30000, 100, $o, '' ); ?><?php $this->select( 'scroll_mode', 'Прокрутка', array( 'top' => 'Наверх', 'smooth' => 'Плавно наверх', 'preserve' => 'Сохранять позицию' ), $o, '' ); ?></div>
 						<?php $this->checkbox( 'load_new_assets', 'Подключать новые CSS/JS', 'Добавляет ресурсы, которых не было на предыдущей странице.', $o ); ?>

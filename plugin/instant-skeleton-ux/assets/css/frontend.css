@@ -12,8 +12,6 @@
 
 /* ---------- tokens ---------- */
 :root {
-  --isux-backdrop: #ffffff;   /* set at runtime from the page's own background */
-  --isux-surface:  rgba(0, 0, 0, .05);
   --isux-block:    rgba(0, 0, 0, .10);
   --isux-hi:       rgba(255, 255, 255, .45);
   --isux-radius:   10px;
@@ -44,8 +42,10 @@ body.isux-scroll-locked {
   z-index: 2147483000;
   overflow: hidden;
   pointer-events: none;
-  /* opaque: this is what stops content leaking through */
-  background: var(--isux-backdrop);
+  /* Transparent. Content is hidden at source by .isux-masked below, not
+     covered by a sheet — so section backgrounds, gradients, decorative layers
+     and pseudo-elements stay real, which is the whole point of the plugin. */
+  background: transparent;
   opacity: 1;
   visibility: visible;
   transition: opacity var(--isux-fade) ease, visibility var(--isux-fade) ease;
@@ -71,6 +71,25 @@ body.isux-scroll-locked {
   to { opacity: 0; visibility: hidden; }
 }
 
+/* If the script never runs, nothing was ever masked — the page is simply
+   itself. The overlay is empty in that case and the animation removes it. */
+
+/* visibility:hidden removes the content from view without touching layout —
+   no reflow, nothing to restore beyond dropping the class. Applied only to
+   content leaves (text, media, controls), never to their containers, so the
+   containers keep painting their own backgrounds and borders. */
+.isux-masked {
+  visibility: hidden !important;
+}
+
+/* Text sitting directly inside a container that also has element children
+   cannot be hidden on its own without wrapping it, so the inherited colour is
+   dropped instead. The container's background and border stay. */
+.isux-masked-text {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
 .isux-shape-layer {
   position: absolute;
   inset: 0;
@@ -87,7 +106,7 @@ body.isux-scroll-locked {
   padding: 0;
   border: 0;
   overflow: hidden;
-  background: var(--isux-block);
+  background: var(--isux-block-local, var(--isux-block));
   border-radius: var(--isux-shape-radius, var(--isux-radius));
   transform: translate3d(var(--isux-x, 0), var(--isux-y, 0), 0);
   /* No will-change here: it would promote every shape to its own compositor
@@ -96,12 +115,11 @@ body.isux-scroll-locked {
 }
 
 /* A card keeps its footprint but sits quieter than the blocks inside it. */
-.isux-shape[data-isux-kind="surface"] { background: var(--isux-surface); }
 .isux-shape[data-isux-kind="text"]    { border-radius: 999px; }
 .isux-shape[data-isux-kind="pill"]    { border-radius: 999px; }
 
 /* ---------- shimmer ---------- */
-html.isux-anim-shimmer .isux-shape::after {
+html.isux-animation-shimmer .isux-shape::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -110,7 +128,7 @@ html.isux-anim-shimmer .isux-shape::after {
     90deg,
     transparent 0%,
     transparent 30%,
-    var(--isux-hi) 50%,
+    var(--isux-hi-local, var(--isux-hi)) 50%,
     transparent 70%,
     transparent 100%
   );
@@ -118,7 +136,7 @@ html.isux-anim-shimmer .isux-shape::after {
   will-change: transform;
 }
 
-html.isux-anim-pulse .isux-shape {
+html.isux-animation-pulse .isux-shape {
   animation: isux-pulse var(--isux-speed) ease-in-out infinite alternate;
 }
 
@@ -149,7 +167,7 @@ html.isux-paused .isux-shape::after { animation-play-state: paused !important; }
 }
 
 /* ---------- debug ---------- */
-.isux-badge {
+.isux-debug-badge {
   position: absolute;
   right: 12px;
   bottom: 12px;
@@ -163,9 +181,9 @@ html.isux-paused .isux-shape::after { animation-play-state: paused !important; }
   font: 600 12px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-.isux-overlay.isux-debug .isux-badge { display: block; }
+.isux-overlay.isux-debug .isux-debug-badge { display: block; }
 
-.isux-sr {
+.isux-sr-message {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;

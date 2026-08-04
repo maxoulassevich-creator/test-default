@@ -42,7 +42,9 @@
 		shownAt: window.ISUX_BOOT_STARTED || now(),
 		progress: 0,
 		shapes: 0,
-		palette: null,
+		paletteCache: {},
+		masked: [],
+		maskedText: [],
 		timers: {},
 		teardown: [],
 		navigationController: null,
@@ -167,44 +169,47 @@
 			Math.round(a.b + (b.b - a.b) * amount) + ')';
 	}
 
-	function pageBackdrop() {
+	/* The colour behind an element — starting at its PARENT.
+	   2.0 started at the element itself, so a button filled #00FFF7 reported
+	   turquoise as its own backdrop and got a turquoise skeleton. What the
+	   shape actually sits on is the parent's background, which is what makes a
+	   light card on a dark page still read correctly. */
+	function backdropBehind(el) {
 		var forced = parseColor(config.backdrop);
 		if (forced) return forced;
 
-		var nodes = [doc.body, root];
-		for (var i = 0; i < nodes.length; i++) {
-			if (!nodes[i]) continue;
-			var color = parseColor(window.getComputedStyle(nodes[i]).backgroundColor);
-			if (color && color.a > 0.9) return color;
+		var node = el && el.parentElement;
+		var guard = 0;
+		while (node && node.nodeType === 1 && guard < 30) {
+			var color = parseColor(window.getComputedStyle(node).backgroundColor);
+			if (color && color.a > 0.6) return color;
+			node = node.parentElement;
+			guard += 1;
 		}
+
 		var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 		return dark ? { r: 20, g: 20, b: 20, a: 1 } : { r: 255, g: 255, b: 255, a: 1 };
 	}
 
-	function buildPalette() {
-		var backdrop = pageBackdrop();
+	function paletteFor(el) {
+		var backdrop = backdropBehind(el);
+		var key = backdrop.r + ',' + backdrop.g + ',' + backdrop.b;
+		if (state.paletteCache[key]) return state.paletteCache[key];
+
 		var dark;
 		if (config.themeMode === 'dark') dark = true;
 		else if (config.themeMode === 'light') dark = false;
 		else dark = luminance(backdrop) < 0.42;
 
 		var toward = dark ? { r: 255, g: 255, b: 255 } : { r: 0, g: 0, b: 0 };
-		var steps = dark ? [0.055, 0.14, 0.26] : [0.05, 0.12, 0.22];
+		var steps = dark ? [0.16, 0.30] : [0.11, 0.04];
 
-		return {
-			backdrop: 'rgb(' + backdrop.r + ',' + backdrop.g + ',' + backdrop.b + ')',
-			surface: mix(backdrop, toward, steps[0]),
-			block: mix(backdrop, toward, steps[1]),
-			highlight: mix(backdrop, toward, steps[2]),
-			dark: dark
+		var palette = {
+			block: mix(backdrop, toward, steps[0]),
+			highlight: mix(backdrop, toward, steps[1])
 		};
-	}
-
-	function applyPalette(palette) {
-		root.style.setProperty('--isux-backdrop', palette.backdrop);
-		root.style.setProperty('--isux-surface', palette.surface);
-		root.style.setProperty('--isux-block', palette.block);
-		root.style.setProperty('--isux-hi', palette.highlight);
+		state.paletteCache[key] = palette;
+		return palette;
 	}
 
 	/* ------------------------------------------------------------------ *
@@ -245,24 +250,6 @@
 		return true;
 	}
 
-	function isSurface(el, rect, cs, viewportArea) {
-		if (!el.children.length) return false;
-		var area = rect.width * rect.height;
-		if (area < 4000 || area > viewportArea * 0.45) return false;
-
-		var bg = parseColor(cs.backgroundColor);
-		if (bg && bg.a > 0.04) return true;
-
-		/* A single hairline — a section divider, an underlined stats row — is
-		   not a card. A frame on all four sides with a radius is. */
-		var framed = parseFloat(cs.borderTopWidth) > 0 && parseFloat(cs.borderRightWidth) > 0 &&
-			parseFloat(cs.borderBottomWidth) > 0 && parseFloat(cs.borderLeftWidth) > 0;
-		var rounded = parseFloat(cs.borderTopLeftRadius) > 2;
-
-		if (framed && rounded) return true;
-		return !!(cs.boxShadow && cs.boxShadow !== 'none' && rounded);
-	}
-
 	/* Deliberately does not test opacity: scroll-reveal effects (AOS, WOW,
 	   Elementor entrance animations, hand-rolled IntersectionObservers) park
 	   blocks at opacity:0 until they scroll into view. Those still occupy their
@@ -293,7 +280,22 @@
 		return Math.max(0, Math.min(value, Math.min(rect.width, rect.height) / 2));
 	}
 
-	function push(fragment, rect, kind, radius) {
+	/* Hide the real thing rather than cover it. visibility keeps the layout
+	   box, so nothing reflows and undoing it is just dropping the class. */
+	function mask(el) {
+		if (!el || el.nodeType !== 1 || el.classList.contains('isux-masked')) return;
+		el.classList.add('isux-masked');
+		state.masked.push(el);
+	}
+
+	function unmaskAll() {
+		state.masked.forEach(function (el) { el.classList.remove('isux-masked'); });
+		state.masked = [];
+		state.maskedText.forEach(function (el) { el.classList.remove('isux-masked-text'); });
+		state.maskedText = [];
+	}
+
+	function push(fragment, rect, kind, radius, source) {
 		if (state.shapes >= MAX_SHAPES) return false;
 
 		var left = Math.max(0, rect.left);
@@ -303,8 +305,11 @@
 		if (width < 3 || height < 3) return false;
 
 		var shape = doc.createElement('span');
+		var palette = paletteFor(source || doc.body);
 		shape.className = 'isux-shape';
 		shape.setAttribute('data-isux-kind', kind);
+		shape.style.setProperty('--isux-block-local', palette.block);
+		shape.style.setProperty('--isux-hi-local', palette.highlight);
 		shape.style.setProperty('--isux-x', left.toFixed(1) + 'px');
 		shape.style.setProperty('--isux-y', top.toFixed(1) + 'px');
 		if (radius != null) shape.style.setProperty('--isux-shape-radius', radius.toFixed(1) + 'px');
@@ -320,11 +325,28 @@
 	   not reshuffle every paragraph's last line. */
 	var TAPER = [0.72, 0.58, 0.81, 0.64, 0.76, 0.55, 0.69, 0.84];
 
-	function paintText(fragment, el, index) {
+	function rectsOf(node) {
 		var range = doc.createRange();
-		range.selectNodeContents(el);
+		range.selectNodeContents(node);
 		var rects = Array.prototype.slice.call(range.getClientRects());
 		if (range.detach) range.detach();
+		return rects;
+	}
+
+	/* Text nodes sitting directly inside an element that also has element
+	   children. A chip built as <div><svg/> Label</div> has one: the svg is an
+	   atom, so the element is not a text leaf, and without this the label was
+	   the one thing on the page that stayed readable. */
+	function directTextNodes(el) {
+		var out = [];
+		for (var i = 0; i < el.childNodes.length; i++) {
+			var node = el.childNodes[i];
+			if (node.nodeType === 3 && node.nodeValue && node.nodeValue.trim()) out.push(node);
+		}
+		return out;
+	}
+
+	function paintRects(fragment, rects, el, index) {
 		if (!rects.length) return;
 
 		// Inline children split a line into several rects; merge them per line.
@@ -359,8 +381,12 @@
 				left: line.left, top: top, right: line.left + width, bottom: top + height,
 				width: width, height: height
 			};
-			if (onScreen(rect)) push(fragment, rect, 'text', height / 2);
+			if (onScreen(rect)) push(fragment, rect, 'text', height / 2, el);
 		});
+	}
+
+	function paintText(fragment, el, index) {
+		paintRects(fragment, rectsOf(el), el, index);
 	}
 
 	/* One top-down pass. 2.0 collected every atom in the scope, then every text
@@ -368,7 +394,6 @@
 	   the doubled and offset shapes came from. Each branch here stops as soon
 	   as it has described what is there. */
 	function scan(scope, fragment) {
-		var viewportArea = window.innerWidth * window.innerHeight;
 		var forced = config.forcedSelectors || '[data-isux-skeleton]';
 		var index = 0;
 
@@ -380,17 +405,36 @@
 			if (!isVisible(cs)) return;
 
 			var rect = el.getBoundingClientRect();
+
+			/* An element caught mid-entrance reports a collapsed box: a scale(0)
+			   reveal, a lazy image with no width/height, an accordion at height
+			   0. getBoundingClientRect() is post-transform, so rebuild the box
+			   from the layout size around the same centre — otherwise the same
+			   class of animation that used to empty the skeleton through
+			   opacity empties it through transform instead.
+			   SVG elements have no offsetWidth, hence the typeof guard. */
+			if ((rect.width < 3 || rect.height < 3) &&
+				typeof el.offsetWidth === 'number' && el.offsetWidth >= 3 && el.offsetHeight >= 3) {
+				var cx = rect.left + rect.width / 2;
+				var cy = rect.top + rect.height / 2;
+				rect = {
+					left: cx - el.offsetWidth / 2, right: cx + el.offsetWidth / 2,
+					top: cy - el.offsetHeight / 2, bottom: cy + el.offsetHeight / 2,
+					width: el.offsetWidth, height: el.offsetHeight
+				};
+			}
+
 			if (rect.bottom < -BUFFER || rect.top > window.innerHeight + BUFFER) return;
 
 			var override = (el.getAttribute('data-isux-skeleton') || '').toLowerCase();
 			if (override === 'ignore') return;
 
 			if (override === 'circle' || override === 'pill') {
-				push(fragment, rect, 'pill', Math.max(rect.width, rect.height));
+				if (push(fragment, rect, 'pill', Math.max(rect.width, rect.height), el)) mask(el);
 				return;
 			}
 			if (override === 'box' || (override !== 'text' && matches(el, forced))) {
-				push(fragment, rect, 'block', radiusOf(cs, rect));
+				if (push(fragment, rect, 'block', radiusOf(cs, rect), el)) mask(el);
 				return;
 			}
 
@@ -398,21 +442,34 @@
 				var radius = radiusOf(cs, rect);
 				var square = Math.abs(rect.width - rect.height) < 3;
 				var round = square && radius >= Math.min(rect.width, rect.height) * 0.45;
-				push(fragment, rect, round ? 'pill' : 'block', radius);
+				if (push(fragment, rect, round ? 'pill' : 'block', radius, el)) mask(el);
 				return;
-			}
-
-			/* Surface before text: a bordered box holding only text — a chip, a
-			   stat tile, a placeholder — needs its frame as well as its line. */
-			if (isSurface(el, rect, cs, viewportArea)) {
-				push(fragment, rect, 'surface', radiusOf(cs, rect));
 			}
 
 			if (isTextLeaf(el)) {
 				paintText(fragment, el, index++);
+				mask(el);
 				return;
 			}
 
+			/* Loose text beside element children. It cannot be given a class of
+			   its own without wrapping it — which would mutate the page — so the
+			   container's inherited colour is dropped instead. Its background
+			   and border are untouched and the children are still walked. */
+			var loose = directTextNodes(el);
+			if (loose.length) {
+				var looseRects = [];
+				loose.forEach(function (node) { looseRects = looseRects.concat(rectsOf(node)); });
+				paintRects(fragment, looseRects, el, index++);
+				if (!el.classList.contains('isux-masked-text')) {
+					el.classList.add('isux-masked-text');
+					state.maskedText.push(el);
+				}
+			}
+
+			/* Containers are left alone deliberately. Their background, border,
+			   gradient and pseudo-elements are the page's real design — a card
+			   keeps looking like a card and only its contents become bars. */
 			for (var i = 0; i < el.children.length; i++) walk(el.children[i]);
 		})(scope);
 	}
@@ -427,9 +484,7 @@
 		}
 		scope = scope || doc.body;
 
-		if (!state.palette) state.palette = buildPalette();
-		applyPalette(state.palette);
-
+		unmaskAll();
 		state.shapes = 0;
 		var fragment = doc.createDocumentFragment();
 		scan(scope, fragment);
@@ -568,6 +623,7 @@
 		var overlay = state.overlay || doc.getElementById('isux-overlay');
 
 		if (!overlay || !state.visible) {
+			unmaskAll();
 			root.classList.remove('isux-loading', 'isux-navigating');
 			if (doc.body) doc.body.classList.remove('isux-scroll-locked');
 			if (overlay) {
@@ -599,6 +655,7 @@
 				overlay.hidden = true;
 				overlay.classList.remove('isux-is-hiding');
 				if (state.layer) state.layer.textContent = '';
+				unmaskAll();
 				state.shapes = 0;
 				setProgress(0);
 				state.visible = false;
@@ -826,7 +883,7 @@
 				current.replaceWith(imported);
 				setProgress(84);
 				// The incoming document may have a different background.
-				state.palette = null;
+				state.paletteCache = {};
 				buildMirror();
 				return loadScripts(incomingDoc, result.responseUrl).then(function () {
 					executeInlineScripts(imported);
@@ -861,11 +918,77 @@
 		});
 	}
 
+	/* Speculation rules — the prerender mode.
+
+	   URL exclusions are expressed as [href*="..."] attribute selectors rather
+	   than href_matches patterns: that reproduces the PHP side's strpos()
+	   semantics exactly and avoids URL Pattern escaping, where one malformed
+	   pattern voids the entire rule set. */
+	function cssString(value) {
+		return String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+	}
+
+	function setupSpeculationRules() {
+		if (config.navigationMode !== 'prerender') return;
+		if (!window.HTMLScriptElement || !HTMLScriptElement.supports ||
+			!HTMLScriptElement.supports('speculationrules')) {
+			log('Speculation Rules не поддерживаются, работает обычная навигация');
+			return;
+		}
+
+		var always = ['a[download]', 'a[target="_blank"]', 'a[rel~="nofollow"]', 'a[href^="#"]'];
+		stringList(config.excludeUrls).forEach(function (part) {
+			if (part) always.push('a[href*="' + cssString(part) + '"]');
+		});
+		if (config.prerenderSkipQuery) always.push('a[href*="?"]');
+
+		/* A page that mutates state on GET must never be prerendered — the
+		   prerendered document really does run. Query strings are skipped by
+		   default for exactly that reason. */
+		var selector = always.join(', ');
+		if (config.excludeLinkSelectors) {
+			var withAuthor = config.excludeLinkSelectors + ', ' + selector;
+			try {
+				doc.querySelector(withAuthor);
+				selector = withAuthor;
+			} catch (error) {
+				log('Селектор исключений некорректен, используются только встроенные:', error);
+			}
+		}
+
+		var rules = {
+			prerender: [{
+				where: { and: [{ href_matches: '/*' }, { not: { selector_matches: selector } }] },
+				eagerness: config.prerenderEagerness || 'moderate'
+			}]
+		};
+
+		var script = doc.createElement('script');
+		script.type = 'speculationrules';
+		script.textContent = JSON.stringify(rules);
+		doc.head.appendChild(script);
+		log('Speculation Rules установлены, eagerness:', rules.prerender[0].eagerness);
+	}
+
 	function onClick(event) {
 		if (!config.transitionLoader) return;
 		var link = event.target.closest ? event.target.closest('a[href]') : null;
 		var url = eligibleLink(event, link);
 		if (!url) return;
+
+		if (config.navigationMode === 'prerender') {
+			/* Do not intercept. preventDefault() would discard the prerendered
+			   document and cancel the cross-document view transition — the two
+			   things this mode exists for. The skeleton stays as the fallback
+			   and only appears if the navigation is still not done after a beat,
+			   so an instant activation never flashes it. */
+			window.clearTimeout(state.timers.transition);
+			state.timers.transition = window.setTimeout(function () {
+				show('navigation');
+			}, Math.max(0, Number(config.transitionDelay) || 400));
+			return;
+		}
+
 		event.preventDefault();
 		if (config.navigationMode === 'ajax' && window.fetch && window.DOMParser && window.AbortController) {
 			ajaxNavigate(url, { push: true });
@@ -905,6 +1028,8 @@
 			}
 		}
 
+		setupSpeculationRules();
+
 		doc.addEventListener('click', onClick, true);
 		doc.addEventListener('submit', onSubmit, true);
 
@@ -932,7 +1057,6 @@
 		show: show,
 		hide: hide,
 		rebuild: function () { return buildMirror(); },
-		palette: function () { return state.palette || (state.palette = buildPalette()); },
 		navigate: function (url) {
 			var target = new URL(url, window.location.href);
 			return config.navigationMode === 'ajax' ? ajaxNavigate(target, { push: true }) : nativeNavigate(target);

@@ -37,10 +37,17 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 == Changelog ==
 
 = 2.1.0 =
-* Renderer rewritten. The overlay is opaque and filled with the page's own
-  background, so real content no longer shows through the gaps between shapes.
-* The palette is decided once per page instead of being sampled from each
-  element, which is what produced turquoise and red skeletons.
+* Renderer rewritten. Content is hidden at source with visibility instead of
+  being covered by an overlay, so nothing shows through the gaps between
+  shapes — and section backgrounds, gradients, decorative layers and card
+  borders all stay real. Layout is untouched and restoring is just dropping a
+  class.
+* New navigation mode: prerender. Speculation Rules plus cross-document view
+  transitions, with the skeleton kept as the fallback. Links with a query
+  string are excluded by default — a prerendered page really does execute.
+* The palette is sampled from an element's parent instead of the element
+  itself, which is what produced turquoise and red skeletons. Local adaptation
+  is kept: a light card on a dark page still gets light placeholders.
 * Text is drawn as centred bars with a tapered last line instead of full
   line boxes.
 * Elements parked at opacity:0 by scroll-reveal effects are no longer skipped
@@ -49,6 +56,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
   deadline and a <noscript> rule, so a script that fails cannot leave a blank
   page, and there is no white flash on dark sites.
 * will-change removed from the shapes; only the sweeping highlight keeps one.
+* Loose text beside element children is no longer left readable.
+* Elements caught mid-entrance with a collapsed box are reconstructed from
+  their layout size rather than skipped.
 * The MutationObserver that could loop against stabilize_layout is gone.
 * Settings removed: adaptive_colors, preserve_backgrounds,
   preserve_decorative_media, stabilize_layout, boot_background and the four

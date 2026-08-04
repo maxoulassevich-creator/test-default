@@ -162,6 +162,9 @@ final class ISUX_Plugin {
 			'preserveSelectors'        => $options['preserve_selectors'],
 			'excludeSkeletonSelectors' => $options['exclude_skeleton_selectors'],
 			'navigationMode'           => $options['navigation_mode'],
+			'prerenderEagerness'       => $options['prerender_eagerness'],
+			'prerenderSkipQuery'       => (bool) $options['prerender_skip_query'],
+			'transitionDelay'          => (int) $options['transition_delay'],
 			'contentSelector'          => $options['content_selector'],
 			'ajaxTimeout'              => (int) $options['ajax_timeout'],
 			'loadNewAssets'            => (bool) $options['load_new_assets'],
@@ -187,7 +190,7 @@ final class ISUX_Plugin {
 		$css_file = ISUX_DIR . 'assets/css/frontend.css';
 		$css      = is_readable( $css_file ) ? file_get_contents( $css_file ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		?>
-		<style id="isux-critical-css"><?php echo $this->css_variables( $options ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $options['custom_css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
+		<style id="isux-critical-css"><?php echo $this->css_variables( $options ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $this->transition_css( $options ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?><?php echo $options['custom_css']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
 		<script id="isux-bootstrap">
 		(function(w,d,c){
 			'use strict';
@@ -226,6 +229,22 @@ final class ISUX_Plugin {
 		</div>
 		<noscript><style>#isux-overlay{display:none!important}</style></noscript>
 		<?php
+	}
+
+	/**
+	 * Cross-document view transitions.
+	 *
+	 * Pure CSS: both documents have to opt in, which they do because the rule
+	 * ships on every page the plugin runs on. No JavaScript is involved, so it
+	 * also works in the prerender mode where the click is not intercepted.
+	 */
+	private function transition_css( $o ) {
+		if ( empty( $o['view_transitions'] ) ) {
+			return '';
+		}
+		return '@view-transition{navigation:auto;}' .
+			'@media (prefers-reduced-motion: reduce){' .
+			'::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important;}}';
 	}
 
 	private function lines( $text ) {
