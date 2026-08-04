@@ -16,6 +16,7 @@ prototypes/{mobile,tablet,desktop}.html
 prototypes/wireframe.css    layout modes selected by body[data-device]
 prototypes/proto.js         shared wireframe markup
 plugin/wrbet-cards/         WordPress plugin: the cards as shortcodes
+plugin/instant-skeleton-ux/ WordPress plugin: skeleton loader (2.1 renderer)
 Wrbet Kenya Standalone.html original uploaded prototype (untouched)
 ```
 

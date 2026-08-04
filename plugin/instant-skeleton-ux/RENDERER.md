@@ -1,9 +1,8 @@
-# Instant Skeleton UX — reworked renderer
+# The 2.1 renderer
 
-Drop-in replacement for `assets/css/frontend.css` and the rendering half of
-`assets/js/frontend.js` in Instant Skeleton UX 2.0.0. It reads the same
-`window.ISUX_CONFIG` the plugin's PHP already writes, so the server side needs
-no changes beyond pointing at these two files.
+What changed between 2.0.0 and 2.1.0, and why. The lifecycle, the AJAX
+navigation layer and the WooCommerce / Elementor adapters were carried over
+unchanged; only the rendering was rewritten.
 
 ## What was wrong
 
@@ -89,43 +88,28 @@ which is a good sign of how easily it bites.
   (a stats row, a section divider) into a filled panel; a frame on all four
   sides with a radius does.
 
-## Install
+## Upgrading from 2.0
 
-```
-wp-content/plugins/instant-skeleton-ux/assets/css/frontend.css   ← this frontend.css
-wp-content/plugins/instant-skeleton-ux/assets/js/frontend.js     ← this frontend.js
-```
+Class names, option names and the public API are unchanged, so custom CSS and
+any code calling `InstantSkeletonUX.show()` / `hide()` / `rebuild()` keeps
+working. Settings were removed and added:
 
-The class prefix changed from `isux-` to `sk-`, so `custom_css` written against
-the old names needs renaming. Everything else — the settings screen, the option
-names, the PHP — is untouched.
-
-### If you use `navigation_mode = ajax`
-
-The AJAX navigation layer of the original file is deliberately not duplicated
-here; it is orthogonal to the rendering and works. Keep your `frontend.js` and
-port only the rendering:
-
-```js
-// replace buildMirror()/paletteFor()/createShape() with:
-ISUXRenderer.build();          // paints the current viewport
-ISUXRenderer.clear();          // empties the layer
-```
-
-`window.InstantSkeletonUX` keeps `show()`, `hide()`, `rebuild()` and
-`getState()` with the same signatures.
-
-## Config
-
-Same keys as 2.0.0. Two are new, three are ignored:
-
-| Key | |
+| Setting | |
 |---|---|
-| `backdrop` | new — force the overlay colour instead of sampling the page |
-| `data-isux-skeleton="ignore"` | new — skip an element and its subtree |
-| `adaptiveColors` | ignored — the palette is always page-level now |
-| `preserveBackgrounds` | ignored — an opaque overlay makes it moot |
-| `stabilizeLayout` | ignored — nothing is written onto page elements |
+| `backdrop` | **new** — force the overlay colour; empty means sample the page |
+| `adaptive_colors` | removed — the palette is page-level now |
+| `preserve_backgrounds` | removed — an opaque overlay makes it moot |
+| `preserve_decorative_media` | removed — same reason |
+| `stabilize_layout` | removed — nothing is written onto page elements any more |
+| `boot_background` | removed — `<body>` is never hidden, so there is nothing to cover |
+| `light_base` / `light_highlight` / `dark_base` / `dark_highlight` | removed — derived from the page background |
+| `min_duration` | default changed from 1200 to 0 |
+| `max_shapes` | default changed from 700 to 400; it also drives the CSS failsafe deadline |
+
+`data-isux-skeleton` gained an `ignore` value that skips an element and its
+subtree.
+
+Stale values left in the database are harmless — they are simply not read.
 
 ## One thing worth deciding
 

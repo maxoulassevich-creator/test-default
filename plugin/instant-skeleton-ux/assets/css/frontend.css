@@ -1,5 +1,5 @@
 /* =========================================================================
-   Instant Skeleton UX — reworked renderer (drop-in for assets/css/frontend.css)
+   Instant Skeleton UX — front-end
 
    Three changes carry most of the fix:
      1. the overlay is OPAQUE, filled with the page's own background, so real
@@ -12,59 +12,73 @@
 
 /* ---------- tokens ---------- */
 :root {
-  --sk-backdrop: #ffffff;   /* set at runtime from the page's own background */
-  --sk-surface:  rgba(0, 0, 0, .05);
-  --sk-block:    rgba(0, 0, 0, .10);
-  --sk-hi:       rgba(255, 255, 255, .45);
-  --sk-radius:   10px;
-  --sk-speed:    1500ms;
-  --sk-progress: #6c5ce7;
-  --sk-progress-height: 3px;
-  --sk-fade:     200ms;
+  --isux-backdrop: #ffffff;   /* set at runtime from the page's own background */
+  --isux-surface:  rgba(0, 0, 0, .05);
+  --isux-block:    rgba(0, 0, 0, .10);
+  --isux-hi:       rgba(255, 255, 255, .45);
+  --isux-radius:   10px;
+  --isux-speed:    1500ms;
+  --isux-progress: #6c5ce7;
+  --isux-progress-height: 3px;
+  --isux-max:      15000ms;
+  --isux-fade:     200ms;
 }
 
 /* The page is never hidden. If the script fails, the visitor sees the site —
    the previous build blanked <body> and relied on a timeout to bring it back. */
-html.sk-loading,
-html.sk-navigating { cursor: progress; }
+html.isux-loading,
+html.isux-navigating { cursor: progress; }
 
-body.sk-scroll-locked {
+body.isux-scroll-locked {
   overflow: hidden !important;
   overscroll-behavior: none;
 }
 
 /* ---------- overlay ---------- */
-.sk-overlay,
-.sk-overlay * { box-sizing: border-box; }
+.isux-overlay,
+.isux-overlay * { box-sizing: border-box; }
 
-.sk-overlay {
+.isux-overlay {
   position: fixed;
   inset: 0;
   z-index: 2147483000;
   overflow: hidden;
   pointer-events: none;
   /* opaque: this is what stops content leaking through */
-  background: var(--sk-backdrop);
+  background: var(--isux-backdrop);
   opacity: 1;
   visibility: visible;
-  transition: opacity var(--sk-fade) ease, visibility var(--sk-fade) ease;
+  transition: opacity var(--isux-fade) ease, visibility var(--isux-fade) ease;
 }
 
-.sk-overlay[hidden] { display: none !important; }
+.isux-overlay[hidden] { display: none !important; }
 
-.sk-overlay.is-hiding {
+.isux-overlay.isux-is-hiding {
   opacity: 0;
   visibility: hidden;
 }
 
-.sk-layer {
+/* A failsafe that needs no JavaScript. If the script never runs — blocked by a
+   CSP, broken by an optimiser, thrown by a conflicting plugin — the overlay
+   takes itself away on the same deadline the script would have used. 2.0 hid
+   <body> instead and depended on a timer to bring it back, so the same failure
+   left the visitor on a blank page. */
+.isux-overlay[data-isux-failsafe] {
+  animation: isux-failsafe 1ms linear var(--isux-max) forwards;
+}
+
+@keyframes isux-failsafe {
+  to { opacity: 0; visibility: hidden; }
+}
+
+.isux-shape-layer {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
 
 /* ---------- shapes ---------- */
-.sk-shape {
+.isux-shape {
   position: absolute;
   left: 0;
   top: 0;
@@ -73,21 +87,21 @@ body.sk-scroll-locked {
   padding: 0;
   border: 0;
   overflow: hidden;
-  background: var(--sk-block);
-  border-radius: var(--sk-shape-radius, var(--sk-radius));
-  transform: translate3d(var(--sk-x, 0), var(--sk-y, 0), 0);
+  background: var(--isux-block);
+  border-radius: var(--isux-shape-radius, var(--isux-radius));
+  transform: translate3d(var(--isux-x, 0), var(--isux-y, 0), 0);
   /* No will-change here: it would promote every shape to its own compositor
      layer. Only the sweeping highlight below needs one. */
   contain: paint;
 }
 
 /* A card keeps its footprint but sits quieter than the blocks inside it. */
-.sk-shape[data-kind="surface"] { background: var(--sk-surface); }
-.sk-shape[data-kind="text"]    { border-radius: 999px; }
-.sk-shape[data-kind="pill"]    { border-radius: 999px; }
+.isux-shape[data-isux-kind="surface"] { background: var(--isux-surface); }
+.isux-shape[data-isux-kind="text"]    { border-radius: 999px; }
+.isux-shape[data-isux-kind="pill"]    { border-radius: 999px; }
 
 /* ---------- shimmer ---------- */
-html.sk-anim-shimmer .sk-shape::after {
+html.isux-anim-shimmer .isux-shape::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -96,46 +110,46 @@ html.sk-anim-shimmer .sk-shape::after {
     90deg,
     transparent 0%,
     transparent 30%,
-    var(--sk-hi) 50%,
+    var(--isux-hi) 50%,
     transparent 70%,
     transparent 100%
   );
-  animation: sk-sweep var(--sk-speed) linear infinite;
+  animation: isux-shimmer var(--isux-speed) linear infinite;
   will-change: transform;
 }
 
-html.sk-anim-pulse .sk-shape {
-  animation: sk-pulse var(--sk-speed) ease-in-out infinite alternate;
+html.isux-anim-pulse .isux-shape {
+  animation: isux-pulse var(--isux-speed) ease-in-out infinite alternate;
 }
 
-html.sk-paused .sk-shape,
-html.sk-paused .sk-shape::after { animation-play-state: paused !important; }
+html.isux-paused .isux-shape,
+html.isux-paused .isux-shape::after { animation-play-state: paused !important; }
 
-@keyframes sk-sweep { to { transform: translateX(130%); } }
-@keyframes sk-pulse { from { opacity: .62; } to { opacity: 1; } }
+@keyframes isux-shimmer { to { transform: translateX(130%); } }
+@keyframes isux-pulse { from { opacity: .62; } to { opacity: 1; } }
 
 /* ---------- progress ---------- */
-.sk-progress {
+.isux-progress {
   position: absolute;
   inset: 0 0 auto;
   z-index: 3;
-  height: var(--sk-progress-height);
+  height: var(--isux-progress-height);
   overflow: hidden;
   transition: opacity 160ms ease;
 }
 
-.sk-overlay.no-progress .sk-progress { opacity: 0; }
+.isux-overlay.isux-no-progress .isux-progress { opacity: 0; }
 
-.sk-progress > span {
+.isux-progress > span {
   display: block;
   width: 0;
   height: 100%;
-  background: var(--sk-progress);
+  background: var(--isux-progress);
   transition: width 220ms ease;
 }
 
 /* ---------- debug ---------- */
-.sk-badge {
+.isux-badge {
   position: absolute;
   right: 12px;
   bottom: 12px;
@@ -149,9 +163,9 @@ html.sk-paused .sk-shape::after { animation-play-state: paused !important; }
   font: 600 12px/1.35 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-.sk-overlay.is-debug .sk-badge { display: block; }
+.isux-overlay.isux-debug .isux-badge { display: block; }
 
-.sk-sr {
+.isux-sr {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -164,11 +178,15 @@ html.sk-paused .sk-shape::after { animation-play-state: paused !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sk-shape,
-  .sk-shape::after,
-  .sk-overlay,
-  .sk-progress > span {
+  .isux-shape,
+  .isux-shape::after,
+  .isux-overlay,
+  .isux-progress > span {
     animation: none !important;
     transition-duration: .01ms !important;
+  }
+  /* The failsafe must still fire; it is a deadline, not decoration. */
+  .isux-overlay[data-isux-failsafe] {
+    animation: isux-failsafe 1ms linear var(--isux-max) forwards !important;
   }
 }
