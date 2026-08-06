@@ -620,6 +620,10 @@ class VL_Account_Admin {
 	protected function diagnostics() {
 		$checks = array();
 
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
 		// WooCommerce.
 		$checks[] = array(
 			'title'  => 'WooCommerce',
@@ -687,6 +691,50 @@ class VL_Account_Admin {
 				'text'   => __( 'Включён показ кода прямо в форме. На рабочем сайте это дыра в безопасности — выключите на вкладке SMS.RU.', 'vl-account' ),
 			);
 		}
+
+		// Стили и скрипты.
+		$css_url = VLACC_URL . 'assets/css/vl-account.css';
+		$css_ok  = file_exists( VLACC_PATH . 'assets/css/vl-account.css' );
+
+		$optimizers = array(
+			'autoptimize/autoptimize.php'                 => 'Autoptimize',
+			'wp-rocket/wp-rocket.php'                     => 'WP Rocket',
+			'litespeed-cache/litespeed-cache.php'         => 'LiteSpeed Cache',
+			'perfmatters/perfmatters.php'                 => 'Perfmatters',
+			'wp-fastest-cache/wpFastestCache.php'         => 'WP Fastest Cache',
+			'sg-cachepress/sg-cachepress.php'             => 'SiteGround Optimizer',
+			'w3-total-cache/w3-total-cache.php'           => 'W3 Total Cache',
+		);
+
+		$found_optimizers = array();
+
+		foreach ( $optimizers as $file => $name ) {
+			if ( is_plugin_active( $file ) ) {
+				$found_optimizers[] = $name;
+			}
+		}
+
+		$assets_text = $css_ok
+			? sprintf(
+				/* translators: %s — ссылка на файл стилей. */
+				__( 'Файл стилей на месте: %s — откройте ссылку, страница должна показать текст CSS, а не ошибку 404.', 'vl-account' ),
+				'<a href="' . esc_url( $css_url ) . '" target="_blank">vl-account.css</a>'
+			)
+			: __( 'Файл стилей не найден — переустановите плагин.', 'vl-account' );
+
+		if ( $found_optimizers ) {
+			$assets_text .= '<br><strong>' . sprintf(
+				/* translators: %s — названия плагинов оптимизации. */
+				esc_html__( 'Найдены плагины оптимизации: %s.', 'vl-account' ),
+				esc_html( implode( ', ', $found_optimizers ) )
+			) . '</strong> ' . esc_html__( 'Добавьте vl-account.css и vl-account.js в исключения объединения и минификации, а также в исключения «удаления неиспользуемого CSS» — иначе выдвижная панель входа теряет оформление и появляется внизу страницы.', 'vl-account' );
+		}
+
+		$checks[] = array(
+			'title'  => __( 'Стили и скрипты плагина', 'vl-account' ),
+			'status' => $css_ok ? ( $found_optimizers ? 'warn' : 'ok' ) : 'error',
+			'text'   => $assets_text,
+		);
 
 		// Адрес сайта.
 		$home = wp_parse_url( home_url(), PHP_URL_HOST );

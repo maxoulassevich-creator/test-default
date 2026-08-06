@@ -49,6 +49,68 @@ function vlacc_template( $template, $args = array(), $return = false ) {
 }
 
 /**
+ * Критические стили формы входа — печатаются рядом с самой формой.
+ *
+ * Это не оформление, а структура: какие шаги формы показаны, а какие скрыты,
+ * и скрытие служебных полей. Без этих правил (например, если плагин оптимизации
+ * объединил или вырезал внешний CSS) форма разваливается: видны сразу все шаги,
+ * поле кода, восстановление пароля и антибот-поле.
+ *
+ * Печатается один раз за страницу.
+ */
+function vlacc_print_form_critical_css() {
+	static $printed = false;
+
+	if ( $printed ) {
+		return;
+	}
+
+	$printed = true;
+
+	$accent = esc_attr( VL_Account_Settings::get( 'accent_color', '#d40000' ) );
+	$dark   = esc_attr( VL_Account_Settings::get( 'button_color', '#2f2f2f' ) );
+	$radius = (int) VL_Account_Settings::get( 'radius', 0 );
+	?>
+<style id="vl-form-critical">
+/* Структура: показываем только текущий шаг, прячем служебные поля. */
+.vl-auth__pane{display:none}
+.vl-auth__pane.is-active{display:block}
+.vl-step{display:none}
+.vl-step.is-active{display:block}
+.vl-field__error{display:none}
+.vl-field__error.is-visible{display:block;margin-top:6px;font-size:12px;color:<?php echo $accent; ?>}
+.vl-hp{position:absolute!important;left:-9999px!important;top:auto!important;width:1px!important;height:1px!important;opacity:0!important;padding:0!important;border:0!important}
+.vl-form [hidden],.vl-auth [hidden],.vl-account [hidden],.vl-drawer [hidden]{display:none!important}
+/* Минимальное оформление: страховка, если внешний CSS не доехал. */
+.vl-auth,.vl-auth *{box-sizing:border-box}
+.vl-auth .vl-field{position:relative;margin-bottom:18px}
+.vl-auth .vl-label{display:flex;align-items:center;gap:6px;font-size:13px;line-height:1.3;color:#4a4a4a;margin-bottom:7px}
+.vl-auth .vl-req{color:<?php echo $accent; ?>}
+.vl-auth .vl-input{width:100%!important;height:44px!important;min-height:44px;padding:10px 14px!important;border:1px solid #e4e4e4!important;border-radius:<?php echo $radius; ?>px;background:#fff!important;font-size:14px;line-height:1.3;color:#333;box-shadow:none!important;margin:0}
+.vl-auth .vl-btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 28px!important;border:1px solid transparent!important;border-radius:<?php echo $radius; ?>px;font-size:12px!important;line-height:1.2;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;cursor:pointer;box-shadow:none!important;width:auto}
+.vl-auth .vl-btn--block{display:flex!important;width:100%!important}
+.vl-auth .vl-btn--primary{background:<?php echo $accent; ?>!important;color:#fff!important}
+.vl-auth .vl-btn--dark{background:<?php echo $dark; ?>!important;color:#fff!important}
+.vl-auth .vl-btn--outline{background:#fff!important;color:#333!important;border-color:#bdbdbd!important;min-height:44px}
+.vl-auth .vl-link{background:none!important;border:0!important;padding:0!important;min-height:0!important;font-size:13px!important;text-transform:none!important;letter-spacing:0!important;color:#333;text-decoration:underline;cursor:pointer;width:auto!important}
+.vl-auth .vl-links{margin:14px 0 0;display:flex;gap:18px;flex-wrap:wrap}
+.vl-auth .vl-form__intro{font-size:13px;line-height:1.6;margin:0 0 20px}
+.vl-auth .vl-form__consent{font-size:11px;line-height:1.5;color:#8a8a8a;margin:12px 0 0}
+.vl-auth .vl-step__hint{font-size:13px;line-height:1.5;margin:0 0 16px}
+.vl-auth .vl-message{padding:12px 16px;margin-bottom:18px;font-size:13px;line-height:1.5;border-left:3px solid #8a8a8a;background:#f7f7f7}
+.vl-auth .vl-message--error{border-left-color:<?php echo $accent; ?>;background:#fdf2f2;color:#8c1c1c}
+.vl-auth .vl-message--success{border-left-color:#2a9d3f;background:#f1f9f2;color:#1f6b2e}
+.vl-auth .vl-consents{margin:0 0 18px;display:grid;gap:12px}
+.vl-auth .vl-check{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;line-height:1.5}
+.vl-auth .vl-check input{position:absolute!important;opacity:0!important;width:1px!important;height:1px!important}
+.vl-auth .vl-check__box{flex:0 0 auto;width:16px;height:16px;margin-top:1px;border:1px solid #bdbdbd;background:#fff;position:relative}
+.vl-auth .vl-check input:checked+.vl-check__box::after{content:"";position:absolute;left:4px;top:0;width:5px;height:10px;border:solid <?php echo $accent; ?>;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.vl-auth .vl-input--code{letter-spacing:.4em;font-size:18px;text-align:center;max-width:220px}
+</style>
+	<?php
+}
+
+/**
  * IP клиента (с учётом прокси/CDN).
  *
  * @return string

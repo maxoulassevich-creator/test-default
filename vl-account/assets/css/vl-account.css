@@ -1376,3 +1376,129 @@ body.vl-drawer-open {
 		font-size: 22px;
 	}
 }
+
+/* --------------------------------------------------
+   Защита от стилей темы
+   --------------------------------------------------
+   Темы и конструкторы (Elementor, WooCommerce) задают оформление
+   кнопкам, полям и ссылкам селекторами вроде `.elementor button`
+   или `.woocommerce input` — по специфичности они выигрывают
+   у одиночного класса. Дублируем ключевые правила с более высокой
+   специфичностью, чтобы формы плагина выглядели одинаково на любой теме.
+   -------------------------------------------------- */
+
+.vl-auth .vl-btn,
+.vl-account .vl-btn,
+.vl-drawer .vl-btn,
+.vl-form .vl-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 48px;
+	padding: 12px 28px;
+	border: 1px solid transparent;
+	border-radius: var(--vl-radius);
+	font-size: 12px;
+	line-height: 1.2;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	text-decoration: none;
+	box-shadow: none;
+	width: auto;
+}
+
+.vl-auth .vl-btn--block,
+.vl-account .vl-btn--block,
+.vl-drawer .vl-btn--block,
+.vl-form .vl-btn--block {
+	display: flex;
+	width: 100%;
+}
+
+.vl-auth .vl-btn--primary,
+.vl-account .vl-btn--primary,
+.vl-drawer .vl-btn--primary,
+.vl-form .vl-btn--primary {
+	background: var(--vl-accent);
+	background-color: var(--vl-accent);
+	color: #fff;
+	border-color: transparent;
+}
+
+.vl-auth .vl-btn--primary:hover,
+.vl-account .vl-btn--primary:hover,
+.vl-drawer .vl-btn--primary:hover,
+.vl-form .vl-btn--primary:hover {
+	background: var(--vl-accent);
+	background-color: var(--vl-accent);
+	color: #fff;
+	opacity: 0.88;
+}
+
+.vl-auth .vl-btn--dark,
+.vl-account .vl-btn--dark,
+.vl-drawer .vl-btn--dark,
+.vl-form .vl-btn--dark {
+	background: var(--vl-dark);
+	background-color: var(--vl-dark);
+	color: #fff;
+	border-color: transparent;
+}
+
+.vl-auth .vl-btn--outline,
+.vl-account .vl-btn--outline,
+.vl-drawer .vl-btn--outline,
+.vl-form .vl-btn--outline {
+	background: #fff;
+	background-color: #fff;
+	color: var(--vl-text);
+	border-color: var(--vl-border-strong);
+	min-height: 44px;
+	padding: 10px 18px;
+}
+
+.vl-auth .vl-input,
+.vl-account .vl-input,
+.vl-drawer .vl-input,
+.vl-form .vl-input {
+	width: 100%;
+	height: 44px;
+	min-height: 44px;
+	padding: 10px 14px;
+	border: 1px solid var(--vl-border);
+	border-radius: var(--vl-radius);
+	background: #fff;
+	background-color: #fff;
+	font-size: 14px;
+	line-height: 1.3;
+	color: var(--vl-text);
+	box-shadow: none;
+	margin: 0;
+}
+
+.vl-auth .vl-link,
+.vl-account .vl-link,
+.vl-drawer .vl-link,
+.vl-form .vl-link {
+	background: none;
+	border: 0;
+	padding: 0;
+	min-height: 0;
+	font-size: 13px;
+	text-transform: none;
+	letter-spacing: 0;
+	color: var(--vl-text);
+	box-shadow: none;
+	width: auto;
+}
+
+.vl-auth .vl-check__box,
+.vl-account .vl-check__box,
+.vl-drawer .vl-check__box,
+.vl-form .vl-check__box {
+	width: 16px;
+	height: 16px;
+	min-width: 16px;
+	border: 1px solid var(--vl-border-strong);
+	background: #fff;
+}

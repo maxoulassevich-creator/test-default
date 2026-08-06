@@ -37,6 +37,8 @@ if ( ! $vl_notice && ! empty( $_GET['vlacc_notice'] ) ) {
 	}
 }
 // phpcs:enable
+
+vlacc_print_form_critical_css();
 ?>
 <div class="vl-auth vl-auth--single" data-vl-auth data-redirect="<?php echo esc_url( $vl_redir ); ?>">
 

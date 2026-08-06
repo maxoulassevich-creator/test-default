@@ -533,9 +533,65 @@
 	 * ------------------------------------------------------------------ */
 
 	var drawerReturnFocus = null;
+	var drawerMoved = false;
 
 	function drawerNode() {
-		return document.querySelector( '[data-vl-drawer]' );
+		var node = document.querySelector( '[data-vl-drawer]' );
+
+		if ( ! node ) {
+			return null;
+		}
+
+		// Переносим панель прямым потомком <body>.
+		// Темы и конструкторы (Elementor и подобные) часто оборачивают подвал
+		// в контейнер с transform/filter/overflow, а такой контейнер становится
+		// точкой отсчёта для position:fixed — панель перестаёт цепляться
+		// к экрану и уезжает вниз страницы.
+		if ( ! drawerMoved && node.parentNode !== document.body ) {
+			document.body.appendChild( node );
+			drawerMoved = true;
+		}
+
+		return node;
+	}
+
+	/**
+	 * Проверить, что панель действительно висит поверх экрана.
+	 *
+	 * Если стили плагина не доехали (объединение CSS, «удаление неиспользуемого
+	 * CSS», кеш темы), панель окажется в обычном потоке внизу страницы.
+	 * В этом случае проставляем минимально необходимое оформление прямо в атрибут
+	 * style — так форма остаётся рабочей даже без внешнего файла стилей.
+	 */
+	function ensureDrawerStyles( node ) {
+		var panel = qs( node, '.vl-drawer__panel' );
+		var overlay = qs( node, '.vl-drawer__overlay' );
+
+		if ( ! panel ) {
+			return;
+		}
+
+		if ( window.getComputedStyle( node ).position !== 'fixed' ) {
+			node.style.cssText = 'position:fixed;top:0;right:0;bottom:0;left:0;z-index:999990;margin:0;padding:0;';
+		}
+
+		if ( window.getComputedStyle( panel ).position !== 'absolute' ) {
+			panel.style.cssText = 'position:absolute;top:0;right:0;width:440px;max-width:100%;height:100%;margin:0;background:#fff;overflow-y:auto;box-shadow:-6px 0 40px rgba(0,0,0,.12);padding:0;';
+
+			if ( window.innerWidth <= 600 ) {
+				panel.style.width = '100%';
+			}
+
+			var inner = qs( panel, '.vl-drawer__inner' );
+
+			if ( inner ) {
+				inner.style.padding = window.innerWidth <= 600 ? '52px 20px 32px' : '56px 40px 40px';
+			}
+		}
+
+		if ( overlay && window.getComputedStyle( overlay ).position !== 'absolute' ) {
+			overlay.style.cssText = 'position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.45);';
+		}
 	}
 
 	function isLoggedIn() {
@@ -550,6 +606,8 @@
 		}
 
 		drawerReturnFocus = document.activeElement;
+
+		ensureDrawerStyles( node );
 
 		var note = qs( node, '[data-vl-drawer-message]' );
 

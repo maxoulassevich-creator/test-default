@@ -124,11 +124,29 @@ final class VL_Account_Plugin {
 	}
 
 	/**
+	 * Версия файла ресурсов.
+	 *
+	 * @param string $relative Путь относительно папки плагина.
+	 * @return string
+	 */
+	public static function asset_version( $relative ) {
+		$path = VLACC_PATH . $relative;
+
+		if ( file_exists( $path ) ) {
+			return VLACC_VERSION . '.' . filemtime( $path );
+		}
+
+		return VLACC_VERSION;
+	}
+
+	/**
 	 * Стили и скрипты фронтенда.
 	 */
 	public function assets() {
-		wp_register_style( 'vl-account', VLACC_URL . 'assets/css/vl-account.css', array(), VLACC_VERSION );
-		wp_register_script( 'vl-account', VLACC_URL . 'assets/js/vl-account.js', array(), VLACC_VERSION, true );
+		// Версия по времени изменения файла: браузеры и плагины оптимизации
+		// подхватывают новую версию сразу после обновления плагина.
+		wp_register_style( 'vl-account', VLACC_URL . 'assets/css/vl-account.css', array(), self::asset_version( 'assets/css/vl-account.css' ) );
+		wp_register_script( 'vl-account', VLACC_URL . 'assets/js/vl-account.js', array(), self::asset_version( 'assets/js/vl-account.js' ), true );
 
 		wp_localize_script(
 			'vl-account',
