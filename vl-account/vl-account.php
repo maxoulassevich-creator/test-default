@@ -42,6 +42,7 @@ require_once VLACC_PATH . 'includes/class-vl-wishlist.php';
 require_once VLACC_PATH . 'includes/class-vl-promo.php';
 require_once VLACC_PATH . 'includes/class-vl-bonus.php';
 require_once VLACC_PATH . 'includes/class-vl-emails.php';
+require_once VLACC_PATH . 'includes/class-vl-email-confirm.php';
 require_once VLACC_PATH . 'includes/class-vl-cache.php';
 require_once VLACC_PATH . 'includes/class-vl-gate.php';
 require_once VLACC_PATH . 'includes/class-vl-shortcodes.php';
@@ -103,6 +104,7 @@ final class VL_Account_Plugin {
 		VL_Account_Promo::instance();
 		VL_Account_Bonus::instance();
 		VL_Account_Emails::instance();
+		VL_Account_Email_Confirm::instance();
 		VL_Account_Cache::instance();
 		VL_Account_Shortcodes::instance();
 		VL_Account_Gate::instance();

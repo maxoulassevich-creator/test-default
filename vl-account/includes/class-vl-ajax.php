@@ -38,7 +38,6 @@ class VL_Account_Ajax {
 		$public = array(
 			'send_code',
 			'verify_code',
-			'register',
 			'login_password',
 			'lost_password',
 			'reset_password',
@@ -48,6 +47,7 @@ class VL_Account_Ajax {
 
 		$private = array(
 			'profile_save',
+			'resend_email',
 			'password_save',
 			'consents_save',
 			'wishlist_remove',
@@ -203,99 +203,24 @@ class VL_Account_Ajax {
 			);
 		}
 
-		// Номер подтверждён, аккаунта нет — показываем шаг регистрации.
-		wp_send_json_success(
-			array(
-				'logged_in'      => false,
-				'need_register'  => true,
-				'token'          => VL_Account_OTP::issue_token( $phone ),
-				'phone'          => $phone,
-				'phone_formatted'=> VL_Account_Phone::format( $phone ),
-				'message'        => __( 'Номер подтверждён. Осталось заполнить пару полей.', 'vl-account' ),
-			)
-		);
-	}
-
-	/**
-	 * Завершение регистрации (после подтверждения номера).
-	 */
-	public function handle_register() {
-		$this->guard();
-
-		$phone = VL_Account_Phone::normalize( $this->post( 'phone' ) );
-		$token = $this->post( 'token' );
-
-		if ( ! VL_Account_OTP::check_token( $token, $phone ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( 'Подтвердите номер телефона заново — сессия истекла.', 'vl-account' ),
-					'restart' => true,
-				)
-			);
+		// Номера в базе нет — заводим аккаунт прямо здесь, без второго шага.
+		if ( ! VL_Account_Settings::get( 'auto_register', 1 ) ) {
+			wp_send_json_error( array( 'message' => __( 'Аккаунт с таким номером не найден.', 'vl-account' ) ) );
 		}
 
-		$email      = sanitize_email( $this->post( 'email' ) );
-		$first_name = $this->post( 'first_name' );
-		$last_name  = $this->post( 'last_name' );
-		$telegram   = $this->post( 'telegram' );
-		$password   = isset( $_POST['password'] ) ? (string) wp_unslash( $_POST['password'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$password2  = isset( $_POST['password2'] ) ? (string) wp_unslash( $_POST['password2'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$consents = array( 'privacy' => true );
 
-		$errors = array();
-
-		if ( VL_Account_Settings::get( 'require_email', 1 ) && ! is_email( $email ) ) {
-			$errors['email'] = __( 'Укажите корректный e-mail.', 'vl-account' );
-		}
-
-		if ( $email && email_exists( $email ) ) {
-			$errors['email'] = __( 'Аккаунт с таким e-mail уже зарегистрирован. Войдите или восстановите пароль.', 'vl-account' );
-		}
-
-		if ( VL_Account_Settings::get( 'require_name', 1 ) && '' === trim( $first_name ) ) {
-			$errors['first_name'] = __( 'Укажите имя.', 'vl-account' );
-		}
-
-		if ( ! VL_Account_Settings::get( 'passwordless', 1 ) ) {
-			if ( strlen( $password ) < 8 ) {
-				$errors['password'] = __( 'Пароль должен быть не короче 8 символов.', 'vl-account' );
-			} elseif ( $password !== $password2 ) {
-				$errors['password2'] = __( 'Пароли не совпадают.', 'vl-account' );
-			}
-		} elseif ( '' !== $password ) {
-			// Пароль необязателен, но если введён — проверяем.
-			if ( strlen( $password ) < 8 ) {
-				$errors['password'] = __( 'Пароль должен быть не короче 8 символов.', 'vl-account' );
-			} elseif ( '' !== $password2 && $password !== $password2 ) {
-				$errors['password2'] = __( 'Пароли не совпадают.', 'vl-account' );
-			}
-		}
-
-		$consents = $this->collect_consents();
-
-		if ( VL_Account_Settings::get( 'consent_privacy', 1 ) && empty( $consents['privacy'] ) ) {
-			$errors['consent_privacy'] = __( 'Без согласия на обработку персональных данных зарегистрировать не сможем.', 'vl-account' );
-		}
-
-		if ( $errors ) {
-			wp_send_json_error(
-				array(
-					'message' => reset( $errors ),
-					'fields'  => $errors,
-				)
-			);
+		if ( VL_Account_Settings::get( 'consent_marketing', 1 ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce проверен в guard().
+			$consents['marketing'] = ! empty( $_POST['consent_marketing'] );
 		}
 
 		$user_id = VL_Account_User::create(
 			array(
-				'phone'      => $phone,
-				'email'      => $email,
-				'first_name' => $first_name,
-				'last_name'  => $last_name,
-				'telegram'   => $telegram,
-				'password'   => $password,
-				'verified'   => true,
-				'consents'   => $consents,
-				'source'     => 'sms_form',
+				'phone'    => $phone,
+				'verified' => true,
+				'consents' => $consents,
+				'source'   => 'sms_one_step',
 			)
 		);
 
@@ -303,17 +228,18 @@ class VL_Account_Ajax {
 			wp_send_json_error( array( 'message' => $user_id->get_error_message() ) );
 		}
 
-		VL_Account_OTP::consume_token( $token );
 		VL_Account_Auth::login_user( $user_id, true );
 
 		wp_send_json_success(
 			array(
 				'logged_in' => true,
-				'message'   => __( 'Регистрация завершена. Добро пожаловать!', 'vl-account' ),
+				'created'   => true,
+				'message'   => __( 'Готово! Личный кабинет создан, вы вошли.', 'vl-account' ),
 				'redirect'  => vlacc_redirect_url(),
 			)
 		);
 	}
+
 
 	/**
 	 * Собрать согласия из формы.
@@ -540,15 +466,16 @@ class VL_Account_Ajax {
 			}
 		}
 
-		$update = array( 'ID' => $user_id );
+		$update = array(
+			'ID'           => $user_id,
+			'first_name'   => $first_name,
+			'last_name'    => $last_name,
+			'display_name' => trim( $first_name . ' ' . $last_name ),
+		);
 
-		if ( $email ) {
-			$update['user_email'] = $email;
+		if ( '' === $update['display_name'] ) {
+			unset( $update['display_name'] );
 		}
-
-		$update['first_name']   = $first_name;
-		$update['last_name']    = $last_name;
-		$update['display_name'] = trim( $first_name . ' ' . $last_name );
 
 		$result = wp_update_user( $update );
 
@@ -558,14 +485,58 @@ class VL_Account_Ajax {
 
 		update_user_meta( $user_id, 'billing_first_name', $first_name );
 		update_user_meta( $user_id, 'billing_last_name', $last_name );
-
-		if ( $email ) {
-			update_user_meta( $user_id, 'billing_email', $email );
-		}
-
 		update_user_meta( $user_id, VL_Account_User::META_TELEGRAM, VL_Account_User::sanitize_telegram( $telegram ) );
 
-		wp_send_json_success( array( 'message' => __( 'Изменения сохранены.', 'vl-account' ) ) );
+		$message = __( 'Изменения сохранены.', 'vl-account' );
+		$user    = get_user_by( 'id', $user_id );
+
+		// E-mail меняем только через подтверждение по ссылке из письма.
+		if ( $email && strtolower( $user->user_email ) !== strtolower( $email ) ) {
+			$requested = VL_Account_Email_Confirm::request_and_send( $user_id, $email );
+
+			if ( is_wp_error( $requested ) ) {
+				wp_send_json_error( array( 'message' => $requested->get_error_message() ) );
+			}
+
+			$message = sprintf(
+				/* translators: %s — адрес электронной почты. */
+				__( 'Сохранили. Мы отправили письмо на %s — перейдите по ссылке из него, чтобы привязать адрес к кабинету.', 'vl-account' ),
+				$email
+			);
+		}
+
+		wp_send_json_success( array( 'message' => $message ) );
+	}
+
+	/**
+	 * Повторно отправить письмо с подтверждением e-mail.
+	 */
+	public function handle_resend_email() {
+		$this->guard();
+
+		$user_id = get_current_user_id();
+
+		if ( ! $user_id ) {
+			wp_send_json_error( array( 'message' => __( 'Сначала войдите в кабинет.', 'vl-account' ) ) );
+		}
+
+		$email = VL_Account_Email_Confirm::pending( $user_id );
+
+		if ( ! $email ) {
+			wp_send_json_error( array( 'message' => __( 'Подтверждать нечего — укажите e-mail в поле выше и сохраните.', 'vl-account' ) ) );
+		}
+
+		VL_Account_Email_Confirm::send( $user_id, true );
+
+		wp_send_json_success(
+			array(
+				'message' => sprintf(
+					/* translators: %s — адрес электронной почты. */
+					__( 'Письмо отправлено на %s. Проверьте почту, в том числе папку «Спам».', 'vl-account' ),
+					$email
+				),
+			)
+		);
 	}
 
 	/**

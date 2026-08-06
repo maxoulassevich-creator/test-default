@@ -39,13 +39,7 @@ $vl_redirect = isset( $redirect ) ? $redirect : '';
 			<div class="vl-drawer__body">
 				<?php
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- разметка формируется шаблоном формы.
-				echo VL_Account_Shortcodes::render_auth(
-					array(
-						'redirect'    => $vl_redirect,
-						'default_tab' => 'login',
-						'show_tabs'   => 'yes',
-					)
-				);
+				echo VL_Account_Shortcodes::render_auth( array( 'redirect' => $vl_redirect ) );
 				?>
 			</div>
 		</div>

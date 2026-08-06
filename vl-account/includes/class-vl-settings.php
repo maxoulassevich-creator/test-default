@@ -65,11 +65,12 @@ class VL_Account_Settings {
 
 			// Логика входа/регистрации.
 			'auth_mode'           => 'sms',   // sms | both (SMS + пароль).
-			'require_email'       => 1,       // Требовать e-mail при регистрации.
-			'require_name'        => 1,
 			'show_telegram'       => 1,
 			'passwordless'        => 1,       // Регистрация без пароля.
-			'auto_register'       => 1,       // Незнакомый номер -> сразу форма регистрации.
+			'auto_register'       => 1,       // Незнакомый номер -> аккаунт создаётся автоматически.
+			'auth_intro'          => '',      // Текст над полем телефона.
+			'auth_consent_note'   => '',      // Текст согласия под кнопкой.
+			'auth_marketing_box'  => 1,       // Галочка согласия на рассылку в форме входа.
 			'cookie_days'         => 30,      // Срок жизни куки авторизации.
 			'phone_mask'          => '+7 (___) ___-__-__',
 			'default_country'     => '7',
@@ -109,6 +110,8 @@ class VL_Account_Settings {
 			// Письма.
 			'email_on_register'   => 1,
 			'email_on_autocreate' => 1,
+			'email_confirm'       => 1,       // Просить подтвердить e-mail из заказа.
+			'email_confirm_days'  => 7,       // Срок жизни ссылки подтверждения.
 
 			// Внешний вид.
 			'accent_color'        => '#d40000',

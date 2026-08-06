@@ -349,11 +349,17 @@ class VL_Account_Admin {
 				)
 			);
 
-			$this->checkbox( 'passwordless', $s, __( 'Регистрация без пароля', 'vl-account' ), __( 'Пароль не спрашиваем: вход по коду. Задать пароль можно позже в кабинете.', 'vl-account' ) );
-			$this->checkbox( 'auto_register', $s, __( 'Регистрация «на лету»', 'vl-account' ), __( 'Незнакомый номер — сразу предлагаем короткую форму регистрации.', 'vl-account' ) );
-			$this->checkbox( 'require_email', $s, __( 'E-mail обязателен', 'vl-account' ), __( 'Нужен для писем о заказах и восстановления доступа.', 'vl-account' ) );
-			$this->checkbox( 'require_name', $s, __( 'Имя обязательно', 'vl-account' ), '' );
-			$this->checkbox( 'show_telegram', $s, __( 'Поле Telegram', 'vl-account' ), __( 'Показывать поле Telegram в форме регистрации и в кабинете.', 'vl-account' ) );
+			$this->checkbox( 'passwordless', $s, __( 'Вход без пароля', 'vl-account' ), __( 'Пароль не спрашиваем: вход по коду. Задать пароль можно позже в кабинете.', 'vl-account' ) );
+			$this->checkbox(
+				'auto_register',
+				$s,
+				__( 'Регистрация в один шаг', 'vl-account' ),
+				__( 'Незнакомый номер регистрируется автоматически после верного кода — отдельной формы регистрации нет. Имя, e-mail и адрес подтянутся из первого заказа. Если выключить, вход останется только у тех, кто уже есть в базе.', 'vl-account' )
+			);
+			$this->text( 'auth_intro', $s, __( 'Текст над полем телефона', 'vl-account' ), __( 'Пусто — «Авторизуйтесь или зарегистрируйтесь по номеру телефона — мы пришлём SMS с кодом подтверждения.»', 'vl-account' ) );
+			$this->text( 'auth_consent_note', $s, __( 'Текст согласия под кнопкой', 'vl-account' ), __( 'Пусто — «Нажимая «получить код», вы соглашаетесь с обработкой персональных данных» со ссылкой на страницу политики.', 'vl-account' ) );
+			$this->checkbox( 'auth_marketing_box', $s, __( 'Галочка рассылки в форме входа', 'vl-account' ), __( 'Необязательная галочка согласия на рекламные рассылки прямо в форме. Если выключить, согласие собирается в кабинете, в разделе «Подписки».', 'vl-account' ) );
+			$this->checkbox( 'show_telegram', $s, __( 'Поле Telegram', 'vl-account' ), __( 'Показывать поле Telegram в кабинете.', 'vl-account' ) );
 			$this->text( 'cookie_days', $s, __( 'Помнить вход, дней', 'vl-account' ), __( 'Сколько посетитель остаётся авторизованным.', 'vl-account' ), 'number' );
 			$this->text( 'phone_mask', $s, __( 'Маска телефона', 'vl-account' ), __( 'Например <code>+7 (___) ___-__-__</code>. Оставьте пустым, чтобы отключить маску.', 'vl-account' ) );
 			$this->text( 'default_country', $s, __( 'Код страны по умолчанию', 'vl-account' ), __( 'Подставляется, если номер введён без кода.', 'vl-account' ) );
@@ -468,8 +474,15 @@ class VL_Account_Admin {
 			$this->checkbox( 'auto_create_account', $s, __( 'Создавать кабинет при заказе', 'vl-account' ), __( 'Если покупатель оформил заказ без входа — заводим аккаунт и отправляем письмо с доступом.', 'vl-account' ) );
 			$this->checkbox( 'attach_guest_orders', $s, __( 'Подтягивать прошлые заказы', 'vl-account' ), __( 'При входе привязываем к аккаунту заказы, оформленные с тем же e-mail или телефоном.', 'vl-account' ) );
 			$this->checkbox( 'match_by_phone', $s, __( 'Искать заказы по телефону', 'vl-account' ), __( 'Учитываются все варианты записи номера: +7, 8, со скобками и без.', 'vl-account' ) );
-			$this->checkbox( 'email_on_register', $s, __( 'Письмо после регистрации', 'vl-account' ), '' );
+			$this->checkbox( 'email_on_register', $s, __( 'Письмо после регистрации', 'vl-account' ), __( 'Уходит только тем, у кого уже есть подтверждённый e-mail.', 'vl-account' ) );
 			$this->checkbox( 'email_on_autocreate', $s, __( 'Письмо при автосоздании кабинета', 'vl-account' ), '' );
+			$this->checkbox(
+				'email_confirm',
+				$s,
+				__( 'Подтверждение e-mail из заказа', 'vl-account' ),
+				__( 'После заказа покупателю приходит второе, отдельное письмо со ссылкой подтверждения. Пока по ней не перешли, адрес к кабинету не привязывается — так нельзя записать на себя чужую почту.', 'vl-account' )
+			);
+			$this->text( 'email_confirm_days', $s, __( 'Ссылка подтверждения живёт, дней', 'vl-account' ), '', 'number' );
 			?>
 		</table>
 		<?php
@@ -495,9 +508,9 @@ class VL_Account_Admin {
 			<tbody>
 				<?php
 				$shortcodes = array(
-					'[vl_auth]'                     => __( 'Вход + регистрация с переключателем', 'vl-account' ),
-					'[vl_login]'                    => __( 'Только форма входа', 'vl-account' ),
-					'[vl_register]'                 => __( 'Только форма регистрации', 'vl-account' ),
+					'[vl_auth]'                     => __( 'Вход и регистрация в один шаг: телефон → код → кабинет', 'vl-account' ),
+					'[vl_login]'                    => __( 'Синоним [vl_auth]', 'vl-account' ),
+					'[vl_register]'                 => __( 'Синоним [vl_auth] — отдельной регистрации больше нет', 'vl-account' ),
 					'[vl_lost_password]'            => __( 'Восстановление доступа', 'vl-account' ),
 					'[vl_account]'                  => __( 'Личный кабинет целиком', 'vl-account' ),
 					'[vl_account_menu]'             => __( 'Только меню кабинета', 'vl-account' ),
@@ -519,7 +532,7 @@ class VL_Account_Admin {
 			</tbody>
 		</table>
 		<p class="description">
-			<?php esc_html_e( 'Дополнительные атрибуты: [vl_auth redirect="/my-account/" default_tab="register"], [vl_account_icon size="22" show_logout="no" show_label="yes"].', 'vl-account' ); ?>
+			<?php esc_html_e( 'Дополнительные атрибуты: [vl_auth redirect="/my-account/" title="Вход"], [vl_account_icon size="22" show_logout="no" show_label="yes" drawer="yes"].', 'vl-account' ); ?>
 		</p>
 		<?php
 	}
@@ -776,9 +789,9 @@ class VL_Account_Admin {
 		// Чекбоксы текущей вкладки, которых нет в POST, сбрасываем в 0.
 		$checkbox_map = array(
 			'sms'     => array( 'test_mode', 'debug_show_code' ),
-			'forms'   => array( 'passwordless', 'auto_register', 'require_email', 'require_name', 'show_telegram', 'gate_cart', 'consent_privacy', 'consent_marketing' ),
+			'forms'   => array( 'passwordless', 'auto_register', 'auth_marketing_box', 'show_telegram', 'gate_cart', 'consent_privacy', 'consent_marketing' ),
 			'account' => array( 'wishlist_on_product' ),
-			'orders'  => array( 'auto_create_account', 'attach_guest_orders', 'match_by_phone', 'email_on_register', 'email_on_autocreate' ),
+			'orders'  => array( 'auto_create_account', 'attach_guest_orders', 'match_by_phone', 'email_on_register', 'email_on_autocreate', 'email_confirm' ),
 			'design'  => array(),
 		);
 

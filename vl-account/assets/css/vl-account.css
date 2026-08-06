@@ -381,6 +381,52 @@ body.vl-drawer-open {
 	margin: 0 0 18px;
 }
 
+/* Текст над полем телефона в форме входа. */
+.vl-form__intro {
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--vl-text);
+	margin: 0 0 20px;
+}
+
+/* Согласие мелким шрифтом под кнопкой «получить код». */
+.vl-form__consent {
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--vl-muted);
+	margin: 12px 0 0;
+}
+
+.vl-form__consent a {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.vl-consents--compact {
+	margin: 0 0 18px;
+}
+
+.vl-consents--compact .vl-check {
+	font-size: 12px;
+}
+
+/* Плашка «e-mail ждёт подтверждения». */
+.vl-pending-email {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	align-items: flex-start;
+}
+
+.vl-pending-email .vl-form {
+	margin: 0;
+}
+
+.vl-pending-email .vl-form__messages:empty {
+	display: none;
+}
+
 .vl-step__hint {
 	font-size: 13px;
 	line-height: 1.5;

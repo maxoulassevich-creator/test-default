@@ -75,11 +75,9 @@ class VL_Account_Shortcodes {
 	public function sc_auth( $atts = array() ) {
 		$atts = shortcode_atts(
 			array(
-				'redirect'     => '',
-				'notice'       => '',
-				'title'        => '',
-				'default_tab'  => 'login',
-				'show_tabs'    => 'yes',
+				'redirect' => '',
+				'notice'   => '',
+				'title'    => '',
 			),
 			$atts,
 			'vl_auth'
@@ -89,49 +87,23 @@ class VL_Account_Shortcodes {
 	}
 
 	/**
-	 * Только вход.
+	 * Синоним [vl_auth]: вход и регистрация — одно действие.
 	 *
 	 * @param array $atts Атрибуты.
 	 * @return string
 	 */
 	public function sc_login( $atts = array() ) {
-		$atts = shortcode_atts(
-			array(
-				'redirect' => '',
-				'title'    => '',
-				'notice'   => '',
-			),
-			$atts,
-			'vl_login'
-		);
-
-		$atts['show_tabs']   = 'no';
-		$atts['default_tab'] = 'login';
-
-		return self::render_auth( $atts );
+		return $this->sc_auth( $atts );
 	}
 
 	/**
-	 * Только регистрация.
+	 * Синоним [vl_auth]. Оставлен, чтобы не ломать уже расставленные шорткоды.
 	 *
 	 * @param array $atts Атрибуты.
 	 * @return string
 	 */
 	public function sc_register( $atts = array() ) {
-		$atts = shortcode_atts(
-			array(
-				'redirect' => '',
-				'title'    => '',
-				'notice'   => '',
-			),
-			$atts,
-			'vl_register'
-		);
-
-		$atts['show_tabs']   = 'no';
-		$atts['default_tab'] = 'register';
-
-		return self::render_auth( $atts );
+		return $this->sc_auth( $atts );
 	}
 
 	/**
@@ -342,11 +314,9 @@ class VL_Account_Shortcodes {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'redirect'    => '',
-				'notice'      => '',
-				'title'       => '',
-				'default_tab' => 'login',
-				'show_tabs'   => 'yes',
+				'redirect' => '',
+				'notice'   => '',
+				'title'    => '',
 			)
 		);
 

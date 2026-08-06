@@ -336,7 +336,12 @@
 
 		loading( button, true );
 
-		post( 'verify_code', { phone: phone, code: code, purpose: purpose } ).then( function ( res ) {
+		post( 'verify_code', {
+			phone: phone,
+			code: code,
+			purpose: purpose,
+			consent_marketing: checked( form, 'consent_marketing' )
+		} ).then( function ( res ) {
 			loading( button, false );
 
 			if ( ! res.success ) {
@@ -348,80 +353,13 @@
 
 			var data = res.data || {};
 
+			// Вход и регистрация — одно действие: незнакомый номер
+			// регистрируется автоматически и сразу попадает в кабинет.
 			if ( data.logged_in ) {
 				message( form, data.message || '', 'success' );
 				redirect( data.redirect );
-				return;
-			}
-
-			if ( data.need_register ) {
-				// Из формы входа переносим уже подтверждённый номер в форму
-				// регистрации — повторное SMS не отправляем.
-				if ( form.dataset.vlForm === 'login' ) {
-					var target = switchPane( form, 'register' );
-
-					if ( target ) {
-						markVerified( target, phone, data.token );
-						message( target, 'Аккаунта с таким номером ещё нет — номер подтверждён, осталось заполнить пару полей.', 'info' );
-
-						var nextField = qs( target, '[name="first_name"]' ) || qs( target, '[data-vl-email]' );
-
-						if ( nextField ) {
-							nextField.focus();
-						}
-					}
-
-					return;
-				}
-
-				markVerified( form, phone, data.token );
-				message( form, data.message || '', 'success' );
-
-				var email = qs( form, '[data-vl-email]' );
-
-				if ( email ) {
-					email.focus();
-				}
 			}
 		} );
-	}
-
-	/**
-	 * Отметить телефон в форме как подтверждённый.
-	 */
-	function markVerified( form, phone, token ) {
-		form.dataset.vlPhone = phone;
-
-		var tokenField = qs( form, '[data-vl-token]' );
-
-		if ( tokenField ) {
-			tokenField.value = token || '';
-		}
-
-		var phoneInput = qs( form, '[data-vl-phone]' );
-
-		if ( phoneInput ) {
-			phoneInput.value = formatPhone( phone );
-			phoneInput.readOnly = true;
-		}
-
-		var badge = qs( form, '[data-vl-verified]' );
-
-		if ( badge ) {
-			badge.hidden = false;
-		}
-
-		var codeWrap = qs( form, '[data-vl-code-wrap]' );
-
-		if ( codeWrap ) {
-			codeWrap.hidden = true;
-		}
-
-		var sendButton = qs( form, '[data-vl-action="send-code"]' );
-
-		if ( sendButton ) {
-			sendButton.hidden = true;
-		}
 	}
 
 	function switchPane( form, pane ) {
@@ -440,52 +378,6 @@
 		} );
 
 		return qs( root, '[data-vl-pane="' + pane + '"] [data-vl-form]' );
-	}
-
-	function register( form, button ) {
-		fieldErrors( form, null );
-		message( form, '' );
-
-		var token = value( form, 'token' );
-
-		if ( ! token ) {
-			message( form, 'Сначала подтвердите номер телефона — нажмите «получить код».', 'error' );
-			return;
-		}
-
-		loading( button, true );
-
-		post( 'register', {
-			phone: form.dataset.vlPhone || value( form, 'phone' ),
-			token: token,
-			first_name: value( form, 'first_name' ),
-			last_name: value( form, 'last_name' ),
-			telegram: value( form, 'telegram' ),
-			email: value( form, 'email' ),
-			password: value( form, 'password' ),
-			password2: value( form, 'password2' ),
-			consent_privacy: checked( form, 'consent_privacy' ),
-			consent_marketing: checked( form, 'consent_marketing' ),
-			redirect_to: value( form, 'redirect_to' )
-		} ).then( function ( res ) {
-			loading( button, false );
-
-			if ( ! res.success ) {
-				var data = res.data || {};
-
-				message( form, data.message || cfg.i18n.network, 'error' );
-				fieldErrors( form, data.fields );
-
-				if ( data.restart ) {
-					step( form, 'phone' );
-				}
-
-				return;
-			}
-
-			message( form, res.data.message || '', 'success' );
-			redirect( res.data.redirect );
-		} );
 	}
 
 	function loginPassword( form, button ) {
@@ -610,6 +502,16 @@
 					el.value = '';
 				} );
 			}
+		} );
+	}
+
+	function resendEmail( form, button ) {
+		message( form, '' );
+		loading( button, true );
+
+		post( 'resend_email', {} ).then( function ( res ) {
+			loading( button, false );
+			message( form, ( res.data && res.data.message ) || cfg.i18n.network, res.success ? 'success' : 'error' );
 		} );
 	}
 
@@ -985,9 +887,6 @@
 		'verify-code': function ( form, button, el ) {
 			verifyCode( form, button, el.dataset.purpose || 'login' );
 		},
-		'register': function ( form, button ) {
-			register( form, button );
-		},
 		'login-password': function ( form, button ) {
 			loginPassword( form, button );
 		},
@@ -1005,6 +904,9 @@
 		},
 		'save-consents': function ( form, button ) {
 			saveConsents( form, button );
+		},
+		'resend-email': function ( form, button ) {
+			resendEmail( form, button );
 		},
 		'change-phone': function ( form ) {
 			step( form, 'phone' );

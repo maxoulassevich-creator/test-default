@@ -13,7 +13,36 @@ defined( 'ABSPATH' ) || exit;
 $vl_phone    = VL_Account_User::get_phone( $user_id );
 $vl_telegram = get_user_meta( $user_id, VL_Account_User::META_TELEGRAM, true );
 $vl_email    = VL_Account_User::has_real_email( $user ) ? $user->user_email : '';
+$vl_pending  = VL_Account_Email_Confirm::pending( $user_id );
+
+// Пока адрес не подтверждён, в поле показываем именно его — так понятнее.
+if ( $vl_pending && ! $vl_email ) {
+	$vl_email = $vl_pending;
+}
 ?>
+
+<?php if ( $vl_pending ) : ?>
+	<div class="vl-message vl-message--info vl-pending-email">
+		<span>
+			<?php
+			printf(
+				/* translators: %s — адрес электронной почты. */
+				esc_html__( 'Адрес %s ждёт подтверждения. Мы отправили на него письмо со ссылкой — после перехода по ней почта привяжется к кабинету.', 'vl-account' ),
+				'<strong>' . esc_html( $vl_pending ) . '</strong>' // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			);
+			?>
+		</span>
+		<form class="vl-form vl-form--resend" data-vl-form="resend" method="post">
+			<div class="vl-form__messages" data-vl-messages></div>
+			<button type="submit" class="vl-link" data-vl-action="resend-email"><?php esc_html_e( 'Отправить письмо ещё раз', 'vl-account' ); ?></button>
+			<input type="text" name="vlacc_hp" class="vl-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+		</form>
+	</div>
+<?php elseif ( ! VL_Account_User::has_real_email( $user ) ) : ?>
+	<div class="vl-message vl-message--info">
+		<?php esc_html_e( 'Добавьте e-mail — на него будут приходить статусы заказов, и по нему можно восстановить доступ. Мы отправим на указанный адрес письмо для подтверждения.', 'vl-account' ); ?>
+	</div>
+<?php endif; ?>
 <form class="vl-form vl-form--profile" data-vl-form="profile" method="post" novalidate>
 
 	<div class="vl-form__messages" data-vl-messages></div>
@@ -41,7 +70,9 @@ $vl_email    = VL_Account_User::has_real_email( $user ) ? $user->user_email : ''
 	<div class="vl-field">
 		<label class="vl-label" for="vl-profile-email"><?php esc_html_e( 'Email адрес', 'vl-account' ); ?></label>
 		<input type="email" id="vl-profile-email" name="email" class="vl-input" value="<?php echo esc_attr( $vl_email ); ?>" autocomplete="email" />
-		<span class="vl-field__hint"><?php esc_html_e( 'На него приходят письма о заказах.', 'vl-account' ); ?></span>
+		<span class="vl-field__hint">
+			<?php esc_html_e( 'На него приходят письма о заказах. Новый адрес привяжется только после перехода по ссылке из письма.', 'vl-account' ); ?>
+		</span>
 	</div>
 
 	<div class="vl-field">

@@ -51,6 +51,40 @@ class VL_Account_Orders {
 
 		// Телефон из заказа сохраняем пользователю в нормализованном виде.
 		add_action( 'woocommerce_checkout_update_customer', array( $this, 'sync_phone' ), 10, 2 );
+
+		// В форме оформления не подставляем технический адрес вида 79...@phone.site.
+		add_filter( 'woocommerce_customer_get_billing_email', array( $this, 'hide_technical_email' ), 10, 2 );
+		add_filter( 'woocommerce_checkout_get_value', array( $this, 'checkout_value' ), 10, 2 );
+	}
+
+	/**
+	 * Технический адрес не показываем покупателю.
+	 *
+	 * @param string      $email    Адрес.
+	 * @param WC_Customer $customer Покупатель.
+	 * @return string
+	 */
+	public function hide_technical_email( $email, $customer = null ) {
+		if ( $email && preg_match( '/@phone\./', $email ) ) {
+			return '';
+		}
+
+		return $email;
+	}
+
+	/**
+	 * Значения полей оформления заказа.
+	 *
+	 * @param mixed  $value Значение.
+	 * @param string $key   Поле.
+	 * @return mixed
+	 */
+	public function checkout_value( $value, $key = '' ) {
+		if ( 'billing_email' === $key && $value && preg_match( '/@phone\./', (string) $value ) ) {
+			return '';
+		}
+
+		return $value;
 	}
 
 	/**
@@ -86,8 +120,8 @@ class VL_Account_Orders {
 	 */
 	protected function process_order( $order ) {
 		if ( $order->get_customer_id() ) {
-			// Заказ уже за пользователем — просто обновим телефон.
-			$this->store_phone_from_order( $order->get_customer_id(), $order );
+			// Заказ уже за пользователем: переносим в кабинет всё, что он ввёл.
+			$this->sync_customer_from_order( $order->get_customer_id(), $order );
 			return;
 		}
 
@@ -180,6 +214,90 @@ class VL_Account_Orders {
 		if ( $phone && ! get_user_meta( $user_id, VL_Account_User::META_PHONE, true ) ) {
 			update_user_meta( $user_id, VL_Account_User::META_PHONE, $phone );
 		}
+	}
+
+	/**
+	 * Перенести данные из заказа в личный кабинет.
+	 *
+	 * При входе по SMS у аккаунта есть только телефон. Имя, фамилия и адрес
+	 * берутся из первого же заказа, а e-mail — только после подтверждения
+	 * по ссылке из письма, чтобы к кабинету нельзя было привязать чужую почту.
+	 *
+	 * @param int      $user_id Пользователь.
+	 * @param WC_Order $order   Заказ.
+	 */
+	public function sync_customer_from_order( $user_id, $order ) {
+		$this->store_phone_from_order( $user_id, $order );
+
+		$user = get_user_by( 'id', $user_id );
+
+		if ( ! $user ) {
+			return;
+		}
+
+		$first = $order->get_billing_first_name();
+		$last  = $order->get_billing_last_name();
+
+		$update = array( 'ID' => $user_id );
+
+		if ( $first && ! $user->first_name ) {
+			$update['first_name'] = $first;
+		}
+
+		if ( $last && ! $user->last_name ) {
+			$update['last_name'] = $last;
+		}
+
+		// Пока имени не было, в кабинете вместо него показывался телефон.
+		if ( $first && ( ! $user->first_name || $user->display_name === VL_Account_Phone::format( VL_Account_User::get_phone( $user_id ) ) ) ) {
+			$update['display_name'] = trim( $first . ' ' . $last );
+		}
+
+		if ( count( $update ) > 1 ) {
+			wp_update_user( $update );
+
+			if ( isset( $update['first_name'] ) ) {
+				update_user_meta( $user_id, 'billing_first_name', $first );
+			}
+
+			if ( isset( $update['last_name'] ) ) {
+				update_user_meta( $user_id, 'billing_last_name', $last );
+			}
+		}
+
+		// E-mail: если он отличается от адреса аккаунта — просим подтвердить.
+		$email = $order->get_billing_email();
+
+		if ( ! $email || ! VL_Account_Email_Confirm::enabled() ) {
+			return;
+		}
+
+		if ( strtolower( $email ) === strtolower( $user->user_email ) ) {
+			return;
+		}
+
+		$requested = VL_Account_Email_Confirm::request( $user_id, $email );
+
+		if ( is_wp_error( $requested ) ) {
+			vlacc_log(
+				'E-mail из заказа не поставлен на подтверждение',
+				array(
+					'order'   => $order->get_id(),
+					'user_id' => $user_id,
+					'reason'  => $requested->get_error_message(),
+				)
+			);
+			return;
+		}
+
+		vlacc_log(
+			'E-mail из заказа ждёт подтверждения',
+			array(
+				'order'   => $order->get_id(),
+				'user_id' => $user_id,
+				'email'   => vlacc_mask_email( $email ),
+			)
+		);
 	}
 
 	/**

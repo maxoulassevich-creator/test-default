@@ -258,46 +258,4 @@ class VL_Account_OTP {
 		set_transient( $ip_key, (int) get_transient( $ip_key ) + 1, HOUR_IN_SECONDS );
 	}
 
-	/**
-	 * Выдать токен подтверждённого номера (нужен для отправки формы регистрации).
-	 *
-	 * @param string $phone Номер.
-	 * @return string
-	 */
-	public static function issue_token( $phone ) {
-		$phone = VL_Account_Phone::normalize( $phone );
-		$token = wp_generate_password( 32, false );
-
-		set_transient( self::PREFIX . 'tok_' . $token, $phone, 20 * MINUTE_IN_SECONDS );
-
-		return $token;
-	}
-
-	/**
-	 * Проверить токен подтверждённого номера.
-	 *
-	 * @param string $token Токен.
-	 * @param string $phone Ожидаемый номер.
-	 * @return bool
-	 */
-	public static function check_token( $token, $phone ) {
-		$token = sanitize_text_field( $token );
-
-		if ( '' === $token ) {
-			return false;
-		}
-
-		$stored = get_transient( self::PREFIX . 'tok_' . $token );
-
-		return $stored && $stored === VL_Account_Phone::normalize( $phone );
-	}
-
-	/**
-	 * Погасить токен после использования.
-	 *
-	 * @param string $token Токен.
-	 */
-	public static function consume_token( $token ) {
-		delete_transient( self::PREFIX . 'tok_' . sanitize_text_field( $token ) );
-	}
 }
