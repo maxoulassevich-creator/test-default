@@ -43,6 +43,7 @@ require_once VLACC_PATH . 'includes/class-vl-promo.php';
 require_once VLACC_PATH . 'includes/class-vl-bonus.php';
 require_once VLACC_PATH . 'includes/class-vl-emails.php';
 require_once VLACC_PATH . 'includes/class-vl-cache.php';
+require_once VLACC_PATH . 'includes/class-vl-gate.php';
 require_once VLACC_PATH . 'includes/class-vl-shortcodes.php';
 require_once VLACC_PATH . 'includes/class-vl-admin.php';
 
@@ -104,6 +105,7 @@ final class VL_Account_Plugin {
 		VL_Account_Emails::instance();
 		VL_Account_Cache::instance();
 		VL_Account_Shortcodes::instance();
+		VL_Account_Gate::instance();
 
 		if ( is_admin() ) {
 			VL_Account_Admin::instance();
@@ -130,12 +132,19 @@ final class VL_Account_Plugin {
 			'vl-account',
 			'VLACC',
 			array(
-				'ajax_url'    => admin_url( 'admin-ajax.php' ),
-				'nonce'       => wp_create_nonce( 'vl-account' ),
-				'resend_wait' => (int) VL_Account_Settings::get( 'resend_timeout', 60 ),
-				'code_length' => (int) VL_Account_Settings::get( 'code_length', 4 ),
-				'phone_mask'  => VL_Account_Settings::get( 'phone_mask', '+7 (___) ___-__-__' ),
-				'i18n'        => array(
+				'ajax_url'     => admin_url( 'admin-ajax.php' ),
+				'nonce'        => wp_create_nonce( 'vl-account' ),
+				'resend_wait'  => (int) VL_Account_Settings::get( 'resend_timeout', 60 ),
+				'code_length'  => (int) VL_Account_Settings::get( 'code_length', 4 ),
+				'phone_mask'   => VL_Account_Settings::get( 'phone_mask', '+7 (___) ___-__-__' ),
+				'is_logged_in' => is_user_logged_in(),
+				'auth_url'     => VL_Account_Settings::auth_url(),
+				'gate'         => array(
+					'enabled'   => VL_Account_Gate::should_block(),
+					'selectors' => VL_Account_Gate::selectors(),
+					'message'   => VL_Account_Gate::message(),
+				),
+				'i18n'         => array(
 					'sending'      => __( 'Отправляем…', 'vl-account' ),
 					'wait'         => __( 'Повторная отправка через %d сек.', 'vl-account' ),
 					'resend'       => __( 'Отправить код повторно', 'vl-account' ),
@@ -144,6 +153,7 @@ final class VL_Account_Plugin {
 					'network'      => __( 'Не удалось связаться с сервером. Попробуйте ещё раз.', 'vl-account' ),
 					'copied'       => __( 'Скопировано', 'vl-account' ),
 					'confirm_exit' => __( 'Выйти из личного кабинета?', 'vl-account' ),
+					'gate_hint'    => __( 'После входа мы сразу продолжим — товар добавится в корзину.', 'vl-account' ),
 				),
 			)
 		);

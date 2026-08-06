@@ -20,6 +20,25 @@ class VL_Account_Shortcodes {
 	private static $instance = null;
 
 	/**
+	 * Форма входа уже выведена на этой странице шорткодом.
+	 *
+	 * Нужно, чтобы не дублировать её ещё раз в выдвижной панели
+	 * (одинаковые id полей ломают подписи и автозаполнение).
+	 *
+	 * @var bool
+	 */
+	private static $auth_rendered = false;
+
+	/**
+	 * Выводилась ли форма входа на этой странице.
+	 *
+	 * @return bool
+	 */
+	public static function auth_rendered() {
+		return self::$auth_rendered;
+	}
+
+	/**
 	 * Получить экземпляр.
 	 *
 	 * @return VL_Account_Shortcodes
@@ -191,6 +210,7 @@ class VL_Account_Shortcodes {
 				'class'       => '',
 				'show_logout' => 'yes',
 				'show_label'  => 'no',
+				'drawer'      => 'no',
 				'label_in'    => __( 'Личный кабинет', 'vl-account' ),
 				'label_out'   => __( 'Войти', 'vl-account' ),
 			),
@@ -198,8 +218,9 @@ class VL_Account_Shortcodes {
 			'vl_account_icon'
 		);
 
-		$size  = (int) $atts['size'];
-		$label = 'yes' === $atts['show_label'];
+		$size   = (int) $atts['size'];
+		$label  = 'yes' === $atts['show_label'];
+		$drawer = 'yes' === $atts['drawer'] ? ' data-vl-open-auth="1"' : '';
 
 		ob_start();
 
@@ -224,11 +245,12 @@ class VL_Account_Shortcodes {
 			}
 		} else {
 			printf(
-				'<a class="vl-account-icons__link vl-account-icons__link--login" href="%1$s" title="%2$s" aria-label="%2$s">%3$s%4$s</a>',
+				'<a class="vl-account-icons__link vl-account-icons__link--login" href="%1$s" title="%2$s" aria-label="%2$s"%5$s>%3$s%4$s</a>',
 				esc_url( VL_Account_Settings::auth_url() ),
 				esc_attr( $atts['label_out'] ),
 				vlacc_icon( 'user', $size ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				$label ? '<span class="vl-account-icons__label">' . esc_html( $atts['label_out'] ) . '</span>' : ''
+				$label ? '<span class="vl-account-icons__label">' . esc_html( $atts['label_out'] ) . '</span>' : '',
+				$drawer // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- статичный атрибут.
 			);
 		}
 
@@ -333,6 +355,11 @@ class VL_Account_Shortcodes {
 		}
 
 		$args['redirect'] = $args['redirect'] ? $args['redirect'] : vlacc_redirect_url();
+
+		// Панель в подвале отрисуется только если форма не выведена на странице.
+		if ( ! did_action( 'wp_footer' ) ) {
+			self::$auth_rendered = true;
+		}
 
 		return vlacc_template( 'auth.php', $args, true );
 	}

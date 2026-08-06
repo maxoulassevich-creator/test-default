@@ -8,7 +8,8 @@
 
 .vl-auth,
 .vl-account,
-.vl-form {
+.vl-form,
+.vl-drawer {
 	--vl-accent: #d40000;
 	--vl-dark: #2f2f2f;
 	--vl-border: #e4e4e4;
@@ -27,8 +28,183 @@
 
 .vl-auth *,
 .vl-account *,
-.vl-form * {
+.vl-form *,
+.vl-drawer * {
 	box-sizing: border-box;
+}
+
+/* Атрибут hidden должен побеждать наши display у классов. */
+.vl-auth [hidden],
+.vl-account [hidden],
+.vl-form [hidden],
+.vl-drawer [hidden] {
+	display: none !important;
+}
+
+/* --------------------------------------------------
+   Выдвижная панель входа (справа, на всю высоту)
+   -------------------------------------------------- */
+
+.vl-drawer[hidden] {
+	display: none;
+}
+
+.vl-drawer {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 999990;
+}
+
+.vl-drawer__overlay {
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	cursor: pointer;
+}
+
+.vl-drawer.is-open .vl-drawer__overlay {
+	opacity: 1;
+}
+
+.vl-drawer__panel {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 440px;
+	max-width: 100%;
+	height: 100%;
+	height: 100dvh;
+	background: #fff;
+	box-shadow: -6px 0 40px rgba(0, 0, 0, 0.12);
+	transform: translateX(100%);
+	transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	display: flex;
+	flex-direction: column;
+}
+
+.vl-drawer.is-open .vl-drawer__panel {
+	transform: translateX(0);
+}
+
+.vl-drawer__inner {
+	padding: 56px 40px 40px;
+	flex: 1 1 auto;
+}
+
+.vl-drawer__close {
+	position: absolute;
+	top: 14px;
+	right: 14px;
+	width: 40px;
+	height: 40px;
+	border: 0;
+	background: none;
+	cursor: pointer;
+	padding: 0;
+	z-index: 2;
+	color: var(--vl-text);
+}
+
+.vl-drawer__close span {
+	position: relative;
+	display: block;
+	width: 18px;
+	height: 18px;
+	margin: 0 auto;
+}
+
+.vl-drawer__close span::before,
+.vl-drawer__close span::after {
+	content: "";
+	position: absolute;
+	top: 8px;
+	left: 0;
+	width: 18px;
+	height: 1px;
+	background: currentColor;
+	transition: background-color 0.2s;
+}
+
+.vl-drawer__close span::before {
+	transform: rotate(45deg);
+}
+
+.vl-drawer__close span::after {
+	transform: rotate(-45deg);
+}
+
+.vl-drawer__close:hover span::before,
+.vl-drawer__close:hover span::after {
+	background: var(--vl-accent);
+}
+
+.vl-drawer__title {
+	font-size: 16px;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	margin: 0 0 12px;
+	color: var(--vl-text);
+}
+
+.vl-drawer__message {
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--vl-muted);
+	margin: 0 0 26px;
+	padding-bottom: 22px;
+	border-bottom: 1px solid var(--vl-border);
+}
+
+.vl-drawer__message[hidden] {
+	display: none;
+}
+
+.vl-drawer__body .vl-auth {
+	max-width: none;
+}
+
+/* Блокировка прокрутки страницы под панелью. */
+body.vl-drawer-open {
+	overflow: hidden;
+}
+
+@media (max-width: 600px) {
+	.vl-drawer__panel {
+		width: 100%;
+	}
+
+	.vl-drawer__inner {
+		padding: 52px 20px 32px;
+	}
+
+	.vl-drawer__title {
+		font-size: 15px;
+	}
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+	.vl-drawer__panel {
+		width: 400px;
+	}
+
+	.vl-drawer__inner {
+		padding: 56px 30px 34px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.vl-drawer__panel,
+	.vl-drawer__overlay {
+		transition: none;
+	}
 }
 
 /* --------------------------------------------------

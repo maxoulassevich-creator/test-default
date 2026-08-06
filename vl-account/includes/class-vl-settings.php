@@ -74,6 +74,12 @@ class VL_Account_Settings {
 			'phone_mask'          => '+7 (___) ___-__-__',
 			'default_country'     => '7',
 
+			// Вход перед покупкой.
+			'gate_cart'           => 0,       // Требовать вход перед добавлением в корзину.
+			'gate_title'          => '',
+			'gate_message'        => '',
+			'gate_selectors'      => '',      // Доп. CSS-селекторы кнопок покупки.
+
 			// Согласия.
 			'consent_privacy'     => 1,
 			'consent_privacy_text'=> 'Я согласен(на) на <a href="%s" target="_blank" rel="nofollow">обработку персональных данных</a>',

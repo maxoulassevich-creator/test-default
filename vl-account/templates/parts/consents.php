@@ -33,8 +33,14 @@ if ( $vl_privacy_url && false !== strpos( $vl_privacy_text, '%s' ) ) {
 <div class="vl-consents">
 	<?php if ( $vl_privacy ) : ?>
 		<label class="vl-check">
-			<input type="checkbox" name="consent_privacy" value="1"
-				<?php checked( ! $vl_user_id || VL_Account_User::has_consent( $vl_user_id, 'privacy' ) ); ?> />
+			<?php
+			// Согласие — активное действие: в форме регистрации галочка по умолчанию снята.
+			// Значение по умолчанию можно изменить фильтром vlacc_consent_default.
+			$vl_privacy_checked = $vl_user_id
+				? VL_Account_User::has_consent( $vl_user_id, 'privacy' )
+				: (bool) apply_filters( 'vlacc_consent_default', false, 'privacy' );
+			?>
+			<input type="checkbox" name="consent_privacy" value="1" <?php checked( $vl_privacy_checked ); ?> />
 			<span class="vl-check__box"></span>
 			<span class="vl-check__text"><?php echo wp_kses_post( $vl_privacy_text ); ?> <span class="vl-req">*</span></span>
 		</label>
@@ -43,8 +49,12 @@ if ( $vl_privacy_url && false !== strpos( $vl_privacy_text, '%s' ) ) {
 
 	<?php if ( $vl_marketing ) : ?>
 		<label class="vl-check">
-			<input type="checkbox" name="consent_marketing" value="1"
-				<?php checked( $vl_user_id ? VL_Account_User::has_consent( $vl_user_id, 'marketing' ) : true ); ?> />
+			<?php
+			$vl_marketing_checked = $vl_user_id
+				? VL_Account_User::has_consent( $vl_user_id, 'marketing' )
+				: (bool) apply_filters( 'vlacc_consent_default', false, 'marketing' );
+			?>
+			<input type="checkbox" name="consent_marketing" value="1" <?php checked( $vl_marketing_checked ); ?> />
 			<span class="vl-check__box"></span>
 			<span class="vl-check__text"><?php echo wp_kses_post( VL_Account_Settings::get( 'consent_marketing_text', '' ) ); ?></span>
 		</label>

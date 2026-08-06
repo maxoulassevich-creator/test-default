@@ -627,6 +627,351 @@
 	}
 
 	/* ------------------------------------------------------------------
+	 * Выдвижная панель входа (справа)
+	 * ------------------------------------------------------------------ */
+
+	var drawerReturnFocus = null;
+
+	function drawerNode() {
+		return document.querySelector( '[data-vl-drawer]' );
+	}
+
+	function isLoggedIn() {
+		return !! cfg.is_logged_in || document.body.classList.contains( 'logged-in' );
+	}
+
+	function openDrawer( text ) {
+		var node = drawerNode();
+
+		if ( ! node ) {
+			return false;
+		}
+
+		drawerReturnFocus = document.activeElement;
+
+		var note = qs( node, '[data-vl-drawer-message]' );
+
+		if ( note && text ) {
+			note.textContent = text;
+			note.hidden = false;
+		}
+
+		node.hidden = false;
+		node.setAttribute( 'aria-hidden', 'false' );
+		document.body.classList.add( 'vl-drawer-open' );
+
+		window.requestAnimationFrame( function () {
+			node.classList.add( 'is-open' );
+		} );
+
+		setTimeout( function () {
+			var field = qs( node, '.vl-auth__pane.is-active input:not([type="hidden"]):not(.vl-hp)' );
+
+			if ( field ) {
+				field.focus();
+			}
+		}, 340 );
+
+		return true;
+	}
+
+	function closeDrawer() {
+		var node = drawerNode();
+
+		if ( ! node || node.hidden ) {
+			return;
+		}
+
+		node.classList.remove( 'is-open' );
+		node.setAttribute( 'aria-hidden', 'true' );
+		document.body.classList.remove( 'vl-drawer-open' );
+
+		setTimeout( function () {
+			node.hidden = true;
+		}, 320 );
+
+		if ( drawerReturnFocus && drawerReturnFocus.focus ) {
+			drawerReturnFocus.focus();
+		}
+	}
+
+	/**
+	 * Открыть вход: панелью, а если её на странице нет — страницей входа.
+	 */
+	function requestAuth( text, nextUrl ) {
+		if ( openDrawer( text ) ) {
+			return;
+		}
+
+		var url = cfg.auth_url || '';
+
+		if ( ! url ) {
+			return;
+		}
+
+		if ( nextUrl ) {
+			url += ( url.indexOf( '?' ) === -1 ? '?' : '&' ) + 'redirect_to=' + encodeURIComponent( nextUrl );
+		}
+
+		window.location.href = url;
+	}
+
+	// Закрытие: крестик, подложка, Esc.
+	document.addEventListener( 'click', function ( event ) {
+		if ( event.target.closest && event.target.closest( '[data-vl-drawer-close]' ) ) {
+			event.preventDefault();
+			closeDrawer();
+		}
+	} );
+
+	document.addEventListener( 'keydown', function ( event ) {
+		var node = drawerNode();
+
+		if ( ! node || node.hidden ) {
+			return;
+		}
+
+		if ( event.key === 'Escape' ) {
+			closeDrawer();
+			return;
+		}
+
+		// Простая ловушка фокуса внутри панели.
+		if ( event.key !== 'Tab' ) {
+			return;
+		}
+
+		var focusable = qsa( node, 'a[href], button:not([disabled]), input:not([type="hidden"]):not(.vl-hp), select, textarea' ).filter( function ( el ) {
+			return el.offsetParent !== null;
+		} );
+
+		if ( ! focusable.length ) {
+			return;
+		}
+
+		var first = focusable[ 0 ];
+		var last = focusable[ focusable.length - 1 ];
+
+		if ( event.shiftKey && document.activeElement === first ) {
+			event.preventDefault();
+			last.focus();
+		} else if ( ! event.shiftKey && document.activeElement === last ) {
+			event.preventDefault();
+			first.focus();
+		}
+	} );
+
+	/* ------------------------------------------------------------------
+	 * Вход перед покупкой
+	 * ------------------------------------------------------------------ */
+
+	var PENDING_KEY = 'vlacc_pending';
+	var PENDING_TTL = 15 * 60 * 1000;
+
+	function gateEnabled() {
+		return !! ( cfg.gate && cfg.gate.enabled ) && ! isLoggedIn();
+	}
+
+	/**
+	 * Найти кнопку покупки, по которой кликнули.
+	 */
+	function matchGate( target ) {
+		var selectors = ( cfg.gate && cfg.gate.selectors ) || [];
+
+		for ( var i = 0; i < selectors.length; i++ ) {
+			var found;
+
+			try {
+				found = target.closest( selectors[ i ] );
+			} catch ( e ) {
+				found = null;
+			}
+
+			if ( found ) {
+				return found;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Запомнить прерванное действие, чтобы повторить его после входа.
+	 */
+	function savePending( el ) {
+		var data = {
+			url: window.location.href,
+			time: Date.now()
+		};
+
+		if ( el.tagName === 'A' && el.getAttribute( 'href' ) && el.getAttribute( 'href' ).charAt( 0 ) !== '#' ) {
+			data.kind = 'link';
+			data.href = el.href;
+		} else {
+			var form = el.closest( 'form' );
+			var fields = [];
+			var productId = el.getAttribute( 'data-product_id' ) || el.getAttribute( 'data-product-id' ) || '';
+
+			if ( form ) {
+				data.kind = 'form';
+				data.action = form.getAttribute( 'action' ) || window.location.href;
+				data.method = ( form.getAttribute( 'method' ) || 'post' ).toLowerCase();
+
+				try {
+					new FormData( form ).forEach( function ( fieldValue, fieldName ) {
+						if ( typeof fieldValue === 'string' ) {
+							fields.push( [ fieldName, fieldValue ] );
+						}
+					} );
+				} catch ( e ) {
+					fields = [];
+				}
+
+				// У кнопки может быть name="add-to-cart" value="ID".
+				if ( el.name && el.value ) {
+					fields.push( [ el.name, el.value ] );
+				}
+			} else if ( productId ) {
+				data.kind = 'form';
+				data.action = window.location.href;
+				data.method = 'post';
+			} else {
+				return;
+			}
+
+			var hasAddToCart = fields.some( function ( pair ) {
+				return pair[ 0 ] === 'add-to-cart';
+			} );
+
+			if ( ! hasAddToCart && productId ) {
+				fields.push( [ 'add-to-cart', productId ] );
+			}
+
+			data.fields = fields;
+		}
+
+		try {
+			window.sessionStorage.setItem( PENDING_KEY, JSON.stringify( data ) );
+		} catch ( e ) {
+			// Приватный режим — просто не сможем продолжить автоматически.
+		}
+	}
+
+	/**
+	 * Повторить действие после успешного входа.
+	 */
+	function replayPending() {
+		if ( ! isLoggedIn() ) {
+			return;
+		}
+
+		var raw = null;
+
+		try {
+			raw = window.sessionStorage.getItem( PENDING_KEY );
+			window.sessionStorage.removeItem( PENDING_KEY );
+		} catch ( e ) {
+			return;
+		}
+
+		if ( ! raw ) {
+			return;
+		}
+
+		var data;
+
+		try {
+			data = JSON.parse( raw );
+		} catch ( e ) {
+			return;
+		}
+
+		if ( ! data || ! data.kind || Date.now() - ( data.time || 0 ) > PENDING_TTL ) {
+			return;
+		}
+
+		if ( data.kind === 'link' && data.href ) {
+			window.location.href = data.href;
+			return;
+		}
+
+		if ( data.kind === 'form' && data.fields && data.fields.length ) {
+			var form = document.createElement( 'form' );
+
+			form.method = data.method === 'get' ? 'get' : 'post';
+			form.action = data.action || window.location.href;
+			form.style.display = 'none';
+
+			data.fields.forEach( function ( pair ) {
+				var input = document.createElement( 'input' );
+
+				input.type = 'hidden';
+				input.name = pair[ 0 ];
+				input.value = pair[ 1 ];
+				form.appendChild( input );
+			} );
+
+			document.body.appendChild( form );
+			form.submit();
+		}
+	}
+
+	// Перехват на фазе захвата — раньше обработчиков темы и WooCommerce.
+	document.addEventListener( 'click', function ( event ) {
+		if ( ! gateEnabled() || ! event.target.closest ) {
+			return;
+		}
+
+		// Внутри самой панели ничего не перехватываем.
+		if ( event.target.closest( '[data-vl-drawer]' ) ) {
+			return;
+		}
+
+		var button = matchGate( event.target );
+
+		if ( ! button || button.disabled || button.classList.contains( 'disabled' ) ) {
+			return;
+		}
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		if ( event.stopImmediatePropagation ) {
+			event.stopImmediatePropagation();
+		}
+
+		savePending( button );
+		requestAuth( cfg.gate.message, window.location.href );
+	}, true );
+
+	// Любой элемент с data-vl-open-auth открывает панель входа.
+	document.addEventListener( 'click', function ( event ) {
+		var trigger = event.target.closest ? event.target.closest( '[data-vl-open-auth]' ) : null;
+
+		if ( ! trigger || isLoggedIn() ) {
+			return;
+		}
+
+		event.preventDefault();
+		requestAuth( trigger.getAttribute( 'data-vl-auth-message' ) || '', window.location.href );
+	}, true );
+
+	function initGate() {
+		replayPending();
+
+		// Сервер вернул гостя со страницы оформления — сразу открываем панель.
+		if ( ! isLoggedIn() && /[?&]vlacc_auth=1/.test( window.location.search ) ) {
+			openDrawer( cfg.gate ? cfg.gate.message : '' );
+		}
+	}
+
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', initGate );
+	} else {
+		initGate();
+	}
+
+	/* ------------------------------------------------------------------
 	 * Обработчики
 	 * ------------------------------------------------------------------ */
 

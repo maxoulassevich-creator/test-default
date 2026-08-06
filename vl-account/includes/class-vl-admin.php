@@ -360,6 +360,26 @@ class VL_Account_Admin {
 			?>
 		</table>
 
+		<h2><?php esc_html_e( 'Вход перед покупкой', 'vl-account' ); ?></h2>
+		<table class="form-table" role="presentation">
+			<?php
+			$this->checkbox(
+				'gate_cart',
+				$s,
+				__( 'Требовать вход перед покупкой', 'vl-account' ),
+				__( 'Гость не может добавить товар в корзину и купить в один клик: справа выезжает панель с формой входа. После входа действие продолжается автоматически.', 'vl-account' )
+			);
+			$this->text( 'gate_title', $s, __( 'Заголовок панели', 'vl-account' ), __( 'По умолчанию: «Вход в личный кабинет».', 'vl-account' ) );
+			$this->text( 'gate_message', $s, __( 'Текст в панели', 'vl-account' ), __( 'Короткое объяснение, зачем нужен вход. Оставьте пустым — подставится стандартный текст.', 'vl-account' ) );
+			$this->text(
+				'gate_selectors',
+				$s,
+				__( 'Дополнительные кнопки', 'vl-account' ),
+				__( 'CSS-селекторы через запятую, если у темы свои кнопки покупки. Уже перехватываются: <code>.single_add_to_cart_button</code>, <code>.custom-buy-now-button</code>, <code>.add_to_cart_button</code>, <code>.ajax_add_to_cart</code>, а также любой элемент с атрибутом <code>data-vl-requires-auth</code>.', 'vl-account' )
+			);
+			?>
+		</table>
+
 		<h2><?php esc_html_e( 'Согласия', 'vl-account' ); ?></h2>
 		<table class="form-table" role="presentation">
 			<?php
@@ -756,7 +776,7 @@ class VL_Account_Admin {
 		// Чекбоксы текущей вкладки, которых нет в POST, сбрасываем в 0.
 		$checkbox_map = array(
 			'sms'     => array( 'test_mode', 'debug_show_code' ),
-			'forms'   => array( 'passwordless', 'auto_register', 'require_email', 'require_name', 'show_telegram', 'consent_privacy', 'consent_marketing' ),
+			'forms'   => array( 'passwordless', 'auto_register', 'require_email', 'require_name', 'show_telegram', 'gate_cart', 'consent_privacy', 'consent_marketing' ),
 			'account' => array( 'wishlist_on_product' ),
 			'orders'  => array( 'auto_create_account', 'attach_guest_orders', 'match_by_phone', 'email_on_register', 'email_on_autocreate' ),
 			'design'  => array(),
