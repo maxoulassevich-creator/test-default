@@ -495,7 +495,13 @@ class VL_Account_Ajax {
 			$requested = VL_Account_Email_Confirm::request_and_send( $user_id, $email );
 
 			if ( is_wp_error( $requested ) ) {
-				wp_send_json_error( array( 'message' => $requested->get_error_message() ) );
+				// Остальные поля уже сохранены — сообщаем именно про письмо.
+				wp_send_json_error(
+					array(
+						'message' => $requested->get_error_message(),
+						'saved'   => true,
+					)
+				);
 			}
 
 			$message = sprintf(
@@ -526,7 +532,13 @@ class VL_Account_Ajax {
 			wp_send_json_error( array( 'message' => __( 'Подтверждать нечего — укажите e-mail в поле выше и сохраните.', 'vl-account' ) ) );
 		}
 
-		VL_Account_Email_Confirm::send( $user_id, true );
+		if ( ! VL_Account_Email_Confirm::send( $user_id, true ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Письмо отправить не удалось — почта сайта не работает. Напишите нам, мы привяжем адрес вручную.', 'vl-account' ),
+				)
+			);
+		}
 
 		wp_send_json_success(
 			array(

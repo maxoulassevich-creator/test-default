@@ -159,8 +159,6 @@ class VL_Account_Email_Confirm {
 			VL_Account_Settings::account_url()
 		);
 
-		update_user_meta( $user_id, self::META_SENT, time() );
-
 		$user = get_user_by( 'id', $user_id );
 		$name = $user && $user->first_name ? $user->first_name : __( 'Здравствуйте', 'vl-account' );
 
@@ -183,7 +181,7 @@ class VL_Account_Email_Confirm {
 		$content .= '<p style="color:#888;font-size:12px">' . esc_html__( 'Если кнопка не работает, скопируйте ссылку в адресную строку браузера:', 'vl-account' ) . '<br>' . esc_html( $link ) . '</p>';
 		$content .= '<p style="color:#888;font-size:12px">' . esc_html__( 'Если вы не оформляли заказ на нашем сайте, просто удалите это письмо — без подтверждения адрес никуда не привяжется.', 'vl-account' ) . '</p>';
 
-		VL_Account_Emails::instance()->send(
+		$sent = VL_Account_Emails::instance()->send(
 			$email,
 			sprintf(
 				/* translators: %s — название сайта. */
@@ -192,6 +190,22 @@ class VL_Account_Email_Confirm {
 			),
 			$content
 		);
+
+		if ( ! $sent ) {
+			// Отметку об отправке не ставим: письмо можно будет отправить заново.
+			vlacc_log(
+				'Письмо с подтверждением e-mail не ушло',
+				array(
+					'user_id' => $user_id,
+					'email'   => vlacc_mask_email( $email ),
+					'error'   => VL_Account_Emails::instance()->last_error(),
+				)
+			);
+
+			return false;
+		}
+
+		update_user_meta( $user_id, self::META_SENT, time() );
 
 		vlacc_log(
 			'Отправлено письмо с подтверждением e-mail',
@@ -218,7 +232,12 @@ class VL_Account_Email_Confirm {
 			return $result;
 		}
 
-		self::send( $user_id, true );
+		if ( ! self::send( $user_id, true ) ) {
+			return new WP_Error(
+				'vlacc_mail_failed',
+				__( 'Адрес сохранён, но письмо с подтверждением отправить не удалось — почта сайта не работает. Напишите нам, мы привяжем адрес вручную.', 'vl-account' )
+			);
+		}
 
 		return true;
 	}
@@ -340,6 +359,60 @@ class VL_Account_Email_Confirm {
 			array(
 				'user_id' => $user_id,
 				'email'   => vlacc_mask_email( $email ),
+			)
+		);
+
+		return true;
+	}
+
+	/**
+	 * Подтвердить адрес вручную, без письма.
+	 *
+	 * Нужно администратору: например, письма с сайта не доходят,
+	 * а покупателю надо привязать почту к кабинету.
+	 *
+	 * @param int $user_id Пользователь.
+	 * @return true|WP_Error
+	 */
+	public static function force_confirm( $user_id ) {
+		$email = self::pending( $user_id );
+
+		if ( ! $email ) {
+			return new WP_Error( 'vlacc_nothing', __( 'У этого пользователя нет адреса, ожидающего подтверждения.', 'vl-account' ) );
+		}
+
+		$owner = email_exists( $email );
+
+		if ( $owner && (int) $owner !== (int) $user_id ) {
+			return new WP_Error( 'vlacc_email_taken', __( 'Этот e-mail уже используется другим аккаунтом.', 'vl-account' ) );
+		}
+
+		$updated = wp_update_user(
+			array(
+				'ID'         => $user_id,
+				'user_email' => $email,
+			)
+		);
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
+
+		update_user_meta( $user_id, 'billing_email', $email );
+		update_user_meta( $user_id, 'vlacc_email_verified', current_time( 'mysql' ) );
+
+		self::forget( $user_id );
+
+		VL_Account_Orders::attach_guest_orders( $user_id );
+
+		do_action( 'vlacc_email_confirmed', $user_id, $email );
+
+		vlacc_log(
+			'E-mail подтверждён вручную администратором',
+			array(
+				'user_id' => $user_id,
+				'email'   => vlacc_mask_email( $email ),
+				'admin'   => get_current_user_id(),
 			)
 		);
 

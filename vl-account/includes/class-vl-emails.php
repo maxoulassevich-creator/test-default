@@ -40,6 +40,49 @@ class VL_Account_Emails {
 	private function __construct() {
 		add_action( 'vlacc_user_registered', array( $this, 'on_register' ), 20, 2 );
 		add_action( 'vlacc_account_created_from_order', array( $this, 'on_order_account' ), 20, 2 );
+
+		// Любая ошибка отправки почты на сайте попадает в журнал плагина —
+		// без этого «письмо не пришло» невозможно отличить от «письмо не ушло».
+		add_action( 'wp_mail_failed', array( $this, 'log_mail_error' ) );
+	}
+
+	/**
+	 * Последняя ошибка отправки почты.
+	 *
+	 * @var string
+	 */
+	protected $last_error = '';
+
+	/**
+	 * Записать ошибку отправки в журнал.
+	 *
+	 * @param WP_Error $error Ошибка от PHPMailer.
+	 */
+	public function log_mail_error( $error ) {
+		if ( ! is_wp_error( $error ) ) {
+			return;
+		}
+
+		$this->last_error = $error->get_error_message();
+
+		$data = $error->get_error_data();
+
+		vlacc_log(
+			'Ошибка отправки письма',
+			array(
+				'error' => $this->last_error,
+				'to'    => isset( $data['to'] ) ? (array) $data['to'] : array(),
+			)
+		);
+	}
+
+	/**
+	 * Текст последней ошибки отправки.
+	 *
+	 * @return string
+	 */
+	public function last_error() {
+		return $this->last_error;
 	}
 
 	/**
@@ -177,14 +220,27 @@ class VL_Account_Emails {
 	public function send( $to, $subject, $content ) {
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
+		$this->last_error = '';
+
 		if ( vlacc_is_woo() && function_exists( 'WC' ) && WC()->mailer() ) {
 			$message = WC()->mailer()->wrap_message( $subject, $content );
-
-			return (bool) WC()->mailer()->send( $to, $subject, $message, $headers );
+			$sent    = (bool) WC()->mailer()->send( $to, $subject, $message, $headers );
+		} else {
+			$message = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#333;max-width:600px;margin:0 auto">' . $content . '</div>';
+			$sent    = (bool) wp_mail( $to, $subject, $message, $headers );
 		}
 
-		$message = '<div style="font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.6;color:#333;max-width:600px;margin:0 auto">' . $content . '</div>';
+		if ( ! $sent ) {
+			vlacc_log(
+				'Письмо не отправлено',
+				array(
+					'to'      => vlacc_mask_email( $to ),
+					'subject' => $subject,
+					'error'   => $this->last_error ? $this->last_error : 'wp_mail вернул false без описания ошибки',
+				)
+			);
+		}
 
-		return wp_mail( $to, $subject, $message, $headers );
+		return $sent;
 	}
 }

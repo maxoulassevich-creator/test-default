@@ -38,6 +38,7 @@ class VL_Account_Admin {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
 		add_action( 'admin_post_vlacc_save_settings', array( $this, 'save' ) );
 		add_action( 'admin_post_vlacc_test_sms', array( $this, 'test_sms' ) );
+		add_action( 'admin_post_vlacc_test_email', array( $this, 'test_email' ) );
 		add_action( 'admin_post_vlacc_flush_rules', array( $this, 'flush_rules' ) );
 		add_action( 'admin_post_vlacc_clear_log', array( $this, 'clear_log' ) );
 		add_filter( 'plugin_action_links_' . VLACC_BASENAME, array( $this, 'action_links' ) );
@@ -569,6 +570,19 @@ class VL_Account_Admin {
 			<p class="description"><?php esc_html_e( 'Отправка идёт выбранным способом (SMS или звонок) и списывает деньги с баланса, если выключен тестовый режим.', 'vl-account' ); ?></p>
 		</form>
 
+		<h2><?php esc_html_e( 'Проверка почты', 'vl-account' ); ?></h2>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="vlacc_test_email" />
+			<?php wp_nonce_field( 'vlacc_test_email' ); ?>
+			<p>
+				<input type="email" name="email" placeholder="<?php echo esc_attr( wp_get_current_user()->user_email ); ?>" class="regular-text" />
+				<?php submit_button( __( 'Отправить тестовое письмо', 'vl-account' ), 'secondary', 'submit', false ); ?>
+			</p>
+			<p class="description">
+				<?php esc_html_e( 'Письмо уходит тем же путём, что и подтверждение e-mail. Если тут ошибка — проблема в почте сайта, а не в плагине. Если письмо «отправлено», но не дошло — его отбросил почтовый сервис получателя, нужен SMTP и настроенные SPF/DKIM.', 'vl-account' ); ?>
+			</p>
+		</form>
+
 		<h2><?php esc_html_e( 'Служебное', 'vl-account' ); ?></h2>
 		<p>
 			<a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=vlacc_flush_rules' ), 'vlacc_flush_rules' ) ); ?>">
@@ -734,6 +748,61 @@ class VL_Account_Admin {
 			'title'  => __( 'Стили и скрипты плагина', 'vl-account' ),
 			'status' => $css_ok ? ( $found_optimizers ? 'warn' : 'ok' ) : 'error',
 			'text'   => $assets_text,
+		);
+
+		// Отправка почты.
+		$smtp_plugins = array(
+			'wp-mail-smtp/wp_mail_smtp.php'          => 'WP Mail SMTP',
+			'easy-wp-smtp/easy-wp-smtp.php'          => 'Easy WP SMTP',
+			'post-smtp/postman-smtp.php'             => 'Post SMTP',
+			'fluent-smtp/fluent-smtp.php'            => 'FluentSMTP',
+			'wp-smtp/wp-smtp.php'                    => 'WP SMTP',
+			'wp-ses/wp-ses.php'                      => 'WP SES',
+			'mailgun/mailgun.php'                    => 'Mailgun',
+		);
+
+		$smtp_found = array();
+
+		foreach ( $smtp_plugins as $file => $name ) {
+			if ( is_plugin_active( $file ) ) {
+				$smtp_found[] = $name;
+			}
+		}
+
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+		$host = $host ? preg_replace( '/^www\./', '', $host ) : '';
+
+		// Письма плагина уходят через почтовик WooCommerce, если он активен.
+		$from = vlacc_is_woo()
+			? get_option( 'woocommerce_email_from_address', '' )
+			: '';
+
+		if ( ! $from ) {
+			$from = apply_filters( 'wp_mail_from', 'wordpress@' . $host );
+		}
+
+		$mail_text = sprintf(
+			/* translators: %s — адрес отправителя. */
+			__( 'Письма уходят от отправителя <code>%s</code>.', 'vl-account' ),
+			esc_html( $from )
+		);
+
+		if ( $smtp_found ) {
+			$mail_text .= ' ' . sprintf(
+				/* translators: %s — названия SMTP-плагинов. */
+				__( 'Подключён SMTP: %s.', 'vl-account' ),
+				esc_html( implode( ', ', $smtp_found ) )
+			);
+		} else {
+			$mail_text .= ' ' . __( 'SMTP-плагин не найден: письма отправляются функцией PHP mail(). Gmail, Яндекс и Mail.ru часто молча отбрасывают такие письма — они не попадают даже в «Спам». Поставьте SMTP-плагин (например, WP Mail SMTP) и отправляйте с адреса на вашем домене.', 'vl-account' );
+		}
+
+		$mail_text .= '<br>' . __( 'Ниже есть кнопка «Отправить тестовое письмо» — она покажет, уходит ли почта с сайта вообще.', 'vl-account' );
+
+		$checks[] = array(
+			'title'  => __( 'Отправка почты', 'vl-account' ),
+			'status' => $smtp_found ? 'ok' : 'warn',
+			'text'   => $mail_text,
 		);
 
 		// Адрес сайта.
@@ -956,6 +1025,60 @@ class VL_Account_Admin {
 			)
 		);
 		exit;
+	}
+
+	/**
+	 * Тестовое письмо — тем же путём, что и письма плагина.
+	 */
+	public function test_email() {
+		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'vlacc_test_email' ) ) {
+			wp_die( esc_html__( 'Недостаточно прав.', 'vl-account' ) );
+		}
+
+		$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
+
+		if ( ! is_email( $email ) ) {
+			$email = wp_get_current_user()->user_email;
+		}
+
+		if ( ! is_email( $email ) ) {
+			$this->redirect_tools( __( 'Укажите корректный адрес.', 'vl-account' ), false );
+		}
+
+		$content  = '<p>' . esc_html__( 'Это тестовое письмо с вашего сайта.', 'vl-account' ) . '</p>';
+		$content .= '<p>' . esc_html__( 'Если вы его читаете — почта с сайта уходит, и письма плагина будут доходить так же.', 'vl-account' ) . '</p>';
+
+		$sent = VL_Account_Emails::instance()->send(
+			$email,
+			sprintf(
+				/* translators: %s — название сайта. */
+				__( 'Проверка почты — %s', 'vl-account' ),
+				get_bloginfo( 'name' )
+			),
+			$content
+		);
+
+		if ( $sent ) {
+			$this->redirect_tools(
+				sprintf(
+					/* translators: %s — адрес электронной почты. */
+					__( 'Письмо принято к отправке на %s. Если оно не придёт за пару минут — сервер отдал его, но почтовый сервис получателя отбросил: нужен SMTP и настроенные SPF/DKIM.', 'vl-account' ),
+					$email
+				),
+				true
+			);
+		}
+
+		$error = VL_Account_Emails::instance()->last_error();
+
+		$this->redirect_tools(
+			sprintf(
+				/* translators: %s — текст ошибки. */
+				__( 'Сайт не смог отправить письмо. Ответ сервера: %s', 'vl-account' ),
+				$error ? $error : __( 'без описания (обычно на хостинге отключена функция mail() — поставьте SMTP-плагин)', 'vl-account' )
+			),
+			false
+		);
 	}
 
 	/**

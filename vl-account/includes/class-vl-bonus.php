@@ -134,6 +134,24 @@ class VL_Account_Bonus {
 					<p class="description"><?php esc_html_e( 'В формате 79261234567 — по нему работает вход по SMS.', 'vl-account' ); ?></p>
 				</td>
 			</tr>
+			<?php $vl_pending = VL_Account_Email_Confirm::pending( $user->ID ); ?>
+			<?php if ( $vl_pending ) : ?>
+				<tr>
+					<th><?php esc_html_e( 'E-mail ждёт подтверждения', 'vl-account' ); ?></th>
+					<td>
+						<code><?php echo esc_html( $vl_pending ); ?></code>
+						<p>
+							<label>
+								<input type="checkbox" name="vlacc_force_confirm_email" value="1" />
+								<?php esc_html_e( 'Подтвердить этот адрес вручную и привязать к аккаунту', 'vl-account' ); ?>
+							</label>
+						</p>
+						<p class="description">
+							<?php esc_html_e( 'Пригодится, если письма с сайта не доходят: адрес станет почтой аккаунта, к кабинету подтянутся заказы с этим адресом.', 'vl-account' ); ?>
+						</p>
+					</td>
+				</tr>
+			<?php endif; ?>
 			<tr>
 				<th><?php esc_html_e( 'Согласия', 'vl-account' ); ?></th>
 				<td>
@@ -186,6 +204,10 @@ class VL_Account_Bonus {
 		if ( isset( $_POST['vlacc_phone_field'] ) ) {
 			$phone = VL_Account_Phone::normalize( sanitize_text_field( wp_unslash( $_POST['vlacc_phone_field'] ) ) );
 			update_user_meta( $user_id, VL_Account_User::META_PHONE, $phone );
+		}
+
+		if ( ! empty( $_POST['vlacc_force_confirm_email'] ) ) {
+			VL_Account_Email_Confirm::force_confirm( $user_id );
 		}
 	}
 }
