@@ -1020,8 +1020,21 @@ svg [fill^="url("] { stroke: none; }
 .bento__art--6 { background: linear-gradient(135deg, #00c9c3 0%, #23383a 100%); }
 .bento__art--7 { background: linear-gradient(135deg, #6d0203 0%, var(--c-gray) 100%); }
 
+/* The whole card is the link, so the anchor takes over the item's column
+   layout rather than sitting inside it as a separate box. */
+.bento__link { display: flex; flex-direction: column; flex: 1; color: inherit; }
 .bento__body { padding: clamp(1rem, .8rem + .7vw, 1.35rem); }
-.bento__title { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+.bento__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: .4rem;
+}
+.bento__title svg { width: 17px; height: 17px; flex: none; color: var(--c-accent); transition: transform .2s var(--ease); }
+.bento__item:hover .bento__title svg { transform: translateX(4px); }
 .bento__text { font-size: var(--fs-sm); color: var(--c-muted); margin: 0; line-height: 1.55; }
 
 /* The grid holds 7 cards. Which one spans two columns changes per breakpoint so
@@ -1063,6 +1076,9 @@ svg [fill^="url("] { stroke: none; }
   stroke-width: 2.5;
 }
 @media (min-width: 768px) { .checklist__items { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; } }
+/* In a narrow column — beside body text in a .split — two columns would leave
+   three words per line, so this variant stays single. */
+@media (min-width: 768px) { .checklist--single .checklist__items { grid-template-columns: minmax(0, 1fr); gap: .85rem; } }
 
 /* ---------- 15. Responsible gambling ---------- */
 .responsible {
@@ -1634,6 +1650,40 @@ svg [fill^="url("] { stroke: none; }
 
 @media (min-width: 700px) { .related { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
+/* ---------- link out of an FAQ group ---------- */
+.faq__more { margin: 1.25rem 0 0; }
+.faq__more a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-accent);
+}
+.faq__more svg { width: 16px; height: 16px; transition: transform .2s var(--ease); }
+.faq__more a:hover svg { transform: translateX(4px); }
+
+/* ---------- editorial placeholders ----------
+   Support-organisation details must not be invented, so the markup ships the
+   slots visibly empty. Dashed and desaturated, they read as unfinished at a
+   glance and are impossible to mistake for published contact details. */
+.term--placeholder { border-style: dashed; background: transparent; }
+.term--placeholder:hover { border-color: var(--c-line-strong); }
+.slot {
+  display: inline-block;
+  min-width: 9ch;
+  padding: .05rem .55rem;
+  border: 1px dashed var(--c-line-strong);
+  border-radius: .35rem;
+  background: rgba(242, 242, 242, .05);
+  color: var(--c-faint);
+  font-family: var(--f-head);
+  font-size: .78em;
+  font-weight: 600;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
 /* ---------- sources / last checked ---------- */
 .sources {
   margin-top: clamp(2rem, 1.5rem + 2vw, 3rem);
@@ -1673,15 +1723,16 @@ svg [fill^="url("] { stroke: none; }
     </a>
 
     <nav class="nav" id="primaryNav" aria-label="Primary">
-      <a class="nav__link" href="#sports">Sports Betting</a>
-      <a class="nav__link" href="#casino">Online Casino</a>
-      <a class="nav__link" href="#aviator">Aviator</a>
-      <a class="nav__link" href="#guide">Guide</a>
-      <a class="nav__link" href="#faq">FAQ</a>
+      <a class="nav__link" href="sports-betting.html">Sports Betting</a>
+      <a class="nav__link" href="online-casino.html">Online Casino</a>
+      <a class="nav__link" href="live-casino.html">Live Casino</a>
+      <a class="nav__link" href="crash-games.html">Crash Games</a>
+      <a class="nav__link" href="virtual-sports.html">Virtual Sport</a>
+      <a class="nav__link" href="faq.html">FAQ</a>
     </nav>
 
     <div class="header__actions">
-      <a class="btn btn--primary btn--sm header__cta" href="#guide">Explore the guide</a>
+      <a class="btn btn--primary btn--sm header__cta" href="responsible-gambling.html">Play responsibly</a>
       <button class="burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
         <span></span><span></span><span></span>
       </button>
@@ -1699,12 +1750,14 @@ svg [fill^="url("] { stroke: none; }
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
       </button>
     </div>
-    <a class="drawer__link" href="#sports"><span>01</span> Sports Betting</a>
-    <a class="drawer__link" href="#casino"><span>02</span> Online Casino</a>
-    <a class="drawer__link" href="#aviator"><span>03</span> Aviator Game</a>
-    <a class="drawer__link" href="#guide"><span>04</span> Guide Sections</a>
-    <a class="drawer__link" href="#responsible"><span>05</span> Responsible Gambling</a>
-    <a class="drawer__link" href="#faq"><span>06</span> FAQ</a>
+    <a class="drawer__link" href="sports-betting.html"><span>01</span> Sports Betting</a>
+    <a class="drawer__link" href="online-casino.html"><span>02</span> Online Casino</a>
+    <a class="drawer__link" href="live-casino.html"><span>03</span> Live Casino</a>
+    <a class="drawer__link" href="crash-games.html"><span>04</span> Crash Games</a>
+    <a class="drawer__link" href="virtual-sports.html"><span>05</span> Virtual Sport</a>
+    <a class="drawer__link" href="bonuses.html"><span>06</span> Bonuses</a>
+    <a class="drawer__link" href="responsible-gambling.html"><span>07</span> Responsible Gambling</a>
+    <a class="drawer__link" href="faq.html"><span>08</span> FAQ</a>
     <a class="btn btn--primary drawer__cta" href="#guide">Explore the guide</a>
     <p class="drawer__note">18+ only. This site is an independent guide and does not accept bets or wagers.</p>
   </nav>
@@ -1728,11 +1781,11 @@ svg [fill^="url("] { stroke: none; }
       </p>
 
       <div class="hero__actions">
-        <a class="btn btn--primary" href="#sports">
+        <a class="btn btn--primary" href="sports-betting.html">
           Start with the basics
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </a>
-        <a class="btn btn--ghost" href="#responsible">Responsible gambling</a>
+        <a class="btn btn--ghost" href="responsible-gambling.html">Responsible gambling</a>
       </div>
 
       <dl class="hero__stats">
@@ -2092,53 +2145,81 @@ svg [fill^="url("] { stroke: none; }
 
     <ul class="bento" data-reveal>
       <li class="bento__item bento__item--wide">
-        <div class="bento__art bento__art--1" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Sports Betting</h3>
-          <p class="bento__text">Odds formats, market types, margins and live wagering explained from the ground up — the longest section of the guide.</p>
-        </div>
+        <a class="bento__link" href="sports-betting.html">
+          <div class="bento__art bento__art--1" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Sports Betting
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Odds formats, market types, margins and live wagering explained from the ground up — the longest section of the guide.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item">
-        <div class="bento__art bento__art--2" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Online Casino</h3>
-          <p class="bento__text">Slots, table games, RTP and volatility basics.</p>
-        </div>
+        <a class="bento__link" href="online-casino.html">
+          <div class="bento__art bento__art--2" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Online Casino
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Slots, table games, RTP and volatility basics.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item">
-        <div class="bento__art bento__art--3" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Live Casino</h3>
-          <p class="bento__text">Real-time dealers, streamed tables and pacing.</p>
-        </div>
+        <a class="bento__link" href="live-casino.html">
+          <div class="bento__art bento__art--3" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Live Casino
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Real-time dealers, streamed tables and pacing.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item">
-        <div class="bento__art bento__art--4" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Crash Games</h3>
-          <p class="bento__text">How multiplier-style rounds are generated and settled.</p>
-        </div>
+        <a class="bento__link" href="crash-games.html">
+          <div class="bento__art bento__art--4" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Crash Games
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">How multiplier-style rounds are generated and settled.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item">
-        <div class="bento__art bento__art--5" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Virtual Sports</h3>
-          <p class="bento__text">Simulated events running around the clock.</p>
-        </div>
+        <a class="bento__link" href="virtual-sports.html">
+          <div class="bento__art bento__art--5" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Virtual Sports
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Simulated events running around the clock.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item">
-        <div class="bento__art bento__art--6" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Bonuses</h3>
-          <p class="bento__text">Reading the terms hidden behind an offer.</p>
-        </div>
+        <a class="bento__link" href="bonuses.html">
+          <div class="bento__art bento__art--6" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Bonuses
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Reading the terms hidden behind an offer.</p>
+          </div>
+        </a>
       </li>
       <li class="bento__item bento__item--wide">
-        <div class="bento__art bento__art--7" aria-hidden="true"></div>
-        <div class="bento__body">
-          <h3 class="bento__title">Responsible Gambling</h3>
-          <p class="bento__text">Deposit limits, time-outs, self-exclusion and the habits that keep betting a form of entertainment rather than a way to chase losses.</p>
-        </div>
+        <a class="bento__link" href="responsible-gambling.html">
+          <div class="bento__art bento__art--7" aria-hidden="true"></div>
+          <div class="bento__body">
+            <h3 class="bento__title">Responsible Gambling
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </h3>
+            <p class="bento__text">Deposit limits, time-outs, self-exclusion and the habits that keep betting a form of entertainment rather than a way to chase losses.</p>
+          </div>
+        </a>
       </li>
     </ul>
 
@@ -2189,7 +2270,7 @@ svg [fill^="url("] { stroke: none; }
         <li>Hiding the extent of play from people close to you</li>
         <li>Borrowing money or using funds meant for bills</li>
         <li>Feeling restless or irritable when you cannot play</li>
-        <li class="signals__cta">Set a deposit limit today — before the next session, not after it.</li>
+        <li class="signals__cta"><a href="responsible-gambling.html">Read the responsible gambling guide →</a></li>
       </ul>
     </div>
   </div>
@@ -2201,7 +2282,7 @@ svg [fill^="url("] { stroke: none; }
     <div class="section__head section__head--center" data-reveal>
       <p class="eyebrow"><span class="eyebrow__dot"></span> Section 06</p>
       <h2 class="section__title">Frequently Asked Questions</h2>
-      <p class="section__lead">The questions Kenyan players ask most before their first bet.</p>
+      <p class="section__lead">The questions Kenyan players ask most before their first bet. Every topic has its own set on the FAQ page.</p>
     </div>
 
     <div class="faq" data-reveal>
@@ -2210,24 +2291,8 @@ svg [fill^="url("] { stroke: none; }
         <div class="faq__a"><p>No. Wrbet is an independent guide. It explains how sports betting and casino games work for players in Kenya, and it does not accept bets, hold funds or operate any gambling product.</p></div>
       </details>
       <details class="faq__item">
-        <summary class="faq__q">How do decimal odds work?<span class="faq__mark" aria-hidden="true"></span></summary>
-        <div class="faq__a"><p>Multiply your stake by the odds to get the total return, stake included. KSh 200 at odds of 2.50 returns KSh 500 — KSh 300 of that is profit. To convert odds into an implied probability, divide 1 by the odds: 2.50 implies a 40% chance.</p></div>
-      </details>
-      <details class="faq__item">
-        <summary class="faq__q">What is the difference between pre-match and live betting?<span class="faq__mark" aria-hidden="true"></span></summary>
-        <div class="faq__a"><p>Pre-match odds are set before the event starts and stay relatively stable. Live (in-play) odds are recalculated continuously during the event as the score, time remaining and match situation change. Live markets move fast and are frequently suspended for a few seconds around key incidents.</p></div>
-      </details>
-      <details class="faq__item">
         <summary class="faq__q">Which payment methods do Kenyan players usually see?<span class="faq__mark" aria-hidden="true"></span></summary>
         <div class="faq__a"><p>Mobile money is the default — M-Pesa and Airtel Money are supported almost everywhere — alongside bank transfer and, on some sites, debit or credit cards. Check minimum amounts, any fees and how long withdrawals take before you deposit, since those terms vary far more than deposit options do.</p></div>
-      </details>
-      <details class="faq__item">
-        <summary class="faq__q">What does RTP mean, and does it help me?<span class="faq__mark" aria-hidden="true"></span></summary>
-        <div class="faq__a"><p>RTP is the theoretical share of all wagers a game returns over its lifetime — millions of rounds, not your session. A 96% RTP slot returns KSh 96 per KSh 100 wagered on average across that entire history. It is useful for comparing games, useless for predicting tonight.</p></div>
-      </details>
-      <details class="faq__item">
-        <summary class="faq__q">How does the Aviator crash game decide when to stop?<span class="faq__mark" aria-hidden="true"></span></summary>
-        <div class="faq__a"><p>The crash point is generated before the round begins, usually with a provably fair method that lets you verify the result afterwards using a published seed. Nothing you do during the round changes it, and the history of previous multipliers has no bearing on the next round.</p></div>
       </details>
       <details class="faq__item">
         <summary class="faq__q">Are gambling winnings taxed in Kenya?<span class="faq__mark" aria-hidden="true"></span></summary>
@@ -2242,6 +2307,12 @@ svg [fill^="url("] { stroke: none; }
         <div class="faq__a"><p>Start with the tools inside your account: deposit limits, time-outs and self-exclusion, which licensed operators are required to provide. Alongside that, speak to a qualified counsellor or a support service in your area, and tell someone you trust — problem gambling is far easier to interrupt early than late.</p></div>
       </details>
     </div>
+
+    <p class="faq__more" data-reveal>
+      <a href="faq.html">All questions, grouped by topic
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </p>
   </div>
 </section>
 
@@ -2253,8 +2324,8 @@ svg [fill^="url("] { stroke: none; }
       <p class="cta-band__text">Nine sections, plain language, no tips and no affiliate pressure.</p>
     </div>
     <div class="cta-band__actions">
-      <a class="btn btn--dark" href="#sports">Start with sports betting</a>
-      <a class="btn btn--outline-dark" href="#faq">Browse the FAQ</a>
+      <a class="btn btn--dark" href="sports-betting.html">Start with sports betting</a>
+      <a class="btn btn--outline-dark" href="faq.html">Browse the FAQ</a>
     </div>
   </div>
 </section>
@@ -2286,23 +2357,22 @@ svg [fill^="url("] { stroke: none; }
 
       <nav class="footer__col" aria-label="Guide">
         <h3 class="footer__heading">Guide</h3>
-        <a href="#sports">Sports Betting</a>
-        <a href="#casino">Online Casino</a>
-        <a href="#aviator">Aviator Game</a>
-        <a href="#guide">All sections</a>
+        <a href="sports-betting.html">Sports Betting</a>
+        <a href="virtual-sports.html">Virtual Sport</a>
+        <a href="bonuses.html">Bonuses</a>
       </nav>
 
       <nav class="footer__col" aria-label="Learn">
         <h3 class="footer__heading">Learn</h3>
-        <a href="#sports">Odds &amp; markets</a>
-        <a href="#casino">RTP &amp; volatility</a>
-        <a href="#guide">Bonus terms</a>
-        <a href="#faq">FAQ</a>
+        <a href="online-casino.html">Online Casino</a>
+        <a href="live-casino.html">Live Casino</a>
+        <a href="crash-games.html">Crash Games</a>
       </nav>
 
       <nav class="footer__col" aria-label="About">
         <h3 class="footer__heading">About</h3>
-        <a href="#responsible">Responsible gambling</a>
+        <a href="responsible-gambling.html">Responsible Gambling</a>
+        <a href="faq.html">FAQ</a>
         <a href="#top">About Wrbet</a>
         <a href="#top">Editorial policy</a>
         <a href="#top">Contact</a>
@@ -2532,15 +2602,22 @@ svg [fill^="url("] { stroke: none; }
     requestAnimationFrame(step);
   })();
 
-  /* ---------- 7. FAQ — one open at a time ---------- */
+  /* ---------- 7. FAQ — one open at a time, per accordion ----------
+     Scoped to the closest .faq group rather than the whole page, so a page
+     carrying several accordions (the FAQ index, one per topic) does not close
+     an answer in one group when a question in another is opened. */
   (function faq() {
-    var items = Array.prototype.slice.call(document.querySelectorAll('.faq__item'));
-    if (!items.length) return;
+    var groups = Array.prototype.slice.call(document.querySelectorAll('.faq'));
+    if (!groups.length) return;
 
-    items.forEach(function (item) {
-      item.addEventListener('toggle', function () {
-        if (!item.open) return;
-        items.forEach(function (other) { if (other !== item) other.open = false; });
+    groups.forEach(function (group) {
+      var items = Array.prototype.slice.call(group.querySelectorAll('.faq__item'));
+
+      items.forEach(function (item) {
+        item.addEventListener('toggle', function () {
+          if (!item.open) return;
+          items.forEach(function (other) { if (other !== item) other.open = false; });
+        });
       });
     });
   })();

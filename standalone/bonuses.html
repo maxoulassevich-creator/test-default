@@ -1024,8 +1024,21 @@ svg [fill^="url("] { stroke: none; }
 .bento__art--6 { background: linear-gradient(135deg, #00c9c3 0%, #23383a 100%); }
 .bento__art--7 { background: linear-gradient(135deg, #6d0203 0%, var(--c-gray) 100%); }
 
+/* The whole card is the link, so the anchor takes over the item's column
+   layout rather than sitting inside it as a separate box. */
+.bento__link { display: flex; flex-direction: column; flex: 1; color: inherit; }
 .bento__body { padding: clamp(1rem, .8rem + .7vw, 1.35rem); }
-.bento__title { font-size: 1rem; font-weight: 700; margin-bottom: .4rem; }
+.bento__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: .4rem;
+}
+.bento__title svg { width: 17px; height: 17px; flex: none; color: var(--c-accent); transition: transform .2s var(--ease); }
+.bento__item:hover .bento__title svg { transform: translateX(4px); }
 .bento__text { font-size: var(--fs-sm); color: var(--c-muted); margin: 0; line-height: 1.55; }
 
 /* The grid holds 7 cards. Which one spans two columns changes per breakpoint so
@@ -1067,6 +1080,9 @@ svg [fill^="url("] { stroke: none; }
   stroke-width: 2.5;
 }
 @media (min-width: 768px) { .checklist__items { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; } }
+/* In a narrow column — beside body text in a .split — two columns would leave
+   three words per line, so this variant stays single. */
+@media (min-width: 768px) { .checklist--single .checklist__items { grid-template-columns: minmax(0, 1fr); gap: .85rem; } }
 
 /* ---------- 15. Responsible gambling ---------- */
 .responsible {
@@ -1637,6 +1653,40 @@ svg [fill^="url("] { stroke: none; }
 .related__text { font-size: var(--fs-sm); color: var(--c-muted); margin: 0; line-height: 1.55; }
 
 @media (min-width: 700px) { .related { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* ---------- link out of an FAQ group ---------- */
+.faq__more { margin: 1.25rem 0 0; }
+.faq__more a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-accent);
+}
+.faq__more svg { width: 16px; height: 16px; transition: transform .2s var(--ease); }
+.faq__more a:hover svg { transform: translateX(4px); }
+
+/* ---------- editorial placeholders ----------
+   Support-organisation details must not be invented, so the markup ships the
+   slots visibly empty. Dashed and desaturated, they read as unfinished at a
+   glance and are impossible to mistake for published contact details. */
+.term--placeholder { border-style: dashed; background: transparent; }
+.term--placeholder:hover { border-color: var(--c-line-strong); }
+.slot {
+  display: inline-block;
+  min-width: 9ch;
+  padding: .05rem .55rem;
+  border: 1px dashed var(--c-line-strong);
+  border-radius: .35rem;
+  background: rgba(242, 242, 242, .05);
+  color: var(--c-faint);
+  font-family: var(--f-head);
+  font-size: .78em;
+  font-weight: 600;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
 
 /* ---------- sources / last checked ---------- */
 .sources {
@@ -2404,15 +2454,22 @@ svg [fill^="url("] { stroke: none; }
     requestAnimationFrame(step);
   })();
 
-  /* ---------- 7. FAQ — one open at a time ---------- */
+  /* ---------- 7. FAQ — one open at a time, per accordion ----------
+     Scoped to the closest .faq group rather than the whole page, so a page
+     carrying several accordions (the FAQ index, one per topic) does not close
+     an answer in one group when a question in another is opened. */
   (function faq() {
-    var items = Array.prototype.slice.call(document.querySelectorAll('.faq__item'));
-    if (!items.length) return;
+    var groups = Array.prototype.slice.call(document.querySelectorAll('.faq'));
+    if (!groups.length) return;
 
-    items.forEach(function (item) {
-      item.addEventListener('toggle', function () {
-        if (!item.open) return;
-        items.forEach(function (other) { if (other !== item) other.open = false; });
+    groups.forEach(function (group) {
+      var items = Array.prototype.slice.call(group.querySelectorAll('.faq__item'));
+
+      items.forEach(function (item) {
+        item.addEventListener('toggle', function () {
+          if (!item.open) return;
+          items.forEach(function (other) { if (other !== item) other.open = false; });
+        });
       });
     });
   })();

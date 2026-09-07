@@ -205,15 +205,22 @@
     requestAnimationFrame(step);
   })();
 
-  /* ---------- 7. FAQ — one open at a time ---------- */
+  /* ---------- 7. FAQ — one open at a time, per accordion ----------
+     Scoped to the closest .faq group rather than the whole page, so a page
+     carrying several accordions (the FAQ index, one per topic) does not close
+     an answer in one group when a question in another is opened. */
   (function faq() {
-    var items = Array.prototype.slice.call(document.querySelectorAll('.faq__item'));
-    if (!items.length) return;
+    var groups = Array.prototype.slice.call(document.querySelectorAll('.faq'));
+    if (!groups.length) return;
 
-    items.forEach(function (item) {
-      item.addEventListener('toggle', function () {
-        if (!item.open) return;
-        items.forEach(function (other) { if (other !== item) other.open = false; });
+    groups.forEach(function (group) {
+      var items = Array.prototype.slice.call(group.querySelectorAll('.faq__item'));
+
+      items.forEach(function (item) {
+        item.addEventListener('toggle', function () {
+          if (!item.open) return;
+          items.forEach(function (other) { if (other !== item) other.open = false; });
+        });
       });
     });
   })();
