@@ -815,8 +815,11 @@ svg [fill^="url("] { stroke: none; }
 .card--link:hover .card__more svg { transform: translateX(4px); }
 
 @media (min-width: 560px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* --4 tops out at three across: it carries the six-card grids, which fill
+   two clean rows. Grids of exactly four cards use --quad instead, so the
+   last row is never left two thirds empty. */
 @media (min-width: 900px) { .card-grid--4 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (min-width: 1200px) { .card-grid--4 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .card-grid--quad { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
 /* ---------- 12. Feature (Aviator) ---------- */
 .feature {
@@ -1455,9 +1458,15 @@ svg [fill^="url("] { stroke: none; }
   margin-bottom: .35rem;
 }
 .term__text { font-size: var(--fs-sm); color: var(--c-muted); margin: 0; line-height: 1.55; }
+.term__text a { color: var(--c-accent); font-weight: 600; white-space: nowrap; }
+.term__text a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (min-width: 640px) { .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .terms--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+/* Three cards stay stacked until they fit on one row, rather than
+   breaking as two plus an orphan. */
+.terms--3 { grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 860px) { .terms--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 /* ---------- callout ---------- */
 .callout {
