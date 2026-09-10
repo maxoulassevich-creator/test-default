@@ -27,7 +27,7 @@
 | Бургер | 06 Bonuses | `bonuses.html` |
 | Бургер | 07 Responsible Gambling | `responsible-gambling.html` |
 | Бургер | 08 FAQ | `faq.html` |
-| Бургер | Кнопка `Back to home` | `index.html` |
+| Бургер | Кнопка `Play responsibly` | `responsible-gambling.html` |
 | Крошки | Home | `index.html` |
 | Футер · Betting | Sports Betting | `sports-betting.html` |
 | Футер · Betting | Virtual Sport | `virtual-sports.html` |
@@ -43,12 +43,15 @@
 | Низ страницы | Кнопка `Browse the FAQ` | `faq.html` |
 | Служебное | Skip to content | `#main` |
 
+Кнопка `Play responsibly` в шапке скрыта ниже 1024px, поэтому та же кнопка
+продублирована внизу бургер-меню — на мобильных это единственный способ до
+неё добраться. На главную ведут логотип и крошки, отдельная кнопка не нужна.
+
 Исключения из этой таблицы:
 
 | Страница | Кнопка / ссылка | Ведёт на | Почему |
 |---|---|---|---|
 | `index.html` | Логотип в шапке и футере | `#top` | уже на главной |
-| `index.html` | Бургер, нижняя кнопка `Explore the guide` | `#guide` | вместо `Back to home` |
 | `index.html` | Низ страницы, левая кнопка `Start with sports betting` | `sports-betting.html` | вместо `Back to the guide` |
 | `faq.html` | Низ страницы, правая кнопка `Play responsibly` | `responsible-gambling.html` | вместо `Browse the FAQ` |
 
