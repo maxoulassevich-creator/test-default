@@ -1,193 +1,213 @@
-# Карта ссылок — постранично
+# Ссылки и кнопки — таблица
 
-Итог аудита всех 9 файлов. Проверено скриптом: каждая внутренняя ссылка ведёт
-на существующий файл или на существующий `id` на странице; ссылок-заглушек
-(`#`, `#top` на не-логотипе) не осталось ни одной.
+Проверено скриптом по всем 9 файлам: каждая ссылка ведёт либо на существующий
+файл, либо на существующий `id`. Ссылок-заглушек не осталось.
 
-Обозначения: **страница** = переход на другой html, *якорь* = скролл внутри
-текущей страницы.
+`#имя` — якорь, скролл внутри той же страницы.
 
 ---
 
-## Общий каркас — одинаковый на всех 9 страницах
+## Шапка, бургер и футер — одинаковы на всех 9 страницах
 
-Эти блоки скопированы без изменений везде, чтобы шапка и футер вели себя
-одинаково на любой странице сайта.
-
-### Шапка (`.site-header`)
-
-| Элемент | Ведёт |
-|---|---|
-| Логотип `W Wrbet Kenya` | `index.html` (на самой главной — *якорь* `#top`) |
-| Sports Betting | `sports-betting.html` |
-| Online Casino | `online-casino.html` |
-| Live Casino | `live-casino.html` |
-| Crash Games | `crash-games.html` |
-| Virtual Sport | `virtual-sports.html` |
-| FAQ | `faq.html` |
-| Кнопка `Play responsibly` | `responsible-gambling.html` |
-
-Активный пункт помечается `class="is-active"` + `aria-current="page"`.
-Bonuses и Responsible Gambling в шапку не вынесены — их 6 пунктов и так на
-пределе по ширине; обе доступны из бургера, футера и блоков «Related».
-
-### Бургер-меню (`.drawer`) — 8 пунктов, полный список разделов
-
-| Элемент | Ведёт |
-|---|---|
-| 01 Sports Betting | `sports-betting.html` |
-| 02 Online Casino | `online-casino.html` |
-| 03 Live Casino | `live-casino.html` |
-| 04 Crash Games | `crash-games.html` |
-| 05 Virtual Sport | `virtual-sports.html` |
-| 06 Bonuses | `bonuses.html` |
-| 07 Responsible Gambling | `responsible-gambling.html` |
-| 08 FAQ | `faq.html` |
-| Кнопка внизу | на внутренних — `Back to home` → `index.html`; на главной — `Explore the guide` → *якорь* `#guide` |
-
-### Футер — три колонки
-
-| Колонка | Ссылки |
-|---|---|
-| **Betting** | `sports-betting.html`, `virtual-sports.html`, `bonuses.html` |
-| **Casino** | `online-casino.html`, `live-casino.html`, `crash-games.html` |
-| **About** | `responsible-gambling.html`, `faq.html`, `index.html` |
-| Логотип в футере | `index.html` (на главной — `#top`) |
-
-### Нижняя цветная полоса (`.cta-band`)
-
-| Страница | Левая кнопка | Правая кнопка |
+| Где | Кнопка / ссылка | Ведёт на |
 |---|---|---|
-| Главная | `sports-betting.html` | `faq.html` |
-| Все внутренние, кроме FAQ | `index.html` | `faq.html` |
-| FAQ | `index.html` | `responsible-gambling.html` |
+| Шапка | Логотип `Wrbet Kenya` | `index.html` |
+| Шапка | Sports Betting | `sports-betting.html` |
+| Шапка | Online Casino | `online-casino.html` |
+| Шапка | Live Casino | `live-casino.html` |
+| Шапка | Crash Games | `crash-games.html` |
+| Шапка | Virtual Sport | `virtual-sports.html` |
+| Шапка | FAQ | `faq.html` |
+| Шапка | Кнопка `Play responsibly` | `responsible-gambling.html` |
+| Бургер | 01 Sports Betting | `sports-betting.html` |
+| Бургер | 02 Online Casino | `online-casino.html` |
+| Бургер | 03 Live Casino | `live-casino.html` |
+| Бургер | 04 Crash Games | `crash-games.html` |
+| Бургер | 05 Virtual Sport | `virtual-sports.html` |
+| Бургер | 06 Bonuses | `bonuses.html` |
+| Бургер | 07 Responsible Gambling | `responsible-gambling.html` |
+| Бургер | 08 FAQ | `faq.html` |
+| Бургер | Кнопка `Back to home` | `index.html` |
+| Крошки | Home | `index.html` |
+| Футер · Betting | Sports Betting | `sports-betting.html` |
+| Футер · Betting | Virtual Sport | `virtual-sports.html` |
+| Футер · Betting | Bonuses | `bonuses.html` |
+| Футер · Casino | Online Casino | `online-casino.html` |
+| Футер · Casino | Live Casino | `live-casino.html` |
+| Футер · Casino | Crash Games | `crash-games.html` |
+| Футер · About | Responsible Gambling | `responsible-gambling.html` |
+| Футер · About | FAQ | `faq.html` |
+| Футер · About | Home | `index.html` |
+| Футер | Логотип `Wrbet Kenya` | `index.html` |
+| Низ страницы | Кнопка `Back to the guide` | `index.html` |
+| Низ страницы | Кнопка `Browse the FAQ` | `faq.html` |
+| Служебное | Skip to content | `#main` |
 
-На FAQ правая кнопка изменена намеренно: вести с FAQ на FAQ бессмысленно.
+Исключения из этой таблицы:
 
-### Служебное
-
-- `Skip to content` — *якорь* `#main`, на всех страницах.
-- Хлебные крошки на внутренних: `Home` → `index.html`, текущая страница —
-  текст без ссылки с `aria-current="page"`.
-- Кнопка «наверх» (`.to-top`) — не ссылка, а `<button>`, скроллит вверх.
+| Страница | Кнопка / ссылка | Ведёт на | Почему |
+|---|---|---|---|
+| `index.html` | Логотип в шапке и футере | `#top` | уже на главной |
+| `index.html` | Бургер, нижняя кнопка `Explore the guide` | `#guide` | вместо `Back to home` |
+| `index.html` | Низ страницы, левая кнопка `Start with sports betting` | `sports-betting.html` | вместо `Back to the guide` |
+| `faq.html` | Низ страницы, правая кнопка `Play responsibly` | `responsible-gambling.html` | вместо `Browse the FAQ` |
 
 ---
 
 ## 1. `index.html` — главная
 
-Уникальные для страницы ссылки, сверх общего каркаса:
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Первый экран · `Start with the basics` | `sports-betting.html` |
+| Первый экран · `Responsible gambling` | `responsible-gambling.html` |
+| Секция 03 Aviator · `Set your limits first` | `responsible-gambling.html` |
+| Секция 04 · карточка Sports Betting | `sports-betting.html` |
+| Секция 04 · карточка Online Casino | `online-casino.html` |
+| Секция 04 · карточка Live Casino | `live-casino.html` |
+| Секция 04 · карточка Crash Games | `crash-games.html` |
+| Секция 04 · карточка Virtual Sports | `virtual-sports.html` |
+| Секция 04 · карточка Bonuses | `bonuses.html` |
+| Секция 04 · карточка Responsible Gambling | `responsible-gambling.html` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Секция 06 · `All questions, grouped by topic` | `faq.html` |
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Первый экран | Кнопка `Start with the basics` | `sports-betting.html` |
-| Первый экран | Кнопка `Responsible gambling` | `responsible-gambling.html` |
-| Секция 03, Aviator | Кнопка `Set your limits first` | `responsible-gambling.html` |
-| **Секция 04, 7 карточек** | Sports Betting | `sports-betting.html` |
-| | Online Casino | `online-casino.html` |
-| | Live Casino | `live-casino.html` |
-| | Crash Games | `crash-games.html` |
-| | Virtual Sports | `virtual-sports.html` |
-| | Bonuses | `bonuses.html` |
-| | Responsible Gambling | `responsible-gambling.html` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Секция 06, под FAQ | `All questions, grouped by topic →` | `faq.html` |
-
-Кликабельна вся карточка секции 04 целиком, не только заголовок: содержимое
-обёрнуто в `<a class="bento__link">`, стрелка справа от заголовка — индикатор.
-
----
+Кликабельна вся карточка секции 04 целиком, не только заголовок.
 
 ## 2. `sports-betting.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#how-it-works`, `#odds`, `#markets`, `#live`, `#risks`, `#faq` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Virtual Sport | `virtual-sports.html` |
-| Related | Bonuses | `bonuses.html` |
-| Related | Responsible Gambling | `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `How it works` | `#how-it-works` |
+| Чип `Odds explained` | `#odds` |
+| Чип `Markets & bet types` | `#markets` |
+| Чип `Live betting odds` | `#live` |
+| Чип `Risks & limits` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Virtual Sport | `virtual-sports.html` |
+| Related · Bonuses | `bonuses.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 3. `online-casino.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#what`, `#games`, `#rtp`, `#rules`, `#risks`, `#faq` |
-| Секция 01, карточка Live casino | `See the live casino guide →` | `live-casino.html` |
-| Секция 01, карточка Crash games | `See the crash games guide →` | `crash-games.html` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Live Casino / Crash Games / Responsible Gambling | `live-casino.html`, `crash-games.html`, `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What it is` | `#what` |
+| Чип `Game types` | `#games` |
+| Чип `RTP & volatility` | `#rtp` |
+| Чип `Reading game rules` | `#rules` |
+| Чип `Risks & limits` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 01 · `See the live casino guide` | `live-casino.html` |
+| Секция 01 · `See the crash games guide` | `crash-games.html` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Live Casino | `live-casino.html` |
+| Related · Crash Games | `crash-games.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 4. `live-casino.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#what`, `#formats`, `#table`, `#compare`, `#risks`, `#faq` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Online Casino / Bonuses / Responsible Gambling | `online-casino.html`, `bonuses.html`, `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What it is` | `#what` |
+| Чип `Formats` | `#formats` |
+| Чип `At the table` | `#table` |
+| Чип `Live vs automated` | `#compare` |
+| Чип `Risks & limits` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Online Casino | `online-casino.html` |
+| Related · Bonuses | `bonuses.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 5. `crash-games.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#what`, `#round`, `#cashout`, `#fairness`, `#risks`, `#faq` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Online Casino / Virtual Sport / Responsible Gambling | `online-casino.html`, `virtual-sports.html`, `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What they are` | `#what` |
+| Чип `How a round works` | `#round` |
+| Чип `Multipliers & cash out` | `#cashout` |
+| Чип `Fairness & predictions` | `#fairness` |
+| Чип `Risks & limits` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Online Casino | `online-casino.html` |
+| Related · Virtual Sport | `virtual-sports.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 6. `virtual-sports.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#what`, `#formats`, `#settlement`, `#compare`, `#risks`, `#faq` |
-| Секция 03, в тексте | ссылка `sports betting` | `sports-betting.html` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Sports Betting / Crash Games / Responsible Gambling | `sports-betting.html`, `crash-games.html`, `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What it is` | `#what` |
+| Чип `Formats` | `#formats` |
+| Чип `Event to settlement` | `#settlement` |
+| Чип `Virtual vs real vs esports` | `#compare` |
+| Чип `Risks & limits` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 03 · ссылка в тексте `sports betting` | `sports-betting.html` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Sports Betting | `sports-betting.html` |
+| Related · Crash Games | `crash-games.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 7. `bonuses.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#what`, `#types`, `#wagering`, `#terms`, `#risks`, `#faq` |
-| Секция 05 | `Read the responsible gambling guide →` | `responsible-gambling.html` |
-| Related | Sports Betting / Online Casino / Responsible Gambling | `sports-betting.html`, `online-casino.html`, `responsible-gambling.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What they are` | `#what` |
+| Чип `Common types` | `#types` |
+| Чип `Wagering requirements` | `#wagering` |
+| Чип `Terms to check` | `#terms` |
+| Чип `Offers & responsible play` | `#risks` |
+| Чип `FAQ` | `#faq` |
+| Секция 05 · `Read the responsible gambling guide` | `responsible-gambling.html` |
+| Related · Sports Betting | `sports-betting.html` |
+| Related · Online Casino | `online-casino.html` |
+| Related · Responsible Gambling | `responsible-gambling.html` |
 
 ## 8. `responsible-gambling.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 6 чипов | *якоря* `#meaning`, `#limits`, `#signs`, `#break`, `#support`, `#faq` |
-| Related | Sports Betting / Online Casino / Bonuses | `sports-betting.html`, `online-casino.html`, `bonuses.html` |
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `What it means` | `#meaning` |
+| Чип `Setting limits` | `#limits` |
+| Чип `Signs of harm` | `#signs` |
+| Чип `Breaks & self-exclusion` | `#break` |
+| Чип `Finding support` | `#support` |
+| Чип `FAQ` | `#faq` |
+| Related · Sports Betting | `sports-betting.html` |
+| Related · Online Casino | `online-casino.html` |
+| Related · Bonuses | `bonuses.html` |
 
-Кнопка `Play responsibly` в шапке помечена активной. Ссылки «наружу» —
-телефоны и сайты организаций поддержки — **не проставлены сознательно**: в
-секции 05 стоят пунктирные пустые поля под название, телефон, часы и адрес
-сайта. Заполнить проверенными данными, тогда там появятся внешние ссылки.
+Секция 05 «Finding Support» — три карточки с пустыми пунктирными полями под
+название, телефон, часы и сайт организации. Ссылок там нет намеренно: заполнить
+проверенными контактами перед публикацией.
 
 ## 9. `faq.html`
 
-| Место | Элемент | Ведёт |
-|---|---|---|
-| Оглавление чипами | 8 чипов | *якоря* `#general`, `#sports`, `#casino`, `#live`, `#crash`, `#virtual`, `#bonuses`, `#responsible` |
-| Под каждой из 7 тематических групп | `Full … guide →` | соответствующая страница раздела |
-
-Группа General ссылок под собой не имеет — это вопросы о самом сайте.
+| Кнопка / ссылка | Ведёт на |
+|---|---|
+| Чип `General` | `#general` |
+| Чип `Sports betting` | `#sports` |
+| Чип `Online casino` | `#casino` |
+| Чип `Live casino` | `#live` |
+| Чип `Crash games` | `#crash` |
+| Чип `Virtual sport` | `#virtual` |
+| Чип `Bonuses` | `#bonuses` |
+| Чип `Responsible gambling` | `#responsible` |
+| `Full sports betting guide` | `sports-betting.html` |
+| `Full online casino guide` | `online-casino.html` |
+| `Full live casino guide` | `live-casino.html` |
+| `Full crash games guide` | `crash-games.html` |
+| `Full virtual sport guide` | `virtual-sports.html` |
+| `Full bonuses guide` | `bonuses.html` |
+| `Full responsible gambling guide` | `responsible-gambling.html` |
 
 ---
 
-## Чего пока нет
+## Чего нет
 
-В ТЗ не заявлены, поэтому не созданы и ссылок на них не осталось:
-**About Wrbet**, **Editorial policy**, **Contact**. Раньше они висели в футере
-главной с `href="#top"` — то есть кликались, но никуда не вели; убраны.
-Если такие страницы нужны (для информационного сайта про азартные игры они
-обычно полезны — авторство и редакционная политика), скажите — сверстаю в том
-же каркасе и верну в колонку About.
-
-## Как проверить
-
-```
-python3 tools/build-single-file.py     # пересобрать автономные версии
-```
-
-Скрипт печатает `UNRESOLVED`, если в странице остался локальный путь, который
-не удалось вшить. Проверка целостности ссылок — отдельным проходом по всем
-`href`: каждый должен указывать на существующий файл либо на существующий `id`.
+В ТЗ не заявлены **About Wrbet**, **Editorial policy**, **Contact**. Раньше
+висели в футере главной с `href="#top"` — кликались, но никуда не вели.
+Убраны. Если нужны — сверстаю в том же каркасе и верну в колонку About.
