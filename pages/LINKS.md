@@ -31,13 +31,12 @@
 | Крошки | Home | `index.html` |
 | Футер · Betting | Sports Betting | `sports-betting.html` |
 | Футер · Betting | Virtual Sport | `virtual-sports.html` |
-| Футер · Betting | Bonuses | `bonuses.html` |
 | Футер · Casino | Online Casino | `online-casino.html` |
 | Футер · Casino | Live Casino | `live-casino.html` |
 | Футер · Casino | Crash Games | `crash-games.html` |
-| Футер · About | Responsible Gambling | `responsible-gambling.html` |
-| Футер · About | FAQ | `faq.html` |
-| Футер · About | Home | `index.html` |
+| Футер · Before you play | Bonuses | `bonuses.html` |
+| Футер · Before you play | Responsible Gambling | `responsible-gambling.html` |
+| Футер · Before you play | FAQ | `faq.html` |
 | Футер | Логотип `Wrbet Kenya` | `index.html` |
 | Низ страницы | Кнопка `Back to the guide` | `index.html` |
 | Низ страницы | Кнопка `Browse the FAQ` | `faq.html` |
@@ -46,6 +45,12 @@
 Кнопка `Play responsibly` в шапке скрыта ниже 1024px, поэтому та же кнопка
 продублирована внизу бургер-меню — на мобильных это единственный способ до
 неё добраться. На главную ведут логотип и крошки, отдельная кнопка не нужна.
+
+Колонки футера: **Betting** — что ставят на спорт и его симуляции; **Casino** —
+игровой зал; **Before you play** — то, что читают до первой ставки, а не по теме
+игры: условия бонусов, ответственная игра и общий FAQ. Bonuses не в Betting
+и не в Casino намеренно — правила отыгрыша одинаково касаются обоих.
+Отдельной ссылки «Home» нет: на главную ведут логотип футера и хлебные крошки.
 
 Исключения из этой таблицы:
 
