@@ -25,39 +25,67 @@
 
         <!-- ═══════════════════ КОНТЕНТ · меняйте здесь ═══════════════════ -->
 
-        <!-- Картинка: вставьте свою ссылку в src. Блок не нужен — удалите <figure>…</figure> -->
+        <!-- Картинка: вставьте ссылку на фото в src. Пока src пустой — показывается иллюстрация-подарок.
+             Картинка не нужна совсем — удалите <figure>…</figure> -->
+        <div class="lf__hero">
         <figure class="lf__media">
-          <img class="lf__img"
-               src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&q=80&auto=format&fit=crop"
-               alt="Полки с книгами на иностранных языках">
+          <img class="lf__img" src="" alt="Пилатес в студии Pure Mind и комплект amarèssence">
           <!-- Плашка на картинке. Не нужна — оставьте пустой -->
-          <figcaption class="lf__badge">30+ лет на рынке</figcaption>
+          <figcaption class="lf__badge">📚 5 октября — День учителя</figcaption>
         </figure>
 
-        <div class="lf__body">
+        <div class="lf__intro">
           <!-- Надзаголовок. Не нужен — оставьте пустым -->
-          <p class="lf__eyebrow">Бесплатная консультация</p>
+          <p class="lf__eyebrow">Розыгрыш для учителей</p>
 
-          <h1 class="lf__title" id="lf-title">Подберём учебники для&nbsp;вашей школы</h1>
+          <!-- Текст внутри <em> выделяется синим -->
+          <h1 class="lf__title" id="lf-title">Учителям тоже нужно <em>заботиться о&nbsp;себе</em></h1>
 
-          <p class="lf__text">Оставьте заявку — методист свяжется с вами в течение рабочего дня, поможет выбрать УМК под уровень учеников и бюджет и пришлёт коммерческое предложение.</p>
+          <p class="lf__text">Разыгрываем [N] пробных тренировок по пилатесу в студии Pure Mind. Каждого победителя ждёт комплект формы amarèssence — вручим его прямо на тренировке.</p>
 
-          <!-- ═══════════════════ /КОНТЕНТ ═══════════════════ -->
+          <!-- Партнёры. Не нужны — оставьте пустым -->
+          <p class="lf__partners">RELOD <i>×</i> Pure Mind <i>×</i> amarèssence</p>
+        </div>
+        </div>
 
-          <!-- Сюда автоматически встаёт нативная форма Tilda -->
-          <div class="lf__form" id="lf-slot">
-            <div class="lf__hint">
-              <b>Форма не найдена</b>
-              Добавьте на эту страницу любой блок из категории «Форма» — он сам встанет сюда, а заявки пойдут в Tilda CRM.
+        <div class="lf__body">
+
+          <!-- Форма: заголовок над полями -->
+          <div class="lf__formbox">
+            <p class="lf__formtitle">Участвовать в розыгрыше</p>
+
+            <!-- Сюда автоматически встаёт нативная форма Tilda (не трогайте) -->
+            <div class="lf__form" id="lf-slot">
+              <div class="lf__hint">
+                <b>Форма не найдена</b>
+                Добавьте на эту страницу блок BF204N из категории «Форма» — он сам встанет сюда, а заявки пойдут в Tilda CRM.
+              </div>
             </div>
           </div>
 
-          <!-- Подпись под формой: замените ссылку на свою политику. Не нужна — оставьте пустой -->
-          <p class="lf__note">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" target="_blank">политикой конфиденциальности</a></p>
+          <!-- Как участвовать: шаги можно добавлять и удалять (<li>…</li>) -->
+          <div class="lf__steps">
+            <h2 class="lf__h2">Как участвовать</h2>
+            <ol>
+              <li><b>Оставьте заявку</b> <span>Имя и e-mail в форме выше — до [дата].</span></li>
+              <li><b>Следите за итогами</b> <span>Победителей объявим [дата] в Telegram-канале RELOD.</span>
+                <a class="lf__tg" href="https://t.me/relod_official" target="_blank" rel="noopener">Подписаться на канал</a></li>
+              <li><b>Подберём ваш комплект</b> <span>Свяжемся с победителями, поможем выбрать комплект amarèssence и размер — подарок будет ждать вас на тренировке.</span></li>
+            </ol>
+          </div>
         </div>
 
       </section>
     </div>
+
+    <!-- Правила и подвал под окном -->
+    <footer class="lf__foot">
+      <p class="lf__rules">Правила розыгрыша — <a href="#" target="_blank">скачать PDF</a> · Организаторы: ЗАО «РЕЛОД», Pure Mind, amarèssence</p>
+      <p class="lf__contacts"><b>RELOD</b> · г. Москва, Последний переулок, д. 26 · <a href="mailto:online@relod.ru">online@relod.ru</a> · <a href="tel:+74957839410">+7 (495) 783-94-10</a></p>
+      <p class="lf__social"><a href="https://t.me/relod_official" target="_blank" rel="noopener">Telegram</a><a href="#" target="_blank" rel="noopener">VK</a><a href="#" target="_blank" rel="noopener">Дзен</a></p>
+    </footer>
+
+    <!-- ═══════════════════ /КОНТЕНТ ═══════════════════ -->
   </div>
 
   <!-- Абстрактный фон в стиле сайта: кольца, контуры, «дождь», точки, буквы -->
@@ -117,8 +145,8 @@
   --lf-field:     #f3f6fb;   /* фон полей */
   --lf-line:      #dde5f1;   /* рамка полей */
   --lf-radius:    28px;      /* скругление окна */
-  --lf-width:     560px;     /* ширина окна */
-  --lf-img-ratio: 16 / 9;    /* пропорции картинки: 16 / 9, 4 / 3, 1 / 1 */
+  --lf-width:     980px;   /* на телефоне окно всегда во всю ширину */     /* ширина окна */
+  --lf-img-ratio: 4 / 3;     /* пропорции картинки: 16 / 9, 4 / 3, 1 / 1 */
   --lf-font:      'Inter', 'TildaSans', Arial, sans-serif;
   /* ═════════════════════════════════════════════════════════ */
 }
@@ -150,7 +178,7 @@ html, body { background: var(--lf-bg) !important; }
 }
 #lf-root *, #lf-root *::before, #lf-root *::after { box-sizing: border-box; }
 
-#lf-root .lf__stage { position: relative; z-index: 1; width: 100%; display: flex; justify-content: center; }
+#lf-root .lf__stage { position: relative; z-index: 1; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 44px; }
 
 /* Стопка: синий и красный листы за окном — как карточки на сайте */
 #lf-root .lf__stack {
@@ -214,8 +242,9 @@ html, body { background: var(--lf-bg) !important; }
   border-radius: inherit;
 }
 /* Если картинка не загрузилась — абстрактная заглушка в фирменных цветах */
-#lf-root .lf__media--fallback { background: radial-gradient(circle at 30% 120%, transparent 38%, rgba(255,255,255,.14) 38.5%, rgba(255,255,255,.14) 46%, transparent 46.5%), radial-gradient(circle at 85% -10%, rgba(255,255,255,.22), transparent 45%), linear-gradient(135deg, #3a86ff, var(--lf-blue-deep)); }
 #lf-root .lf__media--fallback .lf__img { visibility: hidden; }
+#lf-root .lf__media--fallback::after { display: none; }
+#lf-root .lf__art { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: inherit; }
 
 #lf-root .lf__badge {
   position: absolute;
@@ -245,8 +274,9 @@ html, body { background: var(--lf-bg) !important; }
 }
 #lf-root .lf__badge:empty { display: none; }
 
-#lf-root .lf__body { padding: 44px clamp(14px, 5vw, 34px) 26px; }
-#lf-root .lf__body:first-child { padding-top: 30px; }
+#lf-root .lf__intro { padding: 44px clamp(14px, 5vw, 34px) 0; }
+#lf-root .lf__hero > .lf__intro:first-child { padding-top: 30px; }
+#lf-root .lf__body { padding: 0 clamp(14px, 5vw, 34px) 26px; }
 
 #lf-root .lf__eyebrow {
   display: inline-flex;
@@ -279,26 +309,115 @@ html, body { background: var(--lf-bg) !important; }
   text-wrap: pretty;
   animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .5s backwards;
 }
-#lf-root .lf__note {
-  max-width: 400px;
-  margin: 18px auto 0;
-  color: #8a97ab;
-  font: 400 12.5px/1.5 var(--lf-font);
+#lf-root .lf__title em { font-style: normal; color: var(--lf-blue); }
+#lf-root .lf__text a { color: var(--lf-blue); text-decoration: underline; text-underline-offset: 2px; }
+#lf-root .lf__partners {
+  margin: 16px 0 0;
+  color: var(--lf-ink);
+  font: 800 12.5px/1.3 var(--lf-font);
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
-#lf-root .lf__note a, #lf-root .lf__text a { color: var(--lf-blue); text-decoration: underline; text-underline-offset: 2px; }
-#lf-root .lf__eyebrow:empty, #lf-root .lf__title:empty, #lf-root .lf__text:empty, #lf-root .lf__note:empty { display: none; }
+#lf-root .lf__partners i { margin: 0 6px; font-style: normal; font-weight: 500; color: var(--lf-blue); }
+#lf-root .lf__eyebrow:empty, #lf-root .lf__title:empty, #lf-root .lf__text:empty, #lf-root .lf__partners:empty { display: none; }
 
-#lf-root .lf__form { margin-top: 28px; text-align: left; }
+/* Форма — синяя «подложка» как в макете, но в стиле окна */
+#lf-root .lf__formbox {
+  position: relative;
+  margin: 28px 0 0;
+  padding: 22px 22px 24px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--lf-blue) 7%, #fff), color-mix(in srgb, var(--lf-blue) 3%, #fff));
+  border: 1px solid color-mix(in srgb, var(--lf-blue) 14%, transparent);
+}
+#lf-root .lf__formbox::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: -1px;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(90deg, var(--lf-blue), var(--lf-red));
+}
+#lf-root .lf__formtitle { margin: 0 0 16px; color: var(--lf-ink); font: 800 19px/1.25 var(--lf-font); letter-spacing: -.01em; }
+#lf-root .lf__form { text-align: left; }
+
+/* Как участвовать */
+#lf-root .lf__steps { margin-top: 30px; text-align: left; }
+#lf-root .lf__h2 { margin: 0 0 16px; padding: 0; color: var(--lf-ink); font: 800 19px/1.25 var(--lf-font); letter-spacing: -.01em; text-align: center; }
+#lf-root .lf__steps ol { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; counter-reset: lfstep; }
+#lf-root .lf__steps li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 13px 14px 13px 50px;
+  border: 1px solid var(--lf-line);
+  border-radius: 16px;
+  background: #fff;
+  counter-increment: lfstep;
+}
+#lf-root .lf__steps li::before {
+  content: counter(lfstep);
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--lf-blue);
+  color: #fff;
+  font: 800 12px/1 var(--lf-font);
+}
+#lf-root .lf__steps b { color: var(--lf-ink); font: 700 14px/1.3 var(--lf-font); }
+#lf-root .lf__steps span { color: var(--lf-muted); font: 400 12.5px/1.45 var(--lf-font); }
+#lf-root .lf__tg {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  background: #229ed9;
+  color: #fff;
+  font: 700 12px/1 var(--lf-font);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter .2s;
+}
+#lf-root .lf__tg::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21.9 4.3 18.7 19.5c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M21.9 4.3 18.7 19.5c-.2 1-.9 1.3-1.7.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.2l-4.7-1.5c-1-.3-1-1 .2-1.5L20.5 3c.9-.3 1.6.2 1.4 1.3Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+#lf-root .lf__tg:hover { filter: brightness(1.08); }
+
+/* Правила и подвал */
+#lf-root .lf__foot { animation: lfFade .8s ease .7s backwards; width: 100%; max-width: 760px; color: rgba(255, 255, 255, .55); font: 400 13px/1.6 var(--lf-font); }
+#lf-root .lf__foot p { margin: 0; }
+#lf-root .lf__foot a { color: rgba(255, 255, 255, .85); text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .25); transition: color .2s, border-color .2s; }
+#lf-root .lf__foot a:hover { color: #fff; border-color: #fff; }
+#lf-root .lf__foot b { color: #fff; }
+#lf-root .lf__rules { padding-bottom: 14px; margin-bottom: 14px !important; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+#lf-root .lf__social { display: flex; justify-content: center; gap: 18px; margin-top: 8px !important; }
+#lf-root .lf__rules:empty, #lf-root .lf__contacts:empty, #lf-root .lf__social:empty { display: none; }
 
 /* Скелетон, пока форма переезжает (и в редакторе Tilda) */
 #lf-root:not(.lf--ready):not(.lf--noform) .lf__form::before {
   content: "";
   display: block;
   height: 54px;
-  margin-bottom: 218px;
+  margin-bottom: 150px;
   border-radius: 14px;
-  background: var(--lf-field);
-  box-shadow: 0 68px 0 var(--lf-field), 0 136px 0 var(--lf-field), 0 210px 0 color-mix(in srgb, var(--lf-blue) 22%, transparent);
+  background: #fff;
+  box-shadow: 0 68px 0 #fff, 0 142px 0 color-mix(in srgb, var(--lf-blue) 22%, transparent);
   animation: lfSkel 1.4s ease-in-out infinite;
 }
 #lf-root .lf__hint { display: none; }
@@ -361,6 +480,7 @@ html, body { background: var(--lf-bg) !important; }
 #lf-root #lf-slot .t-form { margin: 0 !important; }
 
 #lf-root #lf-slot .t-form__inputsbox { display: block !important; }
+#lf-root #lf-slot .t-input-group_hd, #lf-root #lf-slot .t-input-group[data-field-type="hd"] { display: none !important; }
 #lf-root #lf-slot .t-input-group { width: 100% !important; margin: 0 0 14px !important; padding: 0 !important; }
 #lf-root #lf-slot .t-input-group .t-input-block,
 #lf-root #lf-slot .t-input-group .t-input-title { width: 100% !important; }
@@ -385,7 +505,7 @@ html, body { background: var(--lf-bg) !important; }
   padding: 0 18px !important;
   border: 1.5px solid var(--lf-line) !important;
   border-radius: 14px !important;
-  background: var(--lf-field) !important;
+  background: #fff !important;
   color: var(--lf-ink) !important;
   font: 500 16px/1.3 var(--lf-font) !important;
   box-shadow: none !important;
@@ -469,7 +589,7 @@ html, body { background: var(--lf-bg) !important; }
 #lf-root #lf-slot .js-error-control-box .t-radio__indicator { border-color: var(--lf-red) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--lf-red) 14%, transparent); }
 
 /* Кнопка */
-#lf-root #lf-slot .t-form__submit { width: 100% !important; margin: 22px 0 0 !important; padding: 0 !important; }
+#lf-root #lf-slot .t-form__submit { width: 100% !important; margin: 18px 0 0 !important; padding: 0 !important; }
 #lf-root #lf-slot .t-submit {
   position: relative;
   display: flex !important;
@@ -539,21 +659,60 @@ html, body { background: var(--lf-bg) !important; }
 @keyframes lfPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .7); } 70%, 100% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); } }
 @keyframes lfFloat { 50% { transform: translate(-50%, calc(-50% - 16px)) rotate(var(--r)); } }
 
+/* ─────────── Широкий экран: компактная раскладка ─────────── */
+@media (min-width: 860px) {
+  #lf-root .lf__hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: center; }
+  #lf-root .lf__media { order: 2; }
+  #lf-root .lf__intro, #lf-root .lf__hero > .lf__intro:first-child { padding: 24px 40px 24px 32px; text-align: left; }
+  #lf-root .lf__eyebrow::before { display: none; }
+  #lf-root .lf__text { max-width: none; margin: 0; }
+  #lf-root .lf__body { padding: 0 32px 32px; }
+
+  /* форма в одну строку: поля + кнопка, согласие ниже */
+  #lf-root .lf__formbox { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 20px; align-items: start; padding: 24px; }
+  #lf-root .lf__formbox::before { left: 24px; right: 24px; }
+  #lf-root .lf__formtitle { margin: 0; padding-top: 6px; text-align: left; font-size: 20px; }
+  #lf-root #lf-slot .t-form__inputsbox { display: flex !important; flex-wrap: wrap; align-items: flex-start; gap: 12px; }
+  #lf-root #lf-slot .t-input-group { flex: 1 1 180px; order: 1 !important; margin: 0 !important; }
+  #lf-root #lf-slot .t-input-group_cb, #lf-root #lf-slot .t-input-group_rd, #lf-root #lf-slot .t-input-group_ta,
+  #lf-root #lf-slot .t-input-group_sb, #lf-root #lf-slot .t-input-group_cbx { flex-basis: 100%; order: 3 !important; }
+  #lf-root #lf-slot .t-input-group_nm .t-input-title, #lf-root #lf-slot .t-input-group_em .t-input-title,
+  #lf-root #lf-slot .t-input-group_ph .t-input-title, #lf-root #lf-slot .t-input-group_in .t-input-title {
+    position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  #lf-root #lf-slot .t-form__submit { flex: 0 0 auto; width: auto !important; order: 2 !important; margin: 0 !important; }
+  #lf-root #lf-slot .t-submit { height: 54px !important; padding: 0 26px !important; }
+  #lf-root #lf-slot .t-form__errorbox-middle, #lf-root #lf-slot .t-form__errorbox-bottom { flex-basis: 100%; order: 4 !important; }
+  #lf-root #lf-slot .t-form__errorbox-wrapper { margin: 0 !important; }
+  #lf-root:not(.lf--ready):not(.lf--noform) .lf__form::before { margin-bottom: 30px; box-shadow: none; }
+
+  #lf-root .lf__steps { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 20px; align-items: start; margin-top: 24px; padding: 0 24px; }
+  #lf-root .lf__h2 { margin: 0; padding-top: 14px; text-align: left; font-size: 20px; }
+  #lf-root .lf__steps ol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  #lf-root .lf__steps li { padding: 46px 16px 16px; }
+}
+
 /* ─────────── Телефоны ─────────── */
 @media (max-width: 600px) {
   :root { --lf-radius: 22px; }
   #lf-root { padding: 28px 14px 36px; }
   #lf-root .lf__modal { padding: 8px; }
-  #lf-root .lf__body { padding: 40px 14px 20px; }
-  #lf-root .lf__body:first-child { padding-top: 26px; }
+  #lf-root .lf__intro { padding: 40px 14px 0; }
+  #lf-root .lf__hero > .lf__intro:first-child { padding-top: 26px; }
+  #lf-root .lf__body { padding: 0 14px 20px; }
   #lf-root .lf__stack::before { transform: rotate(-2.5deg) translate(-4px, 10px); }
   #lf-root .lf__stack::after  { transform: rotate(2deg) translate(4px, 14px); }
   #lf-root .lf__text { font-size: 15px; }
+  #lf-root .lf__formbox { padding: 18px 14px 18px; }
+  #lf-root .lf__formbox::before { left: 14px; right: 14px; }
+  #lf-root .lf__stage { gap: 32px; }
+  #lf-root .lf__foot { font-size: 12.5px; }
   #lf-root .lf__glyph { font-size: calc(var(--fs) * .6); }
   #lf-root .lf__topo { width: 420px; left: -180px; top: -170px; }
   #lf-root .lf__rain { width: 130px; right: -10px; top: 2%; }
   #lf-root .lf__blob { width: 140px; left: -60px; bottom: 4%; }
-  #lf-root .lf__dots { right: -20px; bottom: 3%; }
+  #lf-root .lf__dots { display: none; }
+  #lf-root .lf__blob { opacity: .55; }
   #lf-root .lf__ring--a { width: 380px; height: 380px; left: -200px; bottom: -200px; border-width: 32px; }
 }
 @media (max-width: 400px) {
@@ -562,7 +721,7 @@ html, body { background: var(--lf-bg) !important; }
 
 @media (prefers-reduced-motion: reduce) {
   #lf-root .lf__stack, #lf-root .lf__stack::before, #lf-root .lf__stack::after,
-  #lf-root .lf__media, #lf-root .lf__eyebrow, #lf-root .lf__title, #lf-root .lf__text,
+  #lf-root .lf__media, #lf-root .lf__eyebrow, #lf-root .lf__title, #lf-root .lf__text, #lf-root .lf__foot,
   #lf-root .lf__glyph, #lf-root .lf__badge::before, #lf-root .lf__form::before { animation: none !important; }
 }
 </style>
@@ -589,16 +748,33 @@ html, body { background: var(--lf-bg) !important; }
     decor.appendChild(el);
   });
 
-  /* Картинка: нет ссылки — убираем блок, не загрузилась — фирменная заглушка */
+  /* Картинка: пока нет ссылки или фото не загрузилось — иллюстрация-подарок в цветах страницы */
   var img = root.querySelector('.lf__img');
   if (img) {
     var media = img.closest('.lf__media');
-    if (!img.getAttribute('src')) {
-      media.parentNode.removeChild(media);
-    } else {
-      var fail = function () { media.classList.add('lf__media--fallback'); };
-      if (img.complete && !img.naturalWidth) fail(); else img.addEventListener('error', fail);
-    }
+    var art = function () {
+      if (media.querySelector('.lf__art')) return;
+      media.classList.add('lf__media--fallback');
+      media.insertAdjacentHTML('afterbegin',
+        '<svg class="lf__art" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
+        '<defs><linearGradient id="lf-a-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef4ff"/><stop offset="1" stop-color="#dbe7ff"/></linearGradient>' +
+        '<linearGradient id="lf-a-box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a86ff"/><stop offset="1" stop-color="#0b4fd6"/></linearGradient>' +
+        '<linearGradient id="lf-a-rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5a5e"/><stop offset="1" stop-color="#e31216"/></linearGradient></defs>' +
+        '<rect width="640" height="360" fill="url(#lf-a-bg)"/>' +
+        '<circle cx="320" cy="190" r="150" fill="#fff" opacity=".7"/><circle cx="320" cy="190" r="196" fill="none" stroke="#1866f9" stroke-opacity=".12" stroke-width="2"/>' +
+        '<g fill="#1866f9" fill-opacity=".18">' + (function () { var d = ''; for (var y = 0; y < 5; y++) for (var x = 0; x < 6; x++) d += '<circle cx="' + (60 + x * 16) + '" cy="' + (250 + y * 16) + '" r="2.2"/>'; return d; })() + '</g>' +
+        '<ellipse cx="320" cy="300" rx="120" ry="12" fill="#0f1f33" opacity=".1"/>' +
+        '<rect x="232" y="176" width="176" height="120" rx="12" fill="url(#lf-a-box)"/>' +
+        '<rect x="220" y="140" width="200" height="44" rx="10" fill="#4b91ff"/>' +
+        '<rect x="306" y="140" width="28" height="156" fill="url(#lf-a-rib)"/>' +
+        '<path d="M320 140c-18-30-62-42-70-18-6 18 28 22 70 18Z" fill="url(#lf-a-rib)"/><path d="M320 140c18-30 62-42 70-18 6 18-28 22-70 18Z" fill="url(#lf-a-rib)"/>' +
+        '<circle cx="190" cy="120" r="9" fill="#f7191d"/><circle cx="456" cy="104" r="7" fill="#1866f9"/><circle cx="470" cy="236" r="10" fill="#f7191d" opacity=".85"/><circle cx="168" cy="226" r="6" fill="#1866f9"/>' +
+        '<path d="M500 160l6 12 13 2-10 9 3 13-12-7-12 7 3-13-10-9 13-2Z" fill="#ffb020"/><path d="M140 70l4 8 9 1-7 6 2 9-8-5-8 5 2-9-7-6 9-1Z" fill="#ffb020" opacity=".8"/>' +
+        '</svg>');
+    };
+    if (!img.getAttribute('src')) art();
+    else if (img.complete && !img.naturalWidth) art();
+    else img.addEventListener('error', art);
   }
 
   /* Нативная форма Tilda: ищем блок и переносим его внутрь окна целиком —
