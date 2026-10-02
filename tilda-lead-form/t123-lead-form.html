@@ -4,7 +4,7 @@
   ────────────────────────────────────────────────────────────────────
    1. Картинка, заголовок и тексты  → раздел «КОНТЕНТ» прямо ниже.
    2. Цвета, шрифт, ширина окна     → «НАСТРОЙКИ ДИЗАЙНА» в <style>.
-   3. Форма — тоже в «КОНТЕНТ»: поля, кнопка, согласие.
+   3. Форма — тоже в «КОНТЕНТ»: поля, галочки, кнопка, сноска.
       Заявки уходят через стандартный блок формы Tilda (BF204N),
       который нужно добавить на страницу: он прячется, а данные
       из этой формы отправляются через него в Tilda CRM.
@@ -31,35 +31,39 @@
              Картинка не нужна совсем — удалите <figure>…</figure> -->
         <div class="lf__hero">
         <figure class="lf__media">
-          <img class="lf__img" src="" alt="Пилатес в студии Pure Mind и комплект amarèssence">
+          <img class="lf__img" src="" alt="Пилатес в студии Pure Mind и комплект формы amarèssence">
           <!-- Плашка на картинке. Не нужна — оставьте пустой -->
           <figcaption class="lf__badge">📚 5 октября — День учителя</figcaption>
         </figure>
 
         <div class="lf__intro">
           <!-- Надзаголовок. Не нужен — оставьте пустым -->
-          <p class="lf__eyebrow">Розыгрыш для учителей</p>
+          <p class="lf__eyebrow"></p>
 
           <!-- Текст внутри <em> выделяется синим -->
-          <h1 class="lf__title" id="lf-title">Учителям тоже нужно <em>заботиться о&nbsp;себе</em></h1>
+          <h1 class="lf__title" id="lf-title">Осенью особенно важно не&nbsp;забывать о&nbsp;своём самочувствии и&nbsp;<em>заботиться о&nbsp;себе&nbsp;🤍</em></h1>
 
-          <p class="lf__text">Разыгрываем [N] пробных тренировок по пилатесу в студии Pure Mind. Каждого победителя ждёт комплект формы amarèssence — вручим его прямо на тренировке.</p>
+          <p class="lf__text">Компания RELOD, бренд спортивной одежды <a href="https://amaressence.ru" target="_blank" rel="noopener">amarèssence</a> и&nbsp;студия здорового тела и&nbsp;разума <a href="https://puremindpilates.ru/" target="_blank" rel="noopener">Pure Mind</a> объединились, чтобы разыграть места на&nbsp;тренировки в&nbsp;студии и&nbsp;комплекты спортивной формы&nbsp;🧘‍♀️</p>
 
-          <!-- Партнёры. Не нужны — оставьте пустым -->
-          <p class="lf__partners">RELOD <i>×</i> Pure Mind <i>×</i> amarèssence</p>
+          <!-- Кнопка-якорь: ведёт к форме -->
+          <a class="lf__cta" href="#lf-form">Участвовать в розыгрыше</a>
         </div>
         </div>
 
         <div class="lf__body">
 
-          <!-- Форма: заголовок над полями -->
-          <div class="lf__formbox">
-            <p class="lf__formtitle">Участвовать в розыгрыше</p>
+          <!-- ── Секция 2: форма ── -->
+          <div class="lf__formbox" id="lf-formbox">
+            <div class="lf__formhead">
+              <h2 class="lf__formtitle">Участвовать в розыгрыше</h2>
+              <p class="lf__formtext">Разыгрываем [N] тренировок по пилатесу в студии Pure Mind. Каждого победителя ждёт комплект формы amarèssence — вручим его прямо на&nbsp;тренировке*.</p>
+              <p class="lf__formtext">Для участия в розыгрыше заполните форму, и&nbsp;[дата] с&nbsp;помощью рандомайзера мы выберем [N] победителей. Результаты будут опубликованы в&nbsp;<a href="https://t.me/relod_official" target="_blank" rel="noopener">Telegram-канале RELOD</a>, а&nbsp;с&nbsp;победителями мы свяжемся по&nbsp;e-mail, чтобы подобрать комплект и&nbsp;размер.</p>
+            </div>
 
-            <!-- Форма. Поля можно менять: name — имя переменной, как в блоке формы Tilda.
-                 data-success — текст после успешной отправки (если Tilda не покажет своё окно «Спасибо»). -->
+            <!-- Форма. name — имя переменной (как в блоке формы Tilda), required — обязательное поле,
+                 data-error — текст ошибки, data-success — сообщение после отправки. -->
             <form class="lf__hf" id="lf-form" novalidate
-                  data-success="Спасибо! Вы участвуете. Итоги — [дата] в Telegram-канале RELOD.">
+                  data-success="Спасибо! Вы участвуете в розыгрыше. Итоги подведём [дата] — следите за Telegram-каналом RELOD.">
               <div class="lf__row">
                 <label class="lf__field">
                   <span class="lf__label">Ваше имя</span>
@@ -69,32 +73,30 @@
                   <span class="lf__label">Ваш e-mail</span>
                   <input type="email" name="email" placeholder="Ваш e-mail" autocomplete="email" required>
                 </label>
-                <button type="submit" class="lf__btn">Участвовать</button>
               </div>
+
               <label class="lf__check">
-                <input type="checkbox" name="consent" value="yes" required>
+                <input type="checkbox" name="consent" value="yes" required data-error="Нужно согласие на обработку персональных данных.">
                 <i aria-hidden="true"></i>
-                <span>Я даю <a href="/privacy" target="_blank">согласие</a> на обработку персональных данных и принимаю <a href="#" target="_blank">правила розыгрыша</a>.</span>
+                <span>Я даю <a href="/privacy" target="_blank">согласие на обработку моих персональных данных</a></span>
               </label>
+              <label class="lf__check">
+                <input type="checkbox" name="rules" value="yes" required data-error="Нужно принять правила розыгрыша.">
+                <i aria-hidden="true"></i>
+                <span>Я принимаю <a href="#" target="_blank">правила розыгрыша</a></span>
+              </label>
+
               <!-- Скрытое поле: метка, чтобы отличать заявки этой страницы -->
               <input type="hidden" name="source" value="den_uchitelya_2026">
+
+              <button type="submit" class="lf__btn">Участвовать</button>
               <p class="lf__msg" role="alert" hidden></p>
+              <p class="lf__footnote">*Получение призов и участие в тренировке возможно только в&nbsp;Москве, в&nbsp;студии Pure Mind.</p>
             </form>
             <div class="lf__done" role="status" hidden></div>
 
             <!-- Служебное: сюда прячется стандартный блок формы Tilda, через который уходят заявки -->
             <div id="lf-slot" aria-hidden="true"></div>
-          </div>
-
-          <!-- Как участвовать: шаги можно добавлять и удалять (<li>…</li>) -->
-          <div class="lf__steps">
-            <h2 class="lf__h2">Как участвовать</h2>
-            <ol>
-              <li><b>Оставьте заявку</b> <span>Имя и e-mail в форме выше — до [дата].</span></li>
-              <li><b>Следите за итогами</b> <span>Победителей объявим [дата] в Telegram-канале RELOD.</span>
-                <a class="lf__tg" href="https://t.me/relod_official" target="_blank" rel="noopener">Подписаться на канал</a></li>
-              <li><b>Подберём ваш комплект</b> <span>Свяжемся с победителями, поможем выбрать комплект amarèssence и размер — подарок будет ждать вас на тренировке.</span></li>
-            </ol>
           </div>
         </div>
 
@@ -115,7 +117,12 @@
   <div class="lf__decor" aria-hidden="true">
     <span class="lf__ring lf__ring--a"></span>
     <span class="lf__ring lf__ring--b"></span>
-    <span class="lf__arc"></span>
+    <div class="lf__cream">
+      <svg class="lf__wave" viewBox="0 0 1440 140" preserveAspectRatio="none">
+        <path d="M0 92C220 30 420 18 640 52s440 78 800-40V140H0Z" fill="#F7F3EA"/>
+        <path d="M0 92C220 30 420 18 640 52s440 78 800-40" fill="none" stroke="#1866f9" stroke-width="3" vector-effect="non-scaling-stroke"/>
+      </svg>
+    </div>
     <svg class="lf__topo" viewBox="-300 -300 600 600" fill="none">
       <g stroke="#ffffff" stroke-opacity=".08" stroke-width="1.2" vector-effect="non-scaling-stroke">
         <path id="lf-topo" vector-effect="non-scaling-stroke" transform="scale(.6)" d="M0-100C55-100 112-62 106-6 100 52 66 96 8 101-52 106-108 72-101 12-95-46-56-100 0-100Z"/>
@@ -157,7 +164,9 @@
 <style>
 :root {
   /* ═══════════════════ НАСТРОЙКИ ДИЗАЙНА ═══════════════════ */
-  --lf-bg:        #0f1f33;   /* фон страницы — тёмно-синий */
+  --lf-bg:        #0f1f33;   /* фон верха страницы — тёмно-синий */
+  --lf-cream:     #F7F3EA;   /* фон низа страницы и подложка формы — тёплый молочный */
+  --lf-cream-line:#e9e0cc;   /* рамки на молочном */
   --lf-glow:      #1866f9;   /* цвет свечения на фоне */
   --lf-blue:      #1866f9;   /* акцент: кнопка, ссылки, фокус */
   --lf-blue-deep: #0b4fd6;   /* кнопка при наведении */
@@ -174,7 +183,7 @@
   /* ═════════════════════════════════════════════════════════ */
 }
 
-html, body { background: var(--lf-bg) !important; }
+html, body { background: var(--lf-cream) !important; }
 .lf-host { display: none !important; }
 
 /* ─────────── Сцена ─────────── */
@@ -245,7 +254,7 @@ html, body { background: var(--lf-bg) !important; }
   position: relative;
   margin: 0;
   border-radius: calc(var(--lf-radius) - 10px);
-  background: #e8edf6;
+  background: var(--lf-cream);
   animation: lfFade .8s ease .3s backwards;
 }
 #lf-root .lf__media::after {
@@ -333,7 +342,35 @@ html, body { background: var(--lf-bg) !important; }
   animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .5s backwards;
 }
 #lf-root .lf__title em { font-style: normal; color: var(--lf-blue); }
-#lf-root .lf__text a { color: var(--lf-blue); text-decoration: underline; text-underline-offset: 2px; }
+#lf-root .lf__text a, #lf-root .lf__formtext a { color: var(--lf-blue); font-weight: 600; text-decoration: none; border-bottom: 1.5px solid color-mix(in srgb, var(--lf-blue) 35%, transparent); transition: border-color .2s; }
+#lf-root .lf__text a:hover, #lf-root .lf__formtext a:hover { border-color: var(--lf-blue); }
+#lf-root .lf__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 22px;
+  padding: 0 24px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--lf-ink);
+  color: #fff;
+  font: 700 15px/1 var(--lf-font);
+  text-decoration: none;
+  box-shadow: 0 14px 28px -14px rgba(15, 31, 51, .7);
+  transition: transform .2s, background-color .2s;
+  animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .58s backwards;
+}
+#lf-root .lf__cta::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M6 13l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M6 13l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .25s;
+}
+#lf-root .lf__cta:hover { background: var(--lf-blue); transform: translateY(-1px); }
+#lf-root .lf__cta:hover::after { transform: translateY(3px); }
 #lf-root .lf__partners {
   margin: 16px 0 0;
   color: var(--lf-ink);
@@ -350,8 +387,9 @@ html, body { background: var(--lf-bg) !important; }
   margin: 28px 0 0;
   padding: 22px 22px 24px;
   border-radius: 20px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--lf-blue) 7%, #fff), color-mix(in srgb, var(--lf-blue) 3%, #fff));
-  border: 1px solid color-mix(in srgb, var(--lf-blue) 14%, transparent);
+  background: var(--lf-cream);
+  border: 1px solid var(--lf-cream-line);
+  scroll-margin-top: 24px;
 }
 #lf-root .lf__formbox::before {
   content: "";
@@ -363,7 +401,12 @@ html, body { background: var(--lf-bg) !important; }
   border-radius: 0 0 3px 3px;
   background: linear-gradient(90deg, var(--lf-blue), var(--lf-red));
 }
-#lf-root .lf__formtitle { margin: 0 0 16px; color: var(--lf-ink); font: 800 19px/1.25 var(--lf-font); letter-spacing: -.01em; }
+#lf-root .lf__formhead { margin-bottom: 18px; text-align: left; }
+#lf-root .lf__formtitle { margin: 0 0 10px; padding: 0; color: var(--lf-ink); font: 800 22px/1.2 var(--lf-font); letter-spacing: -.015em; }
+#lf-root .lf__formtext { margin: 0 0 10px; color: var(--lf-muted); font: 400 14.5px/1.6 var(--lf-font); }
+#lf-root .lf__formtext:last-child { margin-bottom: 0; }
+#lf-root .lf__footnote { margin: 12px 0 0; color: #8f8a7e; font: 400 12px/1.5 var(--lf-font); }
+#lf-root .lf__footnote:empty { display: none; }
 #lf-root .lf__form { text-align: left; }
 
 /* Как участвовать */
@@ -423,12 +466,12 @@ html, body { background: var(--lf-bg) !important; }
 #lf-root .lf__tg:hover { filter: brightness(1.08); }
 
 /* Правила и подвал */
-#lf-root .lf__foot { animation: lfFade .8s ease .7s backwards; width: 100%; max-width: 760px; color: rgba(255, 255, 255, .55); font: 400 13px/1.6 var(--lf-font); }
+#lf-root .lf__foot { animation: lfFade .8s ease .7s backwards; width: 100%; max-width: 760px; color: #7d786d; font: 400 13px/1.6 var(--lf-font); }
 #lf-root .lf__foot p { margin: 0; }
-#lf-root .lf__foot a { color: rgba(255, 255, 255, .85); text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .25); transition: color .2s, border-color .2s; }
-#lf-root .lf__foot a:hover { color: #fff; border-color: #fff; }
-#lf-root .lf__foot b { color: #fff; }
-#lf-root .lf__rules { padding-bottom: 14px; margin-bottom: 14px !important; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+#lf-root .lf__foot a { color: var(--lf-ink); text-decoration: none; border-bottom: 1px solid rgba(15, 31, 51, .2); transition: color .2s, border-color .2s; }
+#lf-root .lf__foot a:hover { color: var(--lf-blue); border-color: var(--lf-blue); }
+#lf-root .lf__foot b { color: var(--lf-ink); }
+#lf-root .lf__rules { padding-bottom: 14px; margin-bottom: 14px !important; border-bottom: 1px solid var(--lf-cream-line); }
 #lf-root .lf__social { display: flex; justify-content: center; gap: 18px; margin-top: 8px !important; }
 #lf-root .lf__rules:empty, #lf-root .lf__contacts:empty, #lf-root .lf__social:empty { display: none; }
 
@@ -438,16 +481,10 @@ html, body { background: var(--lf-bg) !important; }
 #lf-root .lf__ring { border-radius: 50%; border: solid rgba(255, 255, 255, .07); }
 #lf-root .lf__ring--a { width: 560px; height: 560px; left: -250px; bottom: -280px; border-width: 46px; }
 #lf-root .lf__ring--b { width: 380px; height: 380px; right: -150px; top: -160px; border-width: 34px; border-color: rgba(255, 255, 255, .055); }
-#lf-root .lf__arc {
-  width: 150vmax;
-  height: 150vmax;
-  left: 50%;
-  top: 58%;
-  transform: translateX(-50%);
-  border-radius: 50%;
-  border: 2px solid color-mix(in srgb, var(--lf-blue) 55%, transparent);
-  box-shadow: 0 0 80px color-mix(in srgb, var(--lf-blue) 25%, transparent) inset;
-}
+#lf-root .lf__decor > *:not(.lf__cream) { z-index: 1; }
+#lf-root .lf__cream { left: 0; right: 0; top: 46%; bottom: 0; z-index: 0; background: var(--lf-cream); }
+#lf-root .lf__wave { position: absolute; left: 0; bottom: calc(100% - 1px); width: 100%; height: 120px; }
+#lf-root .lf__ring--a { border-color: rgba(15, 31, 51, .06); }
 #lf-root .lf__topo { width: 640px; left: -200px; top: -230px; }
 #lf-root .lf__rain { width: 200px; right: 7%; top: 9%; opacity: .9; }
 #lf-root .lf__blob { width: 210px; left: -50px; bottom: 8%; transform: rotate(-18deg); filter: drop-shadow(0 20px 40px rgba(24, 102, 249, .45)); }
@@ -456,7 +493,7 @@ html, body { background: var(--lf-bg) !important; }
   height: 100px;
   right: 9%;
   bottom: 10%;
-  background: radial-gradient(circle, rgba(255, 255, 255, .32) 1.6px, transparent 2.2px) 0 0 / 22px 22px;
+  background: radial-gradient(circle, rgba(15, 31, 51, .22) 1.6px, transparent 2.2px) 0 0 / 22px 22px;
 }
 #lf-root .lf__glyph {
   left: var(--x);
@@ -467,6 +504,7 @@ html, body { background: var(--lf-bg) !important; }
   animation: lfFloat 11s ease-in-out infinite;
   user-select: none;
 }
+#lf-root .lf__glyph--ink { color: rgba(15, 31, 51, var(--o, .08)); }
 
 /* ─────────── Форма из HTML ─────────── */
 #lf-root .lf__hf { margin: 0; text-align: left; }
@@ -479,7 +517,7 @@ html, body { background: var(--lf-bg) !important; }
   height: 54px;
   margin: 0;
   padding: 0 18px;
-  border: 1.5px solid var(--lf-line);
+  border: 1.5px solid var(--lf-cream-line);
   border-radius: 14px;
   background: #fff;
   color: var(--lf-ink);
@@ -503,8 +541,9 @@ html, body { background: var(--lf-bg) !important; }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  height: 58px;
-  margin: 6px 0 0;
+  width: 100%;
+  height: 56px;
+  margin: 18px 0 0;
   padding: 0 26px;
   border: 0;
   border-radius: 14px;
@@ -547,7 +586,8 @@ html, body { background: var(--lf-bg) !important; }
   animation: lfSpin .7s linear infinite;
 }
 
-#lf-root .lf__check { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0 0; color: var(--lf-muted); font: 400 13px/1.5 var(--lf-font); cursor: pointer; }
+#lf-root .lf__check + .lf__check { margin-top: 8px; }
+#lf-root .lf__check { position: relative; display: flex; align-items: flex-start; gap: 10px; margin: 14px 0 0; color: var(--lf-muted); font: 400 13px/1.5 var(--lf-font); cursor: pointer; }
 #lf-root .lf__check input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 #lf-root .lf__check i {
   position: relative;
@@ -555,7 +595,7 @@ html, body { background: var(--lf-bg) !important; }
   width: 20px;
   height: 20px;
   margin-top: 0;
-  border: 1.5px solid #b8c5d9;
+  border: 1.5px solid #c9bfa8;
   border-radius: 6px;
   background: #fff;
   transition: background-color .2s, border-color .2s, box-shadow .2s;
@@ -639,13 +679,12 @@ html, body { background: var(--lf-bg) !important; }
   #lf-root .lf__text { max-width: none; margin: 0; }
   #lf-root .lf__body { padding: 0 32px 32px; }
 
-  /* форма в одну строку: поля + кнопка, согласие ниже */
-  #lf-root .lf__formbox { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 20px; align-items: start; padding: 24px; }
-  #lf-root .lf__formbox::before { left: 24px; right: 24px; }
-  #lf-root .lf__formtitle { margin: 0; padding-top: 6px; text-align: left; font-size: 20px; }
+  /* форма: текст слева, поля справа */
+  #lf-root .lf__formbox { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 36px; align-items: start; padding: 30px 30px 28px; }
+  #lf-root .lf__formbox::before { left: 30px; right: 30px; }
+  #lf-root .lf__formhead { margin: 0; text-align: left; }
   #lf-root .lf__row { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
-  #lf-root .lf__field { flex: 1 1 180px; }
-  #lf-root .lf__btn { height: 54px; margin: 0; }
+  #lf-root .lf__field { flex: 1 1 160px; }
 
   #lf-root .lf__steps { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 20px; align-items: start; margin-top: 24px; padding: 0 24px; }
   #lf-root .lf__h2 { margin: 0; padding-top: 14px; text-align: left; font-size: 20px; }
@@ -663,7 +702,6 @@ html, body { background: var(--lf-bg) !important; }
 @media (min-width: 601px) and (max-width: 859px) {
   #lf-root .lf__row { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
   #lf-root .lf__field { flex: 1 1 180px; }
-  #lf-root .lf__btn { height: 54px; margin: 0; }
   #lf-root .lf__steps ol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   #lf-root .lf__steps li { padding: 46px 14px 14px; }
 }
@@ -684,7 +722,9 @@ html, body { background: var(--lf-bg) !important; }
   #lf-root .lf__badge { padding: 8px 14px 8px 11px; font-size: 12px; }
   #lf-root .lf__eyebrow { margin-bottom: 10px; font-size: 11.5px; }
   #lf-root .lf__partners { margin-top: 12px; font-size: 11px; }
-  #lf-root .lf__formtitle, #lf-root .lf__h2 { font-size: 18px; }
+  #lf-root .lf__formtitle, #lf-root .lf__h2 { font-size: 20px; }
+  #lf-root .lf__formtext { font-size: 14px; }
+  #lf-root .lf__cta { width: 100%; justify-content: center; }
   #lf-root .lf__steps { margin-top: 24px; }
   #lf-root .lf__stack::before { transform: rotate(-2deg) translate(-3px, 8px); }
   #lf-root .lf__stack::after  { transform: rotate(1.5deg) translate(3px, 12px); }
@@ -696,17 +736,18 @@ html, body { background: var(--lf-bg) !important; }
   #lf-root .lf__topo { width: 420px; left: -180px; top: -170px; }
   #lf-root .lf__rain { width: 130px; right: -10px; top: 2%; }
   #lf-root .lf__blob { width: 140px; left: -60px; bottom: 4%; }
-  #lf-root .lf__dots { display: none; }
-  #lf-root .lf__blob { opacity: .55; }
+  #lf-root .lf__dots, #lf-root .lf__blob { display: none; }
   #lf-root .lf__ring--a { width: 380px; height: 380px; left: -200px; bottom: -200px; border-width: 32px; }
 }
 @media (max-width: 400px) {
+  #lf-root .lf__title { font-size: 22px; }
+  #lf-root .lf__cta { height: 50px; padding: 0 16px; font-size: 14px; }
   #lf-root .lf__eyebrow::before, #lf-root .lf__eyebrow::after { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   #lf-root .lf__stack, #lf-root .lf__stack::before, #lf-root .lf__stack::after,
-  #lf-root .lf__media, #lf-root .lf__eyebrow, #lf-root .lf__title, #lf-root .lf__text, #lf-root .lf__foot,
+  #lf-root .lf__media, #lf-root .lf__eyebrow, #lf-root .lf__title, #lf-root .lf__text, #lf-root .lf__foot, #lf-root .lf__cta,
   #lf-root .lf__glyph, #lf-root .lf__badge::before, #lf-root .lf__done { animation: none !important; }
 }
 </style>
@@ -735,7 +776,7 @@ html, body { background: var(--lf-bg) !important; }
   var glyphs = (root.getAttribute('data-glyphs') || '').split(/\s+/).filter(Boolean).slice(0, spots.length);
   glyphs.forEach(function (ch, i) {
     var s = spots[i], el = document.createElement('span');
-    el.className = 'lf__glyph';
+    el.className = 'lf__glyph' + (s[1] > 48 ? ' lf__glyph--ink' : '');
     el.textContent = ch;
     el.style.cssText = '--x:' + s[0] + '%;--y:' + s[1] + '%;--fs:' + s[2] + 'px;--r:' + s[3] + 'deg;--o:' + s[4] + ';animation-delay:' + (-i * 1.9) + 's';
     decor.appendChild(el);
@@ -750,7 +791,7 @@ html, body { background: var(--lf-bg) !important; }
       media.classList.add('lf__media--fallback');
       media.insertAdjacentHTML('afterbegin',
         '<svg class="lf__art" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">' +
-        '<defs><linearGradient id="lf-a-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eef4ff"/><stop offset="1" stop-color="#dbe7ff"/></linearGradient>' +
+        '<defs><linearGradient id="lf-a-bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf8f2"/><stop offset="1" stop-color="#efe6d3"/></linearGradient>' +
         '<linearGradient id="lf-a-box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a86ff"/><stop offset="1" stop-color="#0b4fd6"/></linearGradient>' +
         '<linearGradient id="lf-a-rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff5a5e"/><stop offset="1" stop-color="#e31216"/></linearGradient></defs>' +
         '<rect width="640" height="360" fill="url(#lf-a-bg)"/>' +
@@ -830,7 +871,8 @@ html, body { background: var(--lf-bg) !important; }
       if (box) box.classList.toggle('is-error', bad);
       if (bad && !first) {
         first = f;
-        text = f.type === 'checkbox' ? 'Нужно согласие на обработку персональных данных.'
+        text = f.getAttribute('data-error') ? f.getAttribute('data-error')
+             : f.type === 'checkbox' ? 'Отметьте обязательный пункт.'
              : f.type === 'email' && f.value.trim() ? 'Проверьте e-mail — кажется, в нём ошибка.'
              : 'Заполните поле «' + (f.placeholder || f.name) + '».';
       }
@@ -840,27 +882,34 @@ html, body { background: var(--lf-bg) !important; }
   }
 
   /* Ищем в блоке Tilda поле с тем же именем переменной, иначе — по типу поля */
+  var used = [];
+  function free(el) { return el && used.indexOf(el) < 0 ? el : null; }
   function nativeField(f) {
     var nm = (f.name || '').toLowerCase(), els = native.querySelectorAll('input, textarea, select');
     for (var i = 0; i < els.length; i++) {
-      if ((els[i].name || '').toLowerCase() === nm && !els[i].classList.contains('lf-injected')) return els[i];
+      if ((els[i].name || '').toLowerCase() === nm && !els[i].classList.contains('lf-injected') && free(els[i])) return els[i];
     }
     var type = f.type === 'checkbox' ? 'cb' : f.type === 'email' ? 'em' : f.type === 'tel' ? 'ph' : /name/i.test(nm) ? 'nm' : '';
     if (!type) return null;
-    var g = native.querySelector('.t-input-group_' + type + ', [data-field-type="' + type + '"]');
-    if (!g) return null;
-    if (type === 'ph') return g.querySelector('.js-phonemask-result') || g.querySelector('input[type="tel"], input');
-    return g.querySelector(type === 'cb' ? 'input[type="checkbox"]' : 'input, textarea');
+    var gs = native.querySelectorAll('.t-input-group_' + type + ', [data-field-type="' + type + '"]');
+    for (var g = 0; g < gs.length; g++) {
+      var el = type === 'ph' ? (gs[g].querySelector('.js-phonemask-result') || gs[g].querySelector('input[type="tel"], input'))
+             : gs[g].querySelector(type === 'cb' ? 'input[type="checkbox"]' : 'input, textarea');
+      if (free(el)) return el;
+    }
+    return null;
   }
 
   function copyToNative() {
     var old = native.querySelectorAll('.lf-injected');
     for (var k = 0; k < old.length; k++) old[k].parentNode.removeChild(old[k]);
+    used = [];
     var fields = hf.querySelectorAll('input, textarea, select');
     for (var i = 0; i < fields.length; i++) {
       var f = fields[i];
       if (!f.name) continue;
       var t = nativeField(f);
+      if (t) used.push(t);
       if (t && t.type === 'checkbox') {
         t.checked = f.type === 'checkbox' ? f.checked : !!f.value;
       } else if (t) {
@@ -901,6 +950,17 @@ html, body { background: var(--lf-bg) !important; }
     for (var i = 0; i < errs.length && !text; i++) text = (errs[i].textContent || '').trim();
     say('Не удалось отправить заявку' + (text ? ': ' + text : '') + '. Попробуйте ещё раз.');
   }
+
+  /* Кнопка на первом экране плавно ведёт к форме */
+  var cta = root.querySelector('.lf__cta');
+  if (cta) cta.addEventListener('click', function (e) {
+    var box = document.getElementById('lf-formbox');
+    if (!box) return;
+    e.preventDefault();
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var first = hf && hf.querySelector('input:not([type="hidden"])');
+    if (first) setTimeout(function () { first.focus({ preventScroll: true }); }, 600);
+  });
 
   if (hf) {
     hf.addEventListener('input', function (e) {
