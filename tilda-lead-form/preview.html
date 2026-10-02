@@ -28,6 +28,8 @@
   ════════════════════════════════════════════════════════════════════
 -->
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <div class="lf" id="lf-root" data-form-rec="" data-glyphs="A Ж ß é Ñ 字 Ω あ ü ç">
   <!--
     data-form-rec — ID блока формы, если форм на странице несколько:
@@ -486,7 +488,7 @@ html, body { background: var(--lf-bg) !important; }
 /* ─────────── Форма из HTML ─────────── */
 #lf-root .lf__hf { margin: 0; text-align: left; }
 #lf-root .lf__row { display: flex; flex-direction: column; gap: 12px; }
-#lf-root .lf__field { position: relative; display: block; flex: 1 1 180px; min-width: 0; margin: 0; }
+#lf-root .lf__field { position: relative; display: block; flex: none; min-width: 0; margin: 0; }
 #lf-root .lf__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 #lf-root .lf__field input {
   display: block;
@@ -659,12 +661,28 @@ html, body { background: var(--lf-bg) !important; }
   #lf-root .lf__formbox::before { left: 24px; right: 24px; }
   #lf-root .lf__formtitle { margin: 0; padding-top: 6px; text-align: left; font-size: 20px; }
   #lf-root .lf__row { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  #lf-root .lf__field { flex: 1 1 180px; }
   #lf-root .lf__btn { height: 54px; margin: 0; }
 
   #lf-root .lf__steps { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 20px; align-items: start; margin-top: 24px; padding: 0 24px; }
   #lf-root .lf__h2 { margin: 0; padding-top: 14px; text-align: left; font-size: 20px; }
   #lf-root .lf__steps ol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   #lf-root .lf__steps li { padding: 46px 16px 16px; }
+}
+
+/* ─────────── Планшеты и телефоны: картинка не съедает первый экран ─────────── */
+@media (max-width: 859px) {
+  #lf-root .lf__img { aspect-ratio: 16 / 9; max-height: 300px; }
+  #lf-root .lf__text { max-width: 520px; }
+}
+
+/* ─────────── Планшеты: форма в строку, шаги в ряд ─────────── */
+@media (min-width: 601px) and (max-width: 859px) {
+  #lf-root .lf__row { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
+  #lf-root .lf__field { flex: 1 1 180px; }
+  #lf-root .lf__btn { height: 54px; margin: 0; }
+  #lf-root .lf__steps ol { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  #lf-root .lf__steps li { padding: 46px 14px 14px; }
 }
 
 /* ─────────── Телефоны ─────────── */
@@ -677,7 +695,16 @@ html, body { background: var(--lf-bg) !important; }
   #lf-root .lf__body { padding: 0 14px 20px; }
   #lf-root .lf__stack::before { transform: rotate(-2.5deg) translate(-4px, 10px); }
   #lf-root .lf__stack::after  { transform: rotate(2deg) translate(4px, 14px); }
-  #lf-root .lf__text { font-size: 15px; }
+  #lf-root .lf__text { font-size: 15px; line-height: 1.55; }
+  #lf-root .lf__img { aspect-ratio: 16 / 10; max-height: 210px; }
+  #lf-root .lf__title { font-size: clamp(24px, 7.2vw, 30px); }
+  #lf-root .lf__badge { padding: 8px 14px 8px 11px; font-size: 12px; }
+  #lf-root .lf__eyebrow { margin-bottom: 10px; font-size: 11.5px; }
+  #lf-root .lf__partners { margin-top: 12px; font-size: 11px; }
+  #lf-root .lf__formtitle, #lf-root .lf__h2 { font-size: 18px; }
+  #lf-root .lf__steps { margin-top: 24px; }
+  #lf-root .lf__stack::before { transform: rotate(-2deg) translate(-3px, 8px); }
+  #lf-root .lf__stack::after  { transform: rotate(1.5deg) translate(3px, 12px); }
   #lf-root .lf__formbox { padding: 18px 14px 18px; }
   #lf-root .lf__formbox::before { left: 14px; right: 14px; }
   #lf-root .lf__stage { gap: 32px; }
@@ -703,6 +730,14 @@ html, body { background: var(--lf-bg) !important; }
 
 <script>
 (function () {
+  /* Мобильная адаптивность: без viewport телефон рисует страницу шириной 980px */
+  if (!document.querySelector('head meta[name="viewport"]')) {
+    var vp = document.createElement('meta');
+    vp.name = 'viewport';
+    vp.content = 'width=device-width, initial-scale=1';
+    document.head.appendChild(vp);
+  }
+
   var root = document.getElementById('lf-root');
   if (!root || root.getAttribute('data-lf-init')) return;
   root.setAttribute('data-lf-init', '1');
