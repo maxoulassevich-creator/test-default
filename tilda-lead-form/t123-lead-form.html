@@ -1,0 +1,650 @@
+<!--
+  ════════════════════════════════════════════════════════════════════
+   ЛИД-ФОРМА «МОДАЛЬНОЕ ОКНО» — код для блока T123 (HTML-код) в Tilda
+  ────────────────────────────────────────────────────────────────────
+   1. Картинка, заголовок и тексты  → раздел «КОНТЕНТ» прямо ниже.
+   2. Цвета, шрифт, ширина окна     → «НАСТРОЙКИ ДИЗАЙНА» в <style>.
+   3. Поля формы, текст кнопки,
+      сообщение «Спасибо»           → в нативном блоке формы Tilda
+                                      (Контент). Он сам встанет внутрь
+                                      окна, а заявки пойдут в Tilda CRM.
+  ════════════════════════════════════════════════════════════════════
+-->
+
+<div class="lf" id="lf-root" data-form-rec="" data-glyphs="A Ж ß é Ñ 字 Ω あ ü ç">
+  <!--
+    data-form-rec — ID блока формы, если форм на странице несколько:
+                    например "rec123456789" (виден внизу панели «Настройки»
+                    блока). Пусто — возьмётся первая форма на странице.
+    data-glyphs   — буквы, которые плавают на фоне. Пусто — без них.
+  -->
+
+  <div class="lf__stage">
+    <div class="lf__stack">
+      <section class="lf__modal" aria-labelledby="lf-title">
+
+        <!-- ═══════════════════ КОНТЕНТ · меняйте здесь ═══════════════════ -->
+
+        <!-- Картинка: вставьте свою ссылку в src. Блок не нужен — удалите <figure>…</figure> -->
+        <figure class="lf__media">
+          <img class="lf__img"
+               src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1200&q=80&auto=format&fit=crop"
+               alt="Полки с книгами на иностранных языках">
+          <!-- Плашка на картинке. Не нужна — оставьте пустой -->
+          <figcaption class="lf__badge">30+ лет на рынке</figcaption>
+        </figure>
+
+        <div class="lf__body">
+          <!-- Надзаголовок. Не нужен — оставьте пустым -->
+          <p class="lf__eyebrow">Бесплатная консультация</p>
+
+          <h1 class="lf__title" id="lf-title">Подберём учебники для&nbsp;вашей школы</h1>
+
+          <p class="lf__text">Оставьте заявку — методист свяжется с вами в течение рабочего дня, поможет выбрать УМК под уровень учеников и бюджет и пришлёт коммерческое предложение.</p>
+
+          <!-- ═══════════════════ /КОНТЕНТ ═══════════════════ -->
+
+          <!-- Сюда автоматически встаёт нативная форма Tilda -->
+          <div class="lf__form" id="lf-slot">
+            <div class="lf__hint">
+              <b>Форма не найдена</b>
+              Добавьте на эту страницу любой блок из категории «Форма» — он сам встанет сюда, а заявки пойдут в Tilda CRM.
+            </div>
+          </div>
+
+          <!-- Подпись под формой: замените ссылку на свою политику. Не нужна — оставьте пустой -->
+          <p class="lf__note">Нажимая кнопку, вы соглашаетесь с <a href="/privacy" target="_blank">политикой конфиденциальности</a></p>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <!-- Абстрактный фон в стиле сайта: кольца, контуры, «дождь», точки, буквы -->
+  <div class="lf__decor" aria-hidden="true">
+    <span class="lf__ring lf__ring--a"></span>
+    <span class="lf__ring lf__ring--b"></span>
+    <span class="lf__arc"></span>
+    <svg class="lf__topo" viewBox="-300 -300 600 600" fill="none">
+      <g stroke="#ffffff" stroke-opacity=".08" stroke-width="1.2" vector-effect="non-scaling-stroke">
+        <path id="lf-topo" vector-effect="non-scaling-stroke" transform="scale(.6)" d="M0-100C55-100 112-62 106-6 100 52 66 96 8 101-52 106-108 72-101 12-95-46-56-100 0-100Z"/>
+        <use href="#lf-topo" transform="rotate(8) scale(1.4)"/>
+        <use href="#lf-topo" transform="rotate(16) scale(1.85)"/>
+        <use href="#lf-topo" transform="rotate(24) scale(2.3)"/>
+        <use href="#lf-topo" transform="rotate(32) scale(2.75)"/>
+        <use href="#lf-topo" transform="rotate(40) scale(3.2)"/>
+      </g>
+    </svg>
+    <svg class="lf__rain" viewBox="0 0 180 150">
+      <defs>
+        <pattern id="lf-rain-p" width="24" height="24" patternUnits="userSpaceOnUse" patternTransform="rotate(-58)">
+          <rect width="13" height="4.5" rx="2.25" fill="#1866f9"/>
+        </pattern>
+        <radialGradient id="lf-rain-g" cx="70%" cy="30%" r="75%">
+          <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+        </radialGradient>
+        <mask id="lf-rain-m"><rect width="180" height="150" fill="url(#lf-rain-g)"/></mask>
+      </defs>
+      <rect width="180" height="150" fill="url(#lf-rain-p)" mask="url(#lf-rain-m)"/>
+    </svg>
+    <svg class="lf__blob" viewBox="0 0 200 200">
+      <defs>
+        <linearGradient id="lf-blob-g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#3a86ff"/><stop offset="1" stop-color="#0b46c2"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#lf-blob-g)" d="M52 30C84 4 142 8 166 40c18 24 8 52 22 78 14 27-6 62-40 70-30 7-46-14-74-8-30 6-58-6-64-38-5-26 16-38 14-62-2-22 6-36 28-50Z"/>
+    </svg>
+    <span class="lf__dots"></span>
+  </div>
+</div>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+
+<style>
+:root {
+  /* ═══════════════════ НАСТРОЙКИ ДИЗАЙНА ═══════════════════ */
+  --lf-bg:        #0f1f33;   /* фон страницы — тёмно-синий */
+  --lf-glow:      #1866f9;   /* цвет свечения на фоне */
+  --lf-blue:      #1866f9;   /* акцент: кнопка, ссылки, фокус */
+  --lf-blue-deep: #0b4fd6;   /* кнопка при наведении */
+  --lf-red:       #f7191d;   /* плашка на картинке, ошибки */
+  --lf-card:      #ffffff;   /* фон окна */
+  --lf-ink:       #0f1f33;   /* цвет заголовка */
+  --lf-muted:     #5b6b84;   /* цвет текста */
+  --lf-field:     #f3f6fb;   /* фон полей */
+  --lf-line:      #dde5f1;   /* рамка полей */
+  --lf-radius:    28px;      /* скругление окна */
+  --lf-width:     560px;     /* ширина окна */
+  --lf-img-ratio: 16 / 9;    /* пропорции картинки: 16 / 9, 4 / 3, 1 / 1 */
+  --lf-font:      'Inter', 'TildaSans', Arial, sans-serif;
+  /* ═════════════════════════════════════════════════════════ */
+}
+
+html, body { background: var(--lf-bg) !important; }
+.lf-host, .lf-off, #lf-root #lf-slot .lf-off.lf-off { display: none !important; }
+
+/* ─────────── Сцена ─────────── */
+#lf-root {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vh, 96px) 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--lf-bg);
+  background:
+    radial-gradient(1100px 680px at 88% -12%, color-mix(in srgb, var(--lf-glow) 38%, transparent), transparent 62%),
+    radial-gradient(900px 620px at -12% 112%, color-mix(in srgb, var(--lf-glow) 30%, transparent), transparent 62%),
+    var(--lf-bg);
+  font-family: var(--lf-font);
+  color: var(--lf-ink);
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+}
+#lf-root *, #lf-root *::before, #lf-root *::after { box-sizing: border-box; }
+
+#lf-root .lf__stage { position: relative; z-index: 1; width: 100%; display: flex; justify-content: center; }
+
+/* Стопка: синий и красный листы за окном — как карточки на сайте */
+#lf-root .lf__stack {
+  position: relative;
+  width: 100%;
+  max-width: var(--lf-width);
+  animation: lfRise .9s cubic-bezier(.2, .8, .2, 1) .05s backwards;
+}
+#lf-root .lf__stack::before,
+#lf-root .lf__stack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--lf-radius);
+}
+#lf-root .lf__stack::before {
+  background: linear-gradient(140deg, #3a86ff, var(--lf-blue) 45%, var(--lf-blue-deep));
+  transform: rotate(-4.5deg) translate(-14px, 10px);
+  box-shadow: 0 30px 60px -30px rgba(24, 102, 249, .8);
+  animation: lfFan 1s cubic-bezier(.2, .8, .2, 1) .5s backwards;
+}
+#lf-root .lf__stack::after {
+  background: linear-gradient(140deg, #ff5357, var(--lf-red));
+  transform: rotate(3deg) translate(14px, 14px);
+  opacity: .92;
+  animation: lfFan 1s cubic-bezier(.2, .8, .2, 1) .62s backwards;
+}
+
+/* ─────────── Окно ─────────── */
+#lf-root .lf__modal {
+  position: relative;
+  z-index: 1;
+  padding: 12px;
+  border-radius: var(--lf-radius);
+  background: var(--lf-card);
+  box-shadow: 0 50px 100px -30px rgba(2, 10, 28, .75), 0 18px 40px -20px rgba(2, 10, 28, .5);
+}
+
+#lf-root .lf__media {
+  position: relative;
+  margin: 0;
+  border-radius: calc(var(--lf-radius) - 10px);
+  background: #e8edf6;
+  animation: lfFade .8s ease .3s backwards;
+}
+#lf-root .lf__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, transparent 50%, rgba(15, 31, 51, .38));
+  pointer-events: none;
+}
+#lf-root .lf__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--lf-img-ratio);
+  object-fit: cover;
+  border-radius: inherit;
+}
+/* Если картинка не загрузилась — абстрактная заглушка в фирменных цветах */
+#lf-root .lf__media--fallback { background: radial-gradient(circle at 30% 120%, transparent 38%, rgba(255,255,255,.14) 38.5%, rgba(255,255,255,.14) 46%, transparent 46.5%), radial-gradient(circle at 85% -10%, rgba(255,255,255,.22), transparent 45%), linear-gradient(135deg, #3a86ff, var(--lf-blue-deep)); }
+#lf-root .lf__media--fallback .lf__img { visibility: hidden; }
+
+#lf-root .lf__badge {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  transform: translate(-50%, 50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 18px 10px 14px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff4a4e, var(--lf-red));
+  color: #fff;
+  font: 700 13px/1 var(--lf-font);
+  letter-spacing: .01em;
+  white-space: nowrap;
+  box-shadow: 0 0 0 5px var(--lf-card), 0 14px 26px -10px color-mix(in srgb, var(--lf-red) 70%, transparent);
+}
+#lf-root .lf__badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  animation: lfPulse 2.4s ease-out infinite;
+}
+#lf-root .lf__badge:empty { display: none; }
+
+#lf-root .lf__body { padding: 44px clamp(14px, 5vw, 34px) 26px; }
+#lf-root .lf__body:first-child { padding-top: 30px; }
+
+#lf-root .lf__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  color: var(--lf-blue);
+  font: 700 12.5px/1.3 var(--lf-font);
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .35s backwards;
+}
+#lf-root .lf__eyebrow::before,
+#lf-root .lf__eyebrow::after { content: ""; width: 18px; height: 2px; border-radius: 2px; background: currentColor; opacity: .35; }
+
+#lf-root .lf__title {
+  margin: 0 0 14px;
+  padding: 0;
+  color: var(--lf-ink);
+  font: 800 clamp(26px, 4.4vw, 34px)/1.12 var(--lf-font);
+  letter-spacing: -.025em;
+  text-wrap: balance;
+  animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .42s backwards;
+}
+#lf-root .lf__text {
+  max-width: 440px;
+  margin: 0 auto;
+  color: var(--lf-muted);
+  font: 400 16px/1.6 var(--lf-font);
+  text-wrap: pretty;
+  animation: lfUp .7s cubic-bezier(.2, .8, .2, 1) .5s backwards;
+}
+#lf-root .lf__note {
+  max-width: 400px;
+  margin: 18px auto 0;
+  color: #8a97ab;
+  font: 400 12.5px/1.5 var(--lf-font);
+}
+#lf-root .lf__note a, #lf-root .lf__text a { color: var(--lf-blue); text-decoration: underline; text-underline-offset: 2px; }
+#lf-root .lf__eyebrow:empty, #lf-root .lf__title:empty, #lf-root .lf__text:empty, #lf-root .lf__note:empty { display: none; }
+
+#lf-root .lf__form { margin-top: 28px; text-align: left; }
+
+/* Скелетон, пока форма переезжает (и в редакторе Tilda) */
+#lf-root:not(.lf--ready):not(.lf--noform) .lf__form::before {
+  content: "";
+  display: block;
+  height: 54px;
+  margin-bottom: 218px;
+  border-radius: 14px;
+  background: var(--lf-field);
+  box-shadow: 0 68px 0 var(--lf-field), 0 136px 0 var(--lf-field), 0 210px 0 color-mix(in srgb, var(--lf-blue) 22%, transparent);
+  animation: lfSkel 1.4s ease-in-out infinite;
+}
+#lf-root .lf__hint { display: none; }
+#lf-root.lf--noform .lf__hint {
+  display: block;
+  padding: 18px 20px;
+  border: 1.5px dashed color-mix(in srgb, var(--lf-blue) 45%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--lf-blue) 6%, transparent);
+  color: var(--lf-muted);
+  font: 400 14px/1.5 var(--lf-font);
+  text-align: center;
+}
+#lf-root.lf--noform .lf__hint b { display: block; margin-bottom: 4px; color: var(--lf-ink); }
+
+/* ─────────── Фон ─────────── */
+#lf-root .lf__decor { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+#lf-root .lf__decor > * { position: absolute; }
+#lf-root .lf__ring { border-radius: 50%; border: solid rgba(255, 255, 255, .07); }
+#lf-root .lf__ring--a { width: 560px; height: 560px; left: -250px; bottom: -280px; border-width: 46px; }
+#lf-root .lf__ring--b { width: 380px; height: 380px; right: -150px; top: -160px; border-width: 34px; border-color: rgba(255, 255, 255, .055); }
+#lf-root .lf__arc {
+  width: 150vmax;
+  height: 150vmax;
+  left: 50%;
+  top: 58%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--lf-blue) 55%, transparent);
+  box-shadow: 0 0 80px color-mix(in srgb, var(--lf-blue) 25%, transparent) inset;
+}
+#lf-root .lf__topo { width: 640px; left: -200px; top: -230px; }
+#lf-root .lf__rain { width: 200px; right: 7%; top: 9%; opacity: .9; }
+#lf-root .lf__blob { width: 210px; left: -50px; bottom: 8%; transform: rotate(-18deg); filter: drop-shadow(0 20px 40px rgba(24, 102, 249, .45)); }
+#lf-root .lf__dots {
+  width: 154px;
+  height: 100px;
+  right: 9%;
+  bottom: 10%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .32) 1.6px, transparent 2.2px) 0 0 / 22px 22px;
+}
+#lf-root .lf__glyph {
+  left: var(--x);
+  top: var(--y);
+  font: 800 var(--fs)/1 var(--lf-font);
+  color: rgba(255, 255, 255, var(--o, .08));
+  transform: translate(-50%, -50%) rotate(var(--r));
+  animation: lfFloat 11s ease-in-out infinite;
+  user-select: none;
+}
+
+/* ─────────── Нативная форма Tilda в стиле окна ─────────── */
+#lf-root #lf-slot > .t-rec { padding: 0 !important; margin: 0 !important; background: none !important; }
+#lf-root #lf-slot .t-container,
+#lf-root #lf-slot .t-container_100,
+#lf-root #lf-slot .t-col,
+#lf-root #lf-slot .t-width,
+#lf-root #lf-slot [class*="t-prefix_"] { display: block !important; float: none !important; width: auto !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+#lf-root #lf-slot .t-animate { opacity: 1 !important; transform: none !important; }
+#lf-root #lf-slot .t-form { margin: 0 !important; }
+
+#lf-root #lf-slot .t-form__inputsbox { display: block !important; }
+#lf-root #lf-slot .t-input-group { width: 100% !important; margin: 0 0 14px !important; padding: 0 !important; }
+#lf-root #lf-slot .t-input-group .t-input-block,
+#lf-root #lf-slot .t-input-group .t-input-title { width: 100% !important; }
+
+#lf-root #lf-slot .t-input-title {
+  padding: 0 0 7px !important;
+  color: var(--lf-ink) !important;
+  font: 600 13px/1.35 var(--lf-font) !important;
+  text-align: left !important;
+}
+#lf-root #lf-slot .t-input-subtitle {
+  padding: 0 0 8px !important;
+  color: var(--lf-muted) !important;
+  font: 400 12.5px/1.45 var(--lf-font) !important;
+  opacity: 1 !important;
+}
+#lf-root #lf-slot .t-input-block { border-radius: 14px !important; background: none !important; }
+
+#lf-root #lf-slot .t-input,
+#lf-root #lf-slot .t-select {
+  height: 54px !important;
+  padding: 0 18px !important;
+  border: 1.5px solid var(--lf-line) !important;
+  border-radius: 14px !important;
+  background: var(--lf-field) !important;
+  color: var(--lf-ink) !important;
+  font: 500 16px/1.3 var(--lf-font) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-color .2s, box-shadow .2s, background-color .2s !important;
+}
+#lf-root #lf-slot textarea.t-input { height: auto !important; min-height: 112px; padding: 15px 18px !important; line-height: 1.5 !important; }
+#lf-root #lf-slot .t-input::placeholder { color: #97a4b8 !important; opacity: 1; }
+#lf-root #lf-slot .t-input:not(.t-input-phonemask):hover,
+#lf-root #lf-slot .t-select:hover { border-color: #c4d2e8 !important; }
+#lf-root #lf-slot .t-input:not(.t-input-phonemask):focus,
+#lf-root #lf-slot .t-select:focus,
+#lf-root #lf-slot .t-input-phonemask__wrap:focus-within {
+  border-color: var(--lf-blue) !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--lf-blue) 15%, transparent) !important;
+}
+#lf-root #lf-slot .t-select__wrapper::after { right: 20px; border-top-color: var(--lf-muted) !important; }
+
+/* Телефон с выбором страны */
+#lf-root #lf-slot .t-input-phonemask__wrap { display: flex !important; align-items: center !important; }
+#lf-root #lf-slot .t-input.t-input-phonemask {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 51px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+#lf-root #lf-slot .t-input-phonemask__select { margin: 0 10px 0 0 !important; color: var(--lf-ink); font: 500 16px/1 var(--lf-font) !important; }
+#lf-root #lf-slot .t-input-phonemask__select-code { margin-left: 8px !important; }
+#lf-root #lf-slot .t-input-phonemask__select-flag { border-radius: 3px; box-shadow: 0 0 0 1px rgba(15, 31, 51, .1) !important; }
+.t-input-phonemask__options-wrap { border: 1px solid #e3e9f3 !important; border-radius: 14px !important; box-shadow: 0 20px 50px -18px rgba(15, 31, 51, .35) !important; }
+.t-input-phonemask__options-item { font-family: var(--lf-font) !important; }
+
+/* Чекбоксы и радио */
+#lf-root #lf-slot .t-checkbox__control,
+#lf-root #lf-slot .t-radio__control {
+  --size: 20px;
+  --border-width: 1.5px;
+  --border-radius: 6px;
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px;
+  color: var(--lf-muted) !important;
+  font: 400 13px/1.5 var(--lf-font) !important;
+  text-align: left;
+  cursor: pointer;
+}
+#lf-root #lf-slot .t-checkbox__indicator,
+#lf-root #lf-slot .t-radio__indicator { margin-right: 0 !important; border-color: #b8c5d9 !important; background: #fff; opacity: 1 !important; }
+#lf-root #lf-slot .t-checkbox:checked ~ .t-checkbox__indicator { border-color: var(--lf-blue) !important; background: var(--lf-blue); }
+#lf-root #lf-slot .t-checkbox__indicator::after { border-color: #fff !important; }
+#lf-root #lf-slot .t-radio:checked ~ .t-radio__indicator { border-color: var(--lf-blue) !important; }
+#lf-root #lf-slot .t-radio__indicator::after { background: var(--lf-blue) !important; }
+#lf-root #lf-slot .t-checkbox__control a,
+#lf-root #lf-slot .t-radio__control a { color: var(--lf-blue) !important; }
+
+/* Ошибки */
+#lf-root #lf-slot .js-error-control-box .t-input:not(.t-input-phonemask),
+#lf-root #lf-slot .js-error-control-box .t-select { border-color: var(--lf-red) !important; background: #fff7f7 !important; }
+#lf-root #lf-slot .t-input-error { margin-top: 6px !important; color: var(--lf-red) !important; font: 500 12.5px/1.4 var(--lf-font) !important; text-align: left; }
+#lf-root #lf-slot .t-form__errorbox-wrapper {
+  margin: 0 0 14px !important;
+  padding: 12px 16px !important;
+  border: 1px solid color-mix(in srgb, var(--lf-red) 22%, transparent);
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--lf-red) 7%, transparent) !important;
+  text-align: left !important;
+}
+#lf-root #lf-slot .t-form__errorbox-text { margin: 0 !important; padding: 0 !important; list-style: none !important; }
+#lf-root #lf-slot .t-form__errorbox-text,
+#lf-root #lf-slot .t-form__errorbox-item,
+#lf-root #lf-slot .t-form__errorbox-link { color: #c4161a !important; font: 500 13.5px/1.45 var(--lf-font) !important; text-decoration: none !important; }
+#lf-root #lf-slot .js-error-control-box .t-checkbox__control,
+#lf-root #lf-slot .js-error-control-box .t-checkboxes__wrapper,
+#lf-root #lf-slot .js-error-control-box .t-radio__wrapper { border: 0 !important; }
+#lf-root #lf-slot .js-error-control-box .t-checkbox__indicator,
+#lf-root #lf-slot .js-error-control-box .t-radio__indicator { border-color: var(--lf-red) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--lf-red) 14%, transparent); }
+
+/* Кнопка */
+#lf-root #lf-slot .t-form__submit { width: 100% !important; margin: 22px 0 0 !important; padding: 0 !important; }
+#lf-root #lf-slot .t-submit {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px;
+  width: 100% !important;
+  height: 58px !important;
+  padding: 0 24px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  background: linear-gradient(135deg, #2f7dff 0%, var(--lf-blue) 45%, var(--lf-blue-deep) 100%) !important;
+  color: #fff !important;
+  font: 700 16px/1 var(--lf-font) !important;
+  letter-spacing: .01em !important;
+  box-shadow: 0 16px 32px -14px color-mix(in srgb, var(--lf-blue) 85%, transparent) !important;
+  transition: transform .2s, box-shadow .2s, filter .2s !important;
+}
+#lf-root #lf-slot .t-submit .t-btnflex__text,
+#lf-root #lf-slot .t-submit .t-submit__text { color: inherit !important; font: inherit !important; }
+#lf-root #lf-slot .t-submit::after {
+  content: "";
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform .25s;
+}
+#lf-root #lf-slot .t-submit:hover { transform: translateY(-1px); filter: brightness(1.06); box-shadow: 0 20px 38px -14px color-mix(in srgb, var(--lf-blue) 95%, transparent) !important; }
+#lf-root #lf-slot .t-submit:hover::after { transform: translateX(4px); }
+#lf-root #lf-slot .t-submit:active { transform: translateY(1px); filter: brightness(.97); }
+#lf-root #lf-slot .t-submit:focus-visible { outline: 3px solid color-mix(in srgb, var(--lf-blue) 40%, transparent) !important; outline-offset: 3px; }
+#lf-root #lf-slot .t-submit.t-btn_sending { color: transparent !important; }
+#lf-root #lf-slot .t-submit.t-btn_sending::after { opacity: 0; }
+#lf-root #lf-slot .t-submit.t-btn_sending::before { border-color: rgba(255, 255, 255, .35) !important; border-top-color: #fff !important; }
+
+#lf-root #lf-slot .t-form__bottom-text { margin-top: 14px !important; color: #8a97ab !important; font: 400 12.5px/1.5 var(--lf-font) !important; text-align: center !important; }
+
+/* Сообщение об успехе внутри формы (старый вариант Tilda) */
+#lf-root #lf-slot .t-form__successbox:not(.t-form-success-popup) {
+  margin: 0 0 14px !important;
+  padding: 22px !important;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--lf-blue) 8%, #fff) !important;
+  color: var(--lf-ink) !important;
+  font: 600 16px/1.5 var(--lf-font) !important;
+  text-align: center;
+}
+
+/* Всплывающее «Спасибо» Tilda — в стиле окна */
+.t-form-success-popup_new.t-form-success-popup { background-color: rgba(8, 18, 36, .72) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.t-form-success-popup_new .t-form-success-popup__wrapper { padding: 44px 36px 36px !important; border-radius: 24px !important; font-family: var(--lf-font); box-shadow: 0 40px 80px -20px rgba(2, 10, 28, .6); }
+.t-form-success-popup__content-icon { height: 56px !important; }
+.t-form-success-popup__content-icon-background { fill: var(--lf-blue); }
+.t-form-success-popup_new .t-form-success-popup__title { color: var(--lf-ink) !important; font: 800 24px/1.2 var(--lf-font) !important; letter-spacing: -.02em; }
+.t-form-success-popup_new .t-form-success-popup__text { color: var(--lf-muted) !important; font: 400 16px/1.55 var(--lf-font) !important; }
+.t-form-success-popup_new .t-form-success-popup__button { border-radius: 12px !important; background: var(--lf-blue) !important; color: #fff !important; font: 700 15px/1 var(--lf-font) !important; }
+
+/* ─────────── Анимации ─────────── */
+@keyframes lfRise  { from { opacity: 0; transform: translateY(36px) scale(.97); } }
+@keyframes lfFan   { from { opacity: 0; transform: none; } }
+@keyframes lfFade  { from { opacity: 0; } }
+@keyframes lfUp    { from { opacity: 0; transform: translateY(12px); } }
+@keyframes lfSkel  { 50% { opacity: .55; } }
+@keyframes lfPulse { 0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .7); } 70%, 100% { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); } }
+@keyframes lfFloat { 50% { transform: translate(-50%, calc(-50% - 16px)) rotate(var(--r)); } }
+
+/* ─────────── Телефоны ─────────── */
+@media (max-width: 600px) {
+  :root { --lf-radius: 22px; }
+  #lf-root { padding: 28px 14px 36px; }
+  #lf-root .lf__modal { padding: 8px; }
+  #lf-root .lf__body { padding: 40px 14px 20px; }
+  #lf-root .lf__body:first-child { padding-top: 26px; }
+  #lf-root .lf__stack::before { transform: rotate(-2.5deg) translate(-4px, 10px); }
+  #lf-root .lf__stack::after  { transform: rotate(2deg) translate(4px, 14px); }
+  #lf-root .lf__text { font-size: 15px; }
+  #lf-root .lf__glyph { font-size: calc(var(--fs) * .6); }
+  #lf-root .lf__topo { width: 420px; left: -180px; top: -170px; }
+  #lf-root .lf__rain { width: 130px; right: -10px; top: 2%; }
+  #lf-root .lf__blob { width: 140px; left: -60px; bottom: 4%; }
+  #lf-root .lf__dots { right: -20px; bottom: 3%; }
+  #lf-root .lf__ring--a { width: 380px; height: 380px; left: -200px; bottom: -200px; border-width: 32px; }
+}
+@media (max-width: 400px) {
+  #lf-root .lf__eyebrow::before, #lf-root .lf__eyebrow::after { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #lf-root .lf__stack, #lf-root .lf__stack::before, #lf-root .lf__stack::after,
+  #lf-root .lf__media, #lf-root .lf__eyebrow, #lf-root .lf__title, #lf-root .lf__text,
+  #lf-root .lf__glyph, #lf-root .lf__badge::before, #lf-root .lf__form::before { animation: none !important; }
+}
+</style>
+
+<script>
+(function () {
+  var root = document.getElementById('lf-root');
+  if (!root || root.getAttribute('data-lf-init')) return;
+  root.setAttribute('data-lf-init', '1');
+
+  /* Буквы на фоне: [x %, y %, размер px, поворот°, прозрачность] */
+  var spots = [
+    [9, 17, 128, -10, .09], [92, 24, 96, 12, .08], [19, 74, 88, 8, .07], [84, 70, 132, -8, .08],
+    [4, 50, 58, -4, .06], [95, 90, 64, 6, .06], [24, 9, 50, 14, .06], [73, 8, 56, -12, .06],
+    [11, 93, 52, -6, .05], [66, 94, 46, 10, .05]
+  ];
+  var decor = root.querySelector('.lf__decor');
+  var glyphs = (root.getAttribute('data-glyphs') || '').split(/\s+/).filter(Boolean).slice(0, spots.length);
+  glyphs.forEach(function (ch, i) {
+    var s = spots[i], el = document.createElement('span');
+    el.className = 'lf__glyph';
+    el.textContent = ch;
+    el.style.cssText = '--x:' + s[0] + '%;--y:' + s[1] + '%;--fs:' + s[2] + 'px;--r:' + s[3] + 'deg;--o:' + s[4] + ';animation-delay:' + (-i * 1.9) + 's';
+    decor.appendChild(el);
+  });
+
+  /* Картинка: нет ссылки — убираем блок, не загрузилась — фирменная заглушка */
+  var img = root.querySelector('.lf__img');
+  if (img) {
+    var media = img.closest('.lf__media');
+    if (!img.getAttribute('src')) {
+      media.parentNode.removeChild(media);
+    } else {
+      var fail = function () { media.classList.add('lf__media--fallback'); };
+      if (img.complete && !img.naturalWidth) fail(); else img.addEventListener('error', fail);
+    }
+  }
+
+  /* Нативная форма Tilda: ищем блок и переносим его внутрь окна целиком —
+     так скрипты Tilda, приём заявок и Tilda CRM работают как обычно */
+  function findFormRec() {
+    var want = (root.getAttribute('data-form-rec') || '').replace(/\D/g, '');
+    if (want) return document.getElementById('rec' + want);
+    var recs = document.querySelectorAll('.t-rec');
+    for (var i = 0; i < recs.length; i++) {
+      var r = recs[i];
+      if (r.contains(root) || root.contains(r)) continue;
+      if (r.querySelector('form.t-form') && !r.querySelector('.t396, .t-popup, .t706')) return r;
+    }
+    return null;
+  }
+
+  function mount() {
+    if (root.getAttribute('data-lf-mounted')) return;
+    root.setAttribute('data-lf-mounted', '1');
+
+    /* Выносим окно из записи T123, чтобы блок формы не оказался вложен в чужую запись */
+    var host = root.parentNode && root.parentNode.closest ? root.parentNode.closest('.t-rec') : null;
+    if (host && host.parentNode) {
+      host.parentNode.insertBefore(root, host);
+      host.classList.add('lf-host');
+    }
+
+    var rec = findFormRec();
+    var form = rec && rec.querySelector('form');
+    var slot = document.getElementById('lf-slot');
+    if (!form || !slot) { root.classList.add('lf--noform'); return; }
+
+    slot.appendChild(rec);
+    rec.classList.add('lf-native');
+
+    /* Прячем всё, кроме самой формы: заголовок, описание, картинку блока */
+    for (var node = form; node && node !== rec; node = node.parentNode) {
+      var kids = node.parentNode.children;
+      for (var k = 0; k < kids.length; k++) {
+        if (kids[k] !== node && !/^(STYLE|SCRIPT|LINK|NOSCRIPT)$/.test(kids[k].tagName)) kids[k].classList.add('lf-off');
+      }
+    }
+    root.classList.add('lf--ready');
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
+  else mount();
+})();
+</script>
