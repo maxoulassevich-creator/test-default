@@ -1,5 +1,5 @@
 {
-  "version": "1.1.1",
+  "version": "1.1.2",
   "date": "2026-10-14",
   "maxBytes": 83886080,
   "limits": {
@@ -493,6 +493,206 @@
           "test": "Zoom level is kept after a viewport resize",
           "passed": true,
           "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+        }
+      ]
+    },
+    "review_fixtures_upload_vs_viewer": {
+      "note": "reviewer fixtures; viewer verdict from FBXLoader 0.186.1 in Node with the viewer counting rules",
+      "tests": [
+        {
+          "test": "a-base.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "a-bom-crlf.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "a-comma-in-geometry-name.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-comma-in-names.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-comments.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "a-crlf.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "a-exponent-minus-1_6Mtri.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-indented-continuation.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-minus-zero-small.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "a-nested-objects-1_6Mtri.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-nested-objects2-1_6Mtri.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-spaces-indent.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "a-trailing-comma.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "blendshape.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "bone-is-mesh-no-geometry.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "bone-is-mesh-with-geometry.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "cyclic-models.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "dup-geometry-id.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "geometry-first-parent-root.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "geometry-id-int32.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "ids-above-2p53-bigfirst.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "ids-above-2p53.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "ids-negative.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "multi-geometry.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "nurbs-on-mesh-380k.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "nurbs-on-mesh-small.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+        },
+        {
+          "test": "op-connections.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "pvi-double-small.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+        },
+        {
+          "test": "pvi-int64-1_6Mtri.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "pvi-int64-small.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+        },
+        {
+          "test": "pvi-missing.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "pvi-twice.fbx",
+          "passed": true,
+          "detail": "загрузка: принят, просмотр: открыт"
+        },
+        {
+          "test": "r-ascii-no-newlines.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "r-ascii-unclosed-nocomma.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "r-vertices-zlib-truncated.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "r-zlib-bomb.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "r-zlib-garbage.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "r-zlib-truncated.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
+        },
+        {
+          "test": "shape-on-model.fbx",
+          "passed": true,
+          "detail": "загрузка: отклонён, просмотр: отклонён"
         }
       ]
     }

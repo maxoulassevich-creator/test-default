@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Woo Product 3D Viewer
  * Description: GLB/FBX/OBJ-модели товаров WooCommerce, адаптивное окно и шорткод [product_3d_button].
- * Version: 1.1.1
+ * Version: 1.1.2
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -13,7 +13,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-define( 'W3DPV_VERSION', '1.1.1' );
+define( 'W3DPV_VERSION', '1.1.2' );
 define( 'W3DPV_FILE', __FILE__ );
 define( 'W3DPV_PATH', plugin_dir_path( __FILE__ ) );
 define( 'W3DPV_URL', plugin_dir_url( __FILE__ ) );

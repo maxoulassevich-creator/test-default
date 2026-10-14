@@ -3,7 +3,7 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,11 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.1.2 =
+The upload check follows FBXLoader's parsing rules: object ids of any numeric type,
+duplicate ids, skin bones, model cycles, ASCII names with commas and line layout;
+every compressed array must decode to its declared size. Blendshape vertices no longer
+count toward the vertex limit. All stored files are checked again after the update.
 = 1.1.1 =
 Fixed: an FBX made of quads or n-gons passed the upload check and was then rejected
 by the viewer ("too complex", code DECODE). Upload validation now counts exactly what
