@@ -7,6 +7,7 @@ final class W3DPV_Cache {
 	const MAX_BYTES = 536870912; // 512 MiB per site.
 	const HOOK = 'w3dpv_monthly_cache_cleanup';
 	const MARKER = "w3dpv-cache-v1\n";
+	const HTACCESS = "<IfModule mod_mime.c>\nAddType model/gltf-binary .glb\nAddType application/octet-stream .fbx\nAddType model/obj .obj\n</IfModule>\n<IfModule mod_headers.c>\n<FilesMatch \"\\.(glb|fbx|obj)$\">\nHeader set Cache-Control \"public, max-age=2592000, immutable\"\nHeader set X-Content-Type-Options \"nosniff\"\n</FilesMatch>\n</IfModule>\n";
 	private static $prepared = array();
 	private static $copied_bytes = 0;
 
@@ -63,9 +64,11 @@ final class W3DPV_Cache {
 			$contents = @scandir( $real );
 			if ( ! $create || ! is_array( $contents ) || array_diff( $contents, array( '.', '..' ) ) || false === @file_put_contents( $marker, self::MARKER ) ) return false;
 			@file_put_contents( $real . '/index.html', '' );
-			@file_put_contents( $real . '/.htaccess', "<IfModule mod_mime.c>\nAddType model/gltf-binary .glb\nAddType model/obj .obj\n</IfModule>\n<IfModule mod_headers.c>\n<FilesMatch \"\\.(glb|obj)$\">\nHeader set Cache-Control \"public, max-age=2592000, immutable\"\nHeader set X-Content-Type-Options \"nosniff\"\n</FilesMatch>\n</IfModule>\n" );
 		}
 		if ( is_link( $marker ) || @file_get_contents( $marker ) !== self::MARKER ) return false;
+		// Folders created by older versions get the rules for newly supported formats.
+		$htaccess = $real . '/.htaccess';
+		if ( $create && ! is_link( $htaccess ) && @file_get_contents( $htaccess ) !== self::HTACCESS ) @file_put_contents( $htaccess, self::HTACCESS );
 		return array( 'path' => $real, 'url' => trailingslashit( $uploads['baseurl'] ) . 'w3dpv-model-cache/' );
 	}
 
@@ -81,7 +84,7 @@ final class W3DPV_Cache {
 	private static function files( $directory ) {
 		$files = array();
 		foreach ( scandir( $directory['path'] ) as $name ) {
-			if ( ! preg_match( '/^w3dpv-[a-f0-9]{64}\.(?:glb|obj)$/D', $name ) ) continue;
+			if ( ! preg_match( '/^w3dpv-[a-f0-9]{64}\.(?:glb|fbx|obj)$/D', $name ) ) continue;
 			$path = $directory['path'] . '/' . $name;
 			if ( is_file( $path ) && ! is_link( $path ) ) $files[$path] = array( 'bytes' => filesize( $path ), 'time' => filemtime( $path ) );
 		}

@@ -1,3 +1,166 @@
+Woo Product 3D Viewer 1.1.0 — поддержка FBX и исправления по итогам проверки 1.0.3
+Дата: 14.10.2026
+
+Добавлено — FBX:
+- Загрузка .fbx в медиатеку (права upload_files и edit_products, как для GLB/OBJ).
+- Проверка FBX на сервере: FBX 7.x (2011+), двоичный с 32- и 64-битными
+  смещениями записей (7000–7999) и ASCII. Проверяются заголовок и версия,
+  вложенность и границы всех записей, типы свойств, кодирование массивов,
+  наличие сеток, лимиты 1 000 000 вершин, ~1 000 000 треугольников и 256 МиБ
+  заявленных распакованных массивов. Сжатые массивы на сервере не распаковываются.
+- Просмотр через THREE.FBXLoader 0.186.1 и TGALoader. Встроенные текстуры
+  PNG/JPEG/TGA/BMP/WebP загружаются из файла; внешние пути к текстурам не
+  запрашиваются по сети. Незагруженные текстуры убираются из материалов —
+  без этого поверхность рендерится чёрной (воспроизведено A/B-снимком).
+  blob-адреса встроенных изображений освобождаются после загрузки.
+- Материалы Phong/Lambert переводятся в MeshStandardMaterial с сохранением
+  цвета, текстур, прозрачности, рельефа, свечения и цветов вершин;
+  шероховатость — по соглашению Blender (ShininessExponent = ((1 − r)·10)²).
+  Источники света, камеры и кривые из FBX не добавляются в сцену; полностью
+  чёрный слой цветов вершин нейтрализуется; сетки без материала получают
+  цвет из поля «Цвет без материалов». Z-up сцены поворачивает FBXLoader.
+- examples/demo-chair.fbx — двоичный FBX 7.4, преобразованный из demo-chair.glb.
+
+Исправлено — найдено при проверке 1.0.3:
+- Масштаб сбрасывался при изменении размера окна, повороте телефона и
+  переключении полноэкранного режима. Воспроизведено на 1.0.3: после трёх
+  нажатий «+» доля модели в кадре 39,4%, после изменения окна — 11,7%.
+- Отклонённое вложение заново полностью разбиралось при каждом просмотре
+  страницы товара (до 80 МиБ на запрос). Результат теперь хранится до
+  изменения файла (метаданные _w3dpv_invalid).
+- Одна загрузка разбиралась дважды (prefilter и wp_check_filetype_and_ext).
+- Список товаров в админке подключал медиабиблиотеку и модуль просмотра.
+- .htaccess папки кэша создавался один раз и не обновлялся при новых форматах.
+- При удалении плагина оставались опции, служебные метаданные и до 512 МиБ
+  копий моделей. Добавлен uninstall.php; привязки моделей к товарам и файлы
+  медиатеки сохраняются, папка с посторонними файлами не удаляется.
+- Не было объявления совместимости с HPOS (плагин не работает с заказами).
+  В WooCommerce 11.2.1 отсутствие объявления предупреждения не вызывает.
+- fopen() в валидаторах не проверялся; удаление BOM в OBJ выполнялось после trim.
+
+Среда:
+WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.6 (CLI и встроенный сервер),
+SQLite Database Integration 3.1.0. Браузер: Chromium (Playwright 1.56.1,
+сборка 1194), WebGL2 через SwiftShader; iPhone — эмуляция (user-agent,
+touch, 390×844), не физическое устройство.
+Образцы FBX для проверки: three.js r180 examples/models/fbx (vCube, monkey,
+monkey_embedded_texture, Samba Dancing, mixamo, stanford-bunny, nurbs) и
+demo-chair.fbx. Образцы three.js в архив не входят.
+Сборка viewer.js воспроизводима: повторная сборка даёт тот же SHA-256;
+исходная 1.0.3 пересобирается побайтно идентично поставленной.
+
+Не проверялось: PHP 7.4 (запущен только поиск конструкций PHP 8 — не найдено),
+WebKit/Safari и Firefox, физические iPhone/Android, Apache/Nginx/CDN,
+FBX из 3ds Max/Maya/Cinema 4D пользователя, FBX крупнее 8 МиБ.
+
+Проверки версии 1.1.0:
+
+fbx_validator, PHP 8.3.6 (23):
+[OK] Samba_Dancing.fbx — OK
+[OK] mixamo.fbx — OK
+[OK] monkey.fbx — OK
+[OK] monkey_embedded_texture.fbx — OK
+[OK] nurbs.fbx — REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).
+[OK] stanford-bunny.fbx — OK
+[OK] vCube.fbx — OK
+[OK] demo-chair.fbx — OK
+[OK] ascii-huge-count.fbx — REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.
+[OK] ascii-noversion.fbx — REJECT: В FBX не найден номер версии. Экспортируйте модель заново (FBX 7.x).
+[OK] ascii-old.fbx — REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.
+[OK] ascii-php.fbx — REJECT: FBX содержит неподдерживаемые данные.
+[OK] bad-encoding.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+[OK] bad-endoffset-64.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+[OK] bad-endoffset.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+[OK] bad-proptype.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+[OK] bomb-declared.fbx — REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.
+[OK] bomb-uncompressed-mismatch.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+[OK] glb-renamed.fbx — REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).
+[OK] header-only.fbx — REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).
+[OK] html.fbx — REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).
+[OK] old-6100.fbx — REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.
+[OK] truncated.fbx — REJECT: Структура FBX повреждена. Экспортируйте файл заново.
+
+wordpress_server (16):
+[OK] Old cache .htaccess is upgraded with FBX rules
+[OK] FBX copy is served from the server cache with the .fbx extension — /wp-content/uploads/w3dpv-model-cache/w3dpv-e8804b72e6a3551391682cdf3608e9e4c9baaafd074927ab35e50e82a2911574.fbx
+[OK] Server FBX copy is identical to the original
+[OK] Cache statistics include FBX copies — files=2 fbx=2
+[OK] Broken attachment is rejected and the result is stored — Структура FBX повреждена. Экспортируйте файл заново.
+[OK] HPOS compatibility is declared — woo-product-3d-viewer/woo-product-3d-viewer.php
+[N/A] Product block editor declaration — the feature no longer exists in WooCommerce 11.2.1
+[OK] Next request reuses the stored rejection without parsing
+[OK] A changed file is validated again
+[OK] Options removed
+[OK] Validation meta removed
+[OK] Cleanup is unscheduled
+[OK] Product model assignments are kept
+[OK] Media originals are kept
+[OK] Foreign file keeps the folder; only plugin files are removed — keep-me.txt
+[OK] Cache folder is removed
+
+wordpress_admin_chromium (12):
+[OK] Product list does not load viewer/admin scripts
+[OK] Editor shows the saved FBX file — monkey_embedded_texture.fbx
+[OK] Editor field names the supported formats — Файл 3D-модели (GLB, FBX или OBJ)
+[OK] Admin preview renders the FBX
+[OK] Saving the product stores the newly selected FBX — vCube.fbx
+[OK] Yaw setting is saved
+[OK] Variation editor lists the variation FBX — Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана
+[OK] Cache page shows the stored copies
+[OK] No JavaScript errors in the admin
+[OK] Binary FBX 7700 uploads through the media screen — upload-browser upload-browser-1.fbx Edit Copy URL to clipboard
+[OK] ASCII FBX uploads through the media screen — upload-ascii upload-ascii-1.fbx Edit Copy URL to clipboard
+[OK] Broken FBX is refused with the plugin message — Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново.
+
+storefront_chromium (42):
+[OK] Binary FBX 7400 (cube): opens without error — phase=ready meshes=1 vertices=36 textures=0
+[OK] Binary FBX 7400 (cube): model is visible and not black — coverage=23.2% mean=125,59,92 dark=0%
+[OK] Binary FBX 7400 (cube): no requests outside the site or for external textures
+[OK] Binary FBX 7400 (cube): no JavaScript errors
+[OK] Binary FBX with an external texture path: opens without error — phase=ready meshes=1 vertices=2910 textures=0
+[OK] Binary FBX with an external texture path: model is visible and not black — coverage=9.5% mean=234,234,235 dark=0%
+[OK] Binary FBX with an external texture path: no requests outside the site or for external textures
+[OK] Binary FBX with an external texture path: no JavaScript errors
+[OK] Binary FBX with an embedded PNG texture: opens without error — phase=ready meshes=1 vertices=2910 textures=1
+[OK] Binary FBX with an embedded PNG texture: model is visible and not black — coverage=9.2% mean=157,159,179 dark=0%
+[OK] Binary FBX with an embedded PNG texture: no requests outside the site or for external textures
+[OK] Binary FBX with an embedded PNG texture: no JavaScript errors
+[OK] Skinned, animated binary FBX 7400: opens without error — phase=ready meshes=2 vertices=165960 textures=0
+[OK] Skinned, animated binary FBX 7400: model is visible and not black — coverage=3.6% mean=77,149,171 dark=0%
+[OK] Skinned, animated binary FBX 7400: no requests outside the site or for external textures
+[OK] Skinned, animated binary FBX 7400: no JavaScript errors
+[OK] Binary FBX 7700 (64-bit record offsets): opens without error — phase=ready meshes=2 vertices=147336 textures=0
+[OK] Binary FBX 7700 (64-bit record offsets): model is visible and not black — coverage=3.5% mean=219,124,111 dark=0%
+[OK] Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures
+[OK] Binary FBX 7700 (64-bit record offsets): no JavaScript errors
+[OK] ASCII FBX 7500: opens without error — phase=ready meshes=1 vertices=91014 textures=0
+[OK] ASCII FBX 7500: model is visible and not black — coverage=10.6% mean=241,242,242 dark=0%
+[OK] ASCII FBX 7500: no requests outside the site or for external textures
+[OK] ASCII FBX 7500: no JavaScript errors
+[OK] Embedded FBX texture is uploaded and used — textures=1
+[OK] Missing external FBX texture is dropped instead of rendering black — textures=0
+[OK] Embedded texture blob URLs are revoked after loading — {"seen":1,"alive":0}
+[OK] FBX palette: model recolors to the chosen color — before=157,159,179 blue=153,196,229
+[OK] FBX palette: reset restores the original look — reset=157,159,179
+[OK] Escape closes the FBX viewer and removes the canvas
+[OK] GLB chair: opens and renders — coverage=11.7% mean=209,189,165
+[OK] GLB chair: no JavaScript errors
+[OK] OBJ chair: opens and renders — coverage=11.9% mean=242,130,124
+[OK] OBJ chair: no JavaScript errors
+[OK] FBX demo chair (examples/demo-chair.fbx): opens and renders — coverage=11.8% mean=209,189,165
+[OK] FBX demo chair (examples/demo-chair.fbx): no JavaScript errors
+[OK] Variation with its own FBX opens that FBX — {"id":13,"format":"fbx","bytes":319516,"mobile":false}
+[OK] Variation without a model falls back to the parent GLB — {"id":17,"format":"glb","bytes":386064,"mobile":false}
+[OK] Variable product: no JavaScript errors
+[OK] iPhone emulation: textured FBX opens in the constrained mode — apple=true constrained=true coverage=15.1%
+[OK] iPhone emulation: no JavaScript errors
+       original 1.0.3: home=11.7% zoomed=39.4% resized=11.7%
+[OK] Zoom level is kept after a viewport resize — home=11.7% zoomed=39.4% resized=39.4%
+
+Итого 1.1.0: 92 успешно, 0 ошибок, 1 неприменимо (функции product_block_editor
+нет в WooCommerce 11.2.1; объявление оставлено для более ранних версий).
+
+--- Результаты версии 1.0.3 (исторические) ---
 Woo Product 3D Viewer 1.0.3 — кэш, скорость и совместимость Safari
 Дата: 13.10.2026
 

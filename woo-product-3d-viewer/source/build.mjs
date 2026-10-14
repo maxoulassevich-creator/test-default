@@ -8,4 +8,4 @@ for (const kind of ['draco', 'basis']) fs.mkdirSync(root + '/assets/decoders/' +
 for (const name of ['draco_decoder.js','draco_decoder.wasm','draco_wasm_wrapper.js']) fs.copyFileSync(three + '/examples/jsm/libs/draco/gltf/' + name, root + '/assets/decoders/draco/' + name);
 for (const name of ['basis_transcoder.js','basis_transcoder.wasm']) fs.copyFileSync(three + '/examples/jsm/libs/basis/' + name, root + '/assets/decoders/basis/' + name);
 fs.copyFileSync(three + '/LICENSE', root + '/LICENSE-THREE.txt');
-console.log('Viewer compiled; local Draco, Meshopt and KTX2 support included.');
+console.log('Viewer compiled; GLB (Draco, Meshopt, KTX2), FBX (with TGA textures) and OBJ support included.');

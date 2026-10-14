@@ -1,13 +1,13 @@
 === Woo Product 3D Viewer ===
 Contributors: custom-development
-Tags: woocommerce, 3d, glb, obj, product
+Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Local GLB/OBJ product viewer with an accessible responsive modal and a shortcode.
+Local GLB/FBX/OBJ product viewer with an accessible responsive modal and a shortcode.
 
 == Installation ==
 Upload the plugin ZIP via Plugins > Add New > Upload Plugin, then activate.
@@ -18,6 +18,10 @@ See README-RU.html for the complete Russian guide and TEST-REPORT.txt for checks
 
 == Description ==
 * GLB 2.0 with embedded resources; Draco, Meshopt and KTX2 loaders included.
+* FBX 7.x (FBX 2011 and newer), binary and ASCII: meshes, Phong/Lambert materials,
+  embedded PNG/JPEG/TGA/BMP/WebP textures, Z-up scenes. External texture files are
+  not loaded; such surfaces keep their material color. Lights, cameras and curves
+  from the file are ignored; animations and skins stay in the bind pose.
 * Polygonal OBJ geometry; external MTL/textures are not supported.
 * Orbit, slow rotation with pause, zoom, camera reset, keyboard controls.
 * Background/model color palette, a custom color picker and original color reset.
@@ -35,6 +39,14 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.1.0 =
+Added FBX support: upload validation (binary/ASCII 7.x, structure and complexity limits),
+viewer loading with embedded textures, PBR material conversion and demo-chair.fbx.
+Fixed: zoom level is reset after a window resize, rotation or fullscreen switch.
+Fixed: a rejected media file was parsed again on every product page view.
+Fixed: the product list screen loaded the media frame and the 3D viewer.
+Added uninstall cleanup of plugin options, technical metadata and cache copies.
+Declared WooCommerce HPOS compatibility; the cache folder rules include FBX.
 = 1.0.3 =
 Added bounded server/browser model caches, 30-day cleanup and a cache management page.
 Download and engine loading run in parallel; desktop hover/focus preloads one model.

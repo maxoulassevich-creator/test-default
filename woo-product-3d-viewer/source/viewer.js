@@ -1,11 +1,13 @@
 import {
   WebGLRenderer, Scene, PerspectiveCamera, HemisphereLight, DirectionalLight,
   MeshStandardMaterial, Group, Box3, Vector3, Sphere, Spherical, MathUtils,
-  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, LoadingManager, DoubleSide, TextureLoader
+  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, LoadingManager, DoubleSide, TextureLoader, Loader
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -58,6 +60,108 @@ function validateGLB(bytes, maxVertices) {
   if (!vertices || vertices > maxVertices) throw new Error('Модель не содержит геометрии или превышает лимит сложности.');
   for (const accessor of (json.accessors || [])) if (!Number.isSafeInteger(accessor.count) || accessor.count < 0 || accessor.count > maxVertices * 3) throw new Error('Модель превышает лимит сложности.');
   return json;
+}
+
+const FBX_BINARY = 'Kaydara FBX Binary  \0';
+const TEXTURE_SLOTS = ['map', 'emissiveMap', 'normalMap', 'bumpMap', 'displacementMap', 'alphaMap', 'aoMap', 'lightMap', 'specularMap', 'envMap'];
+
+function checkFBX(bytes) {
+  const start = new TextDecoder().decode(new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 65536)));
+  if (start.startsWith(FBX_BINARY)) {
+    if (bytes.byteLength < 27) throw new Error('Файл FBX повреждён.');
+    const version = new DataView(bytes).getUint32(23, true);
+    if (version < 7000) throw new Error('Версия FBX ' + version + ' не поддерживается. Экспортируйте FBX 2011 или новее (7.x).');
+    return;
+  }
+  if (start.includes('\0') || /<\?|<\/?(?:html|script|svg)\b/i.test(start)) throw new Error('Файл FBX содержит неподдерживаемые данные.');
+  const version = /FBXVersion: (\d+)/.exec(start);
+  if (version && Number(version[1]) < 7000) throw new Error('Версия FBX ' + version[1] + ' не поддерживается. Экспортируйте FBX 2011 или новее (7.x).');
+}
+
+/** FBX textures may only come from the file itself; external paths never reach the network. */
+function fbxLoadingManager() {
+  const manager = new LoadingManager();
+  const created = new Set();
+  let active = 0, wake = null;
+  const itemStart = manager.itemStart, itemEnd = manager.itemEnd;
+  manager.itemStart = url => { active++; itemStart(url); };
+  manager.itemEnd = url => { itemEnd(url); if (--active <= 0 && wake) wake(); };
+  manager.setURLModifier(url => (url.startsWith('data:') || created.has(url)) ? url : 'data:,');
+  manager.addHandler(/\.tga$/i, new TGALoader(manager));
+  return {
+    manager,
+    parse(loader, bytes) {
+      // FBXLoader turns embedded images into blob URLs synchronously during parse() and never revokes them.
+      const createObjectURL = URL.createObjectURL;
+      URL.createObjectURL = function (value) { const url = createObjectURL.call(URL, value); created.add(url); return url; };
+      try { return loader.parse(bytes, ''); } finally { URL.createObjectURL = createObjectURL; }
+    },
+    idle(ms) {
+      if (active <= 0) return Promise.resolve();
+      return new Promise(resolve => { const timer = setTimeout(() => { wake = null; resolve(); }, ms); wake = () => { wake = null; clearTimeout(timer); resolve(); }; });
+    },
+    release() { created.forEach(url => URL.revokeObjectURL(url)); created.clear(); }
+  };
+}
+
+function loadedTexture(texture) {
+  const image = texture && texture.image;
+  if (!image) return false;
+  return texture.isDataTexture ? !!image.data : image.width > 0 && image.height > 0;
+}
+
+/** Brings FBX scenes in line with the GLB pipeline: studio lighting, PBR materials and no placeholder textures. */
+function prepareFBX(model, fallbackColor) {
+  model.updateMatrixWorld(true);
+  const extras = [];
+  model.traverse(child => { if (child !== model && (child.isLight || child.isCamera || child.isLine || child.isPoints)) extras.push(child); });
+  for (const child of extras) {
+    const parent = child.parent;
+    if (!parent) continue;
+    for (const nested of [...child.children]) parent.attach(nested);
+    parent.remove(child);
+    if (child.geometry) child.geometry.dispose();
+    for (const material of (Array.isArray(child.material) ? child.material : [child.material])) if (material) material.dispose();
+    if (typeof child.dispose === 'function') child.dispose();
+  }
+  const converted = new Map(), geometries = new Set(), dropped = new Set();
+  const convert = material => {
+    if (!material) return material;
+    if (converted.has(material)) return converted.get(material);
+    // A texture that failed to load (external path, PSD, TIFF) would sample as black.
+    for (const slot of TEXTURE_SLOTS) if (material[slot] && !loadedTexture(material[slot])) { dropped.add(material[slot]); material[slot] = null; }
+    let result = material;
+    if (material.isMeshPhongMaterial || material.isMeshLambertMaterial) {
+      // Blender writes ShininessExponent = ((1 - roughness) * 10)^2 and reads it back the same way.
+      let roughness = material.isMeshLambertMaterial ? 0.9 : MathUtils.clamp(1 - Math.sqrt(Math.max(Number(material.shininess) || 0, 0)) / 10, 0.25, 1);
+      if (material.specular && Math.max(material.specular.r, material.specular.g, material.specular.b) < 0.02) roughness = Math.max(roughness, 0.9);
+      const parameters = {name: material.name, color: material.color, roughness, metalness: 0, side: DoubleSide};
+      for (const key of ['map', 'emissive', 'emissiveMap', 'emissiveIntensity', 'normalMap', 'normalMapType', 'normalScale', 'bumpMap', 'bumpScale', 'displacementMap', 'displacementScale', 'displacementBias', 'alphaMap', 'aoMap', 'aoMapIntensity', 'lightMap', 'lightMapIntensity', 'opacity', 'transparent', 'alphaTest', 'vertexColors', 'flatShading']) {
+        if (material[key] !== undefined && material[key] !== null) parameters[key] = material[key];
+      }
+      result = new MeshStandardMaterial(parameters);
+      if (material.name === Loader.DEFAULT_MATERIAL_NAME) result.color.set(fallbackColor || '#9aa7b7');
+      material.dispose();
+    }
+    converted.set(material, result);
+    return result;
+  };
+  model.traverse(child => {
+    if (!child.isMesh) return;
+    child.material = Array.isArray(child.material) ? child.material.map(convert) : convert(child.material);
+    geometries.add(child.geometry);
+  });
+  for (const geometry of geometries) {
+    if (!geometry.getAttribute('normal')) geometry.computeVertexNormals();
+    // Some exporters write an empty (all black) color layer; it would hide every material.
+    const colors = geometry.getAttribute('color');
+    if (colors && colors.array && colors.itemSize >= 3) {
+      let visible = false;
+      for (let i = 0; i < colors.array.length && !visible; i += colors.itemSize) visible = colors.array[i] > 0.004 || colors.array[i + 1] > 0.004 || colors.array[i + 2] > 0.004;
+      if (!visible) { colors.array.fill(1); colors.needsUpdate = true; }
+    }
+  }
+  dropped.forEach(texture => texture.dispose());
 }
 
 export function mount(host, options, config, callbacks) {
@@ -128,11 +232,13 @@ export function mount(host, options, config, callbacks) {
     const sphere = new Box3().setFromObject(pivot).getBoundingSphere(new Sphere());
     const halfVertical = MathUtils.degToRad(camera.fov / 2);
     const halfHorizontal = Math.atan(Math.tan(halfVertical) * camera.aspect);
+    // Keep the shopper's zoom level when only the viewport changes.
+    const zoomLevel = preserveAngle ? camera.position.distanceTo(controls.target) / homeDistance : 1;
     homeDistance = sphere.radius / Math.sin(Math.min(halfVertical, halfHorizontal)) * 1.12;
     const direction = preserveAngle ? camera.position.clone().sub(controls.target).normalize() : new Vector3(3.8, 2, 5).normalize();
-    camera.position.copy(direction.multiplyScalar(homeDistance));
     controls.target.set(0, 0, 0); controls.minDistance = Math.max(sphere.radius * 0.4, 0.01);
     controls.maxDistance = homeDistance * 4;
+    camera.position.copy(direction.multiplyScalar(MathUtils.clamp(homeDistance * zoomLevel, controls.minDistance, controls.maxDistance)));
     camera.near = Math.max(sphere.radius / 1000, 0.001); camera.far = homeDistance * 15;
     camera.updateProjectionMatrix(); controls.update(0);
     if (!preserveAngle) controls.saveState();
@@ -266,6 +372,21 @@ export function mount(host, options, config, callbacks) {
         resources = gltf.scenes;
         model = gltf.scene;
         // Embedded animation clips are intentionally not started: this viewer presents the product shape.
+      } else if (options.model.format === 'fbx') {
+        checkFBX(bytes);
+        const textures = fbxLoadingManager();
+        try {
+          try { model = textures.parse(new FBXLoader(textures.manager), bytes); }
+          catch (error) {
+            if (/version not supported/i.test(error.message || '')) throw new Error('Версия FBX не поддерживается. Экспортируйте FBX 2011 или новее (7.x).');
+            throw new Error('Не удалось прочитать FBX. Экспортируйте файл заново (FBX 7.x, сетки, встроенные текстуры).');
+          }
+          // Embedded images decode asynchronously; external texture paths fail at once.
+          await textures.idle(30000);
+        } finally { textures.release(); }
+        if (disposed || errorState) { if (model) disposeObject(model); model = null; return; }
+        prepareFBX(model, options.color);
+        // Animation clips and skeletons stay in the bind pose, as with GLB.
       } else if (options.model.format === 'obj') {
         const text = new TextDecoder().decode(bytes).replace(/^\uFEFF/, '');
         if (text.includes('\0') || /<\?|<\/?(?:html|script|svg)\b/i.test(text)) throw new Error('Файл OBJ содержит неподдерживаемые данные.');
@@ -280,7 +401,7 @@ export function mount(host, options, config, callbacks) {
           child.material = new MeshStandardMaterial({color: vertexColors ? '#ffffff' : (options.color || '#9aa7b7'), vertexColors, roughness: 0.5, metalness: 0.12, side: DoubleSide});
         });
         originalMaterials.forEach(value => value.dispose());
-      } else throw new Error('Поддерживаются только GLB и OBJ.');
+      } else throw new Error('Поддерживаются только GLB, FBX и OBJ.');
       if (disposed || errorState) { disposeObject(resources || model); model = null; resources = null; return; }
       if (timedOut) throw new Error('Загрузка заняла больше 3 минут. Повторите попытку.');
       let vertexCount = 0, meshCount = 0;
@@ -297,8 +418,9 @@ export function mount(host, options, config, callbacks) {
       const textureLimit = Math.min(constrained ? 2048 : 8192, renderer.capabilities.maxTextureSize);
       for (const texture of textures) {
         const image = texture.image;
-        if (image && Math.max(image.width, image.height) > textureLimit) {
-          if (texture.isCompressedTexture || !constrained) throw new Error('Текстуры превышают возможности устройства. Для телефонов загрузите облегчённый GLB с текстурами до 2048 пикселей.');
+        const longest = image ? Math.max(image.width || 0, image.height || 0) : 0;
+        if (longest > textureLimit && !(texture.isDataTexture && constrained && longest <= renderer.capabilities.maxTextureSize)) {
+          if (texture.isCompressedTexture || texture.isDataTexture || !constrained) throw new Error('Текстуры превышают возможности устройства. Для телефонов загрузите облегчённую модель с текстурами до 2048 пикселей.');
           if (!resizedImages.has(image)) {
             const scale = textureLimit / Math.max(image.width, image.height);
             const small = document.createElement('canvas');

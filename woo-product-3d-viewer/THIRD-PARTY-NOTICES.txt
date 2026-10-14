@@ -1,9 +1,13 @@
-Woo Product 3D Viewer 1.0.3
+Woo Product 3D Viewer 1.1.0
 Plugin PHP, JavaScript, CSS and source: GPL-2.0-or-later.
 
-Three.js 0.186.1
+Three.js 0.186.1 (including GLTFLoader, OBJLoader, FBXLoader and TGALoader)
 https://github.com/mrdoob/three.js
 MIT License; included verbatim in LICENSE-THREE.txt.
+
+fflate 0.8.2 (bundled with Three.js 0.186.1; used by FBXLoader for compressed FBX arrays)
+https://github.com/101arrowz/fflate
+MIT License; included verbatim in LICENSE-FFLATE.txt.
 
 Draco decoder (the files bundled with Three.js 0.186.1)
 https://github.com/google/draco
@@ -18,4 +22,5 @@ https://github.com/zeux/meshoptimizer
 MIT License. The full license and copyright notice are included in LICENSE-MESHOPT.txt.
 
 The complete Apache-2.0 license text is included in LICENSE-APACHE.txt.
-Example chair files were generated procedurally for this plugin package.
+Example chair files were generated procedurally for this plugin package;
+demo-chair.fbx is a binary FBX 7.4 conversion of demo-chair.glb.

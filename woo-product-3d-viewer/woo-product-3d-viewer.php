@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Woo Product 3D Viewer
- * Description: GLB/OBJ-модели товаров WooCommerce, адаптивное окно и шорткод [product_3d_button].
- * Version: 1.0.3
+ * Description: GLB/FBX/OBJ-модели товаров WooCommerce, адаптивное окно и шорткод [product_3d_button].
+ * Version: 1.1.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -13,7 +13,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-define( 'W3DPV_VERSION', '1.0.3' );
+define( 'W3DPV_VERSION', '1.1.0' );
 define( 'W3DPV_FILE', __FILE__ );
 define( 'W3DPV_PATH', plugin_dir_path( __FILE__ ) );
 define( 'W3DPV_URL', plugin_dir_url( __FILE__ ) );
@@ -23,6 +23,14 @@ require_once W3DPV_PATH . 'includes/class-w3dpv-cache.php';
 require_once W3DPV_PATH . 'includes/class-w3dpv-plugin.php';
 W3DPV_Cache::init();
 register_deactivation_hook( __FILE__, array( 'W3DPV_Cache', 'deactivate' ) );
+
+// The plugin does not read or write orders. Settings use the classic product editor only.
+add_action( 'before_woocommerce_init', static function () {
+	if ( class_exists( '\Automattic\WooCommerce\Utilities\FeaturesUtil' ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'product_block_editor', __FILE__, false );
+	}
+} );
 
 add_action( 'plugins_loaded', static function () {
 

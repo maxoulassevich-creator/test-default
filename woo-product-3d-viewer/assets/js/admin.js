@@ -13,11 +13,11 @@
   }
   $(document).on('click', '.w3dpv-select-file', function () {
     const field = $(this).closest('.w3dpv-file-field');
-    const frame = wp.media({title: 'Выберите GLB или OBJ', button: {text: 'Использовать 3D-модель'}, multiple: false});
+    const frame = wp.media({title: 'Выберите GLB, FBX или OBJ', button: {text: 'Использовать 3D-модель'}, multiple: false});
     frame.on('select', function () {
       const file = frame.state().get('selection').first().toJSON();
       const ext = (file.filename || '').split('.').pop().toLowerCase();
-      if (!['glb', 'obj'].includes(ext)) { window.alert('Нужен файл GLB или OBJ.'); return; }
+      if (!['glb', 'fbx', 'obj'].includes(ext)) { window.alert('Нужен файл GLB, FBX или OBJ.'); return; }
       if (file.filesizeInBytes > W3DPVConfig.maxBytes) { window.alert('Модель превышает лимит ' + (W3DPVConfig.maxBytes / 1048576) + ' МиБ.'); return; }
       field.find('.w3dpv-attachment-id').val(file.id).trigger('change');
       field.find('.w3dpv-file-info').text(file.filename);

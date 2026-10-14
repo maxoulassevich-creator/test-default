@@ -105,7 +105,11 @@
     } else if (model.format === 'obj') {
       const start = new TextDecoder().decode(new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 1024)));
       if (/<!doctype|<html|<\?php|<script/i.test(start)) throw new Error('Вместо OBJ сервер вернул страницу. Проверьте доступность модели.');
-    } else throw new Error('Поддерживаются только GLB и OBJ.');
+    } else if (model.format === 'fbx') {
+      // Binary FBX starts with a fixed signature; ASCII FBX declares its header near the start.
+      const start = new TextDecoder().decode(new Uint8Array(bytes, 0, Math.min(bytes.byteLength, 65536)));
+      if (!start.startsWith('Kaydara FBX Binary  \0') && (/<!doctype|<html|<\?php|<script/i.test(start) || !/FBXHeaderExtension|FBXVersion/.test(start))) throw new Error('Вместо корректного FBX получен другой файл. Проверьте доступность модели на сайте.');
+    } else throw new Error('Поддерживаются только GLB, FBX и OBJ.');
   }
 
   async function read(cache, key, model) {

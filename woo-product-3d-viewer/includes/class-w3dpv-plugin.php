@@ -29,15 +29,16 @@ final class W3DPV_Plugin {
 
 	public function upload_mimes( $mimes ) {
 		if ( $this->uploader_allowed() ) {
-			$mimes['glb'] = 'model/gltf-binary';
-			$mimes['obj'] = 'model/obj';
+			foreach ( W3DPV_Model::FORMATS as $extension => $mime ) {
+				$mimes[$extension] = $mime;
+			}
 		}
 		return $mimes;
 	}
 
 	public function upload_prefilter( $file ) {
 		$extension = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
-		if ( ! in_array( $extension, array( 'glb', 'obj' ), true ) || ! empty( $file['error'] ) ) {
+		if ( ! W3DPV_Model::supported( $extension ) || ! empty( $file['error'] ) ) {
 			return $file;
 		}
 		if ( ! $this->uploader_allowed() ) {
@@ -53,10 +54,10 @@ final class W3DPV_Plugin {
 
 	public function filetype( $data, $file, $filename, $mimes, $real_mime = null ) {
 		$extension = strtolower( pathinfo( $filename, PATHINFO_EXTENSION ) );
-		if ( ! in_array( $extension, array( 'glb', 'obj' ), true ) || ! $this->uploader_allowed() ) {
+		if ( ! W3DPV_Model::supported( $extension ) || ! $this->uploader_allowed() ) {
 			return $data;
 		}
-		$expected = 'glb' === $extension ? 'model/gltf-binary' : 'model/obj';
+		$expected = W3DPV_Model::FORMATS[$extension];
 		// Respect a stricter MIME policy passed by WordPress or another plugin.
 		$allowed = wp_check_filetype( $filename, $mimes );
 		if ( ( $allowed['type'] ?? '' ) !== $expected || is_wp_error( W3DPV_Model::validate( $file, $extension ) ) ) {
@@ -75,7 +76,7 @@ final class W3DPV_Plugin {
 		$valid = $attachment && ! is_wp_error( $attachment );
 		?>
 		<div class="w3dpv-file-field<?php echo $variation ? ' w3dpv-file-field--variation' : ''; ?>">
-			<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $mobile ? 'Облегчённая модель для телефонов (необязательно)' : 'Файл 3D-модели' ); ?></label>
+			<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $mobile ? 'Облегчённая модель для телефонов (необязательно)' : 'Файл 3D-модели (GLB, FBX или OBJ)' ); ?></label>
 			<input type="hidden" class="w3dpv-attachment-id" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $attachment_id ); ?>">
 			<div class="w3dpv-file-info" aria-live="polite"><?php echo esc_html( $valid ? $attachment['name'] : ( $attachment_id ? 'Файл недоступен — выберите модель заново.' : 'Модель не выбрана' ) ); ?></div>
 			<div class="w3dpv-file-actions">
@@ -98,7 +99,7 @@ final class W3DPV_Plugin {
 		};
 		?>
 		<div id="w3dpv_product_data" class="panel woocommerce_options_panel hidden">
-			<div class="w3dpv-admin-intro"><strong>Покажите товар со всех сторон</strong><p>Загрузите GLB со встроенными материалами и текстурами или полигональный OBJ. OBJ отображается без внешних MTL и текстур, в выбранном ниже цвете.</p></div>
+			<div class="w3dpv-admin-intro"><strong>Покажите товар со всех сторон</strong><p>Загрузите GLB со встроенными материалами и текстурами, FBX (7.x, лучше со встроенными текстурами — Embed Media) или полигональный OBJ. Внешние файлы текстур для FBX и MTL для OBJ не загружаются: такие поверхности показываются цветом материала.</p></div>
 			<?php
 			wp_nonce_field( 'w3dpv_save_' . $product_object->get_id(), '_w3dpv_nonce' );
 			$this->file_field( '_w3dpv_model_id', '_w3dpv_model_id', absint( $meta( 'model_id', 0 ) ) );
@@ -106,11 +107,11 @@ final class W3DPV_Plugin {
 			woocommerce_wp_checkbox( array( 'id' => '_w3dpv_auto', 'label' => 'Автовращение', 'description' => 'Медленное вращение при открытии. Покупатель может остановить его.', 'value' => $meta( 'auto', 'yes' ) ) );
 			woocommerce_wp_text_input( array( 'id' => '_w3dpv_speed', 'label' => 'Скорость, °/сек', 'type' => 'number', 'value' => $meta( 'speed', 8 ), 'custom_attributes' => array( 'min' => 1, 'max' => 30, 'step' => 1 ) ) );
 			woocommerce_wp_text_input( array( 'id' => '_w3dpv_yaw', 'label' => 'Поворот модели, °', 'type' => 'number', 'value' => $meta( 'yaw', 0 ), 'description' => 'Начальное направление модели: от −180 до 180°.', 'desc_tip' => true, 'custom_attributes' => array( 'min' => -180, 'max' => 180, 'step' => 1 ) ) );
-			woocommerce_wp_text_input( array( 'id' => '_w3dpv_color', 'label' => 'Цвет OBJ', 'type' => 'color', 'value' => $meta( 'color', '#9aa7b7' ) ) );
+			woocommerce_wp_text_input( array( 'id' => '_w3dpv_color', 'label' => 'Цвет без материалов', 'type' => 'color', 'value' => $meta( 'color', '#9aa7b7' ), 'description' => 'Цвет OBJ и сеток FBX, у которых нет материала.', 'desc_tip' => true ) );
 			woocommerce_wp_text_input( array( 'id' => '_w3dpv_background', 'label' => 'Фон просмотра', 'type' => 'color', 'value' => $meta( 'background', '#f2f4f7' ) ) );
 			woocommerce_wp_checkbox( array( 'id' => '_w3dpv_show_button', 'label' => 'Автоматическая кнопка', 'description' => 'Показывать кнопку после блока покупки в стандартном шаблоне товара. Для Elementor используйте шорткод.', 'value' => $meta( 'show_button', 'no' ) ) );
 			?>
-			<div class="w3dpv-admin-note"><strong>Шорткод кнопки:</strong> <code>[product_3d_button]</code><br>Для конкретного товара: <code>[product_3d_button id="123" label="Посмотреть в 3D"]</code><p>Для телефонов можно выбрать отдельный GLB до 5–10 МиБ с текстурами до 2048 px. Если облегчённой модели нет, используется основная. Кэш создаётся автоматически и очищается раз в 30 дней. <a href="<?php echo esc_url( admin_url( 'admin.php?page=w3dpv-cache' ) ); ?>">Управление кэшем 3D</a>.</p><p>Если у вариации нет своего файла, используется модель основного товара. Лимит модели: 80 МиБ (ограничение вашего сервера может быть меньше). Файлы должны храниться в локальной медиатеке; облачное хранение с удалением локального файла не поддерживается.</p></div>
+			<div class="w3dpv-admin-note"><strong>Шорткод кнопки:</strong> <code>[product_3d_button]</code><br>Для конкретного товара: <code>[product_3d_button id="123" label="Посмотреть в 3D"]</code><p>Для телефонов можно выбрать отдельный GLB/FBX до 5–10 МиБ с текстурами до 2048 px. Если облегчённой модели нет, используется основная. Кэш создаётся автоматически и очищается раз в 30 дней. <a href="<?php echo esc_url( admin_url( 'admin.php?page=w3dpv-cache' ) ); ?>">Управление кэшем 3D</a>.</p><p>Если у вариации нет своего файла, используется модель основного товара. Лимит модели: 80 МиБ (ограничение вашего сервера может быть меньше). Файлы должны храниться в локальной медиатеке; облачное хранение с удалением локального файла не поддерживается.</p></div>
 		</div>
 		<?php
 	}
@@ -233,7 +234,8 @@ final class W3DPV_Plugin {
 
 	public function admin_assets() {
 		$screen = get_current_screen();
-		if ( ! $screen || 'product' !== $screen->post_type ) {
+		// Only the product editor needs the media frame and viewer, not the product list.
+		if ( ! $screen || 'product' !== $screen->post_type || 'post' !== $screen->base ) {
 			return;
 		}
 		wp_enqueue_media();
