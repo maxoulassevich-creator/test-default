@@ -1,0 +1,883 @@
+{
+  "version": "1.0.3",
+  "date": "2026-10-13",
+  "maxBytes": 83886080,
+  "current": {
+    "server_cache_and_mobile": {
+      "version": "1.0.3",
+      "wordpress": "7.1.3",
+      "woocommerce": "11.2.1",
+      "tests": [
+        {
+          "test": "Monthly cleanup interval is exactly 30 days",
+          "passed": true
+        },
+        {
+          "test": "Cron scheduling is idempotent and upgrades schedule without reactivation",
+          "passed": true
+        },
+        {
+          "test": "Media cache fingerprint is the actual SHA-256 of the file",
+          "passed": true
+        },
+        {
+          "test": "Server cache copy is atomic and identical to the original",
+          "passed": true
+        },
+        {
+          "test": "Cached payload retains the original versioned URL as fallback",
+          "passed": true
+        },
+        {
+          "test": "Repeated preparation reuses the existing cached URL",
+          "passed": true
+        },
+        {
+          "test": "Apache cache folder defines MIME types and 30-day immutable headers",
+          "passed": true
+        },
+        {
+          "test": "Cleanup removes copies and preserves original media",
+          "passed": true
+        },
+        {
+          "test": "Cleanup leaves unrelated files untouched",
+          "passed": true
+        },
+        {
+          "test": "Cleanup changes generation to invalidate subsequent cache keys",
+          "passed": true
+        },
+        {
+          "test": "A fresh copy is created on demand after cleanup",
+          "passed": true
+        },
+        {
+          "test": "Cleanup respects an active writer lock and leaves its files intact",
+          "passed": true
+        },
+        {
+          "test": "An unowned directory is not adopted or used as model cache",
+          "passed": true
+        },
+        {
+          "test": "Oldest disposable copies are evicted to enforce the 512 MiB site budget",
+          "passed": true
+        },
+        {
+          "test": "Scheduled cleanup uses the same bounded original-preserving path",
+          "passed": true
+        },
+        {
+          "test": "Deactivation unschedules only plugin cleanup",
+          "passed": true
+        },
+        {
+          "test": "Published product supplies distinct main and optional mobile models",
+          "passed": true
+        },
+        {
+          "test": "A wrong product nonce cannot change the mobile model",
+          "passed": true
+        },
+        {
+          "test": "Variation with its own main model does not inherit a different variant mobile model",
+          "passed": true
+        },
+        {
+          "test": "Variation using the parent main model also inherits the parent mobile model",
+          "passed": true
+        },
+        {
+          "test": "Variation-specific mobile model is supported",
+          "passed": true
+        },
+        {
+          "test": "Draft products expose neither main nor mobile model",
+          "passed": true
+        },
+        {
+          "test": "Real 33 MiB validated file is copied into the bounded server cache",
+          "passed": true
+        }
+      ],
+      "mobile_product_id": 35,
+      "mobile_parent_id": 36,
+      "mobile_own_variation_id": 37,
+      "mobile_fallback_variation_id": 38
+    },
+    "chromium_cache_and_mobile": {
+      "version": "1.0.3",
+      "engine": "chromium",
+      "browser": "153.0.8010.0",
+      "deviceScope": "Chromium with mobile viewport and iPhone UA; physical iPhone not tested",
+      "tests": [
+        {
+          "test": "33 MiB file opens and is persisted without retaining a large memory copy",
+          "passed": true
+        },
+        {
+          "test": "Reopening uses browser cache with model network requests blocked",
+          "passed": true
+        },
+        {
+          "test": "Persistent cache survives page reload and works without model network access",
+          "passed": true
+        },
+        {
+          "test": "Expired browser entry is discarded and fetched again after 30 days",
+          "passed": true
+        },
+        {
+          "test": "Corrupt cached data is evicted and replaced by the valid model",
+          "passed": true
+        },
+        {
+          "test": "Stale page URL after server cleanup falls back to original media",
+          "passed": true
+        },
+        {
+          "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
+          "passed": true
+        },
+        {
+          "test": "Storage quota or denied storage never blocks viewing",
+          "passed": true
+        },
+        {
+          "test": "Touch phone automatically selects the optional lighter model",
+          "passed": true
+        },
+        {
+          "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
+          "passed": true
+        },
+        {
+          "test": "Palette stays usable in Apple compatibility mode",
+          "passed": true
+        },
+        {
+          "test": "33 MiB GLB opens in the Apple mobile rendering mode",
+          "passed": true
+        },
+        {
+          "test": "Older Safari dialog fallback has a centered viewport and working close",
+          "passed": true
+        },
+        {
+          "test": "No unhandled JavaScript errors in cache and compatibility flows",
+          "passed": true
+        }
+      ],
+      "timings": [
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 2855
+        },
+        {
+          "bytes": 34603008,
+          "source": "browser",
+          "elapsedMs": 625
+        },
+        {
+          "bytes": 34603008,
+          "source": "browser",
+          "elapsedMs": 5424
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 3319
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 4916
+        },
+        {
+          "bytes": 386064,
+          "source": "network",
+          "elapsedMs": 424
+        },
+        {
+          "bytes": 386064,
+          "source": "server",
+          "elapsedMs": 4480
+        },
+        {
+          "bytes": 1982403,
+          "source": "server",
+          "elapsedMs": 1194
+        },
+        {
+          "bytes": 487228,
+          "source": "server",
+          "elapsedMs": 1719
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 949
+        },
+        {
+          "bytes": 386064,
+          "source": "server",
+          "elapsedMs": 1069
+        }
+      ]
+    },
+    "webkit_cache_and_mobile": {
+      "version": "1.0.3",
+      "engine": "webkit",
+      "browser": "26.5",
+      "deviceScope": "Linux WebKit with mobile viewport and iPhone UA; physical iPhone not tested",
+      "tests": [
+        {
+          "test": "33 MiB file opens and is persisted without retaining a large memory copy",
+          "passed": true
+        },
+        {
+          "test": "Reopening uses browser cache with model network requests blocked",
+          "passed": true
+        },
+        {
+          "test": "Persistent cache survives page reload and works without model network access",
+          "passed": true
+        },
+        {
+          "test": "Expired browser entry is discarded and fetched again after 30 days",
+          "passed": true
+        },
+        {
+          "test": "Corrupt cached data is evicted and replaced by the valid model",
+          "passed": true
+        },
+        {
+          "test": "Stale page URL after server cleanup falls back to original media",
+          "passed": true
+        },
+        {
+          "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
+          "passed": true
+        },
+        {
+          "test": "Storage quota or denied storage never blocks viewing",
+          "passed": true
+        },
+        {
+          "test": "Touch phone automatically selects the optional lighter model",
+          "passed": true
+        },
+        {
+          "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
+          "passed": true
+        },
+        {
+          "test": "Palette stays usable in Apple compatibility mode",
+          "passed": true
+        },
+        {
+          "test": "33 MiB GLB opens in the Apple mobile rendering mode",
+          "passed": true
+        },
+        {
+          "test": "Older Safari dialog fallback has a centered viewport and working close",
+          "passed": true
+        },
+        {
+          "test": "No unhandled JavaScript errors in cache and compatibility flows",
+          "passed": true
+        }
+      ],
+      "timings": [
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 2107
+        },
+        {
+          "bytes": 34603008,
+          "source": "browser",
+          "elapsedMs": 988
+        },
+        {
+          "bytes": 34603008,
+          "source": "browser",
+          "elapsedMs": 1563
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 2183
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 1568
+        },
+        {
+          "bytes": 386064,
+          "source": "network",
+          "elapsedMs": 1118
+        },
+        {
+          "bytes": 386064,
+          "source": "server",
+          "elapsedMs": 1212
+        },
+        {
+          "bytes": 1982403,
+          "source": "server",
+          "elapsedMs": 1743
+        },
+        {
+          "bytes": 487228,
+          "source": "server",
+          "elapsedMs": 2722
+        },
+        {
+          "bytes": 34603008,
+          "source": "server",
+          "elapsedMs": 2022
+        },
+        {
+          "bytes": 386064,
+          "source": "server",
+          "elapsedMs": 1077
+        }
+      ]
+    },
+    "webkit_palette_pixels": {
+      "version": "1.0.3",
+      "engine": "WebKit 26.5",
+      "tests": [
+        {
+          "test": "Touch palette changes rendered texture pixels in WebKit",
+          "passed": true
+        },
+        {
+          "test": "Original color reset restores exact rendered texture pixels in WebKit",
+          "passed": true
+        }
+      ]
+    },
+    "palette_regression": {
+      "version": "1.0.2",
+      "browser": "153.0.8010.0",
+      "tests": [
+        {
+          "test": "Palette has separate background/model tabs and ten color presets",
+          "passed": true
+        },
+        {
+          "test": "Background preset updates the visible stage immediately",
+          "passed": true
+        },
+        {
+          "test": "Custom background color and background reset work",
+          "passed": true
+        },
+        {
+          "test": "Model palette repaints a textured GLB",
+          "passed": true
+        },
+        {
+          "test": "Reset restores the exact original GLB colors and textures",
+          "passed": true
+        },
+        {
+          "test": "Custom model color is applied",
+          "passed": true
+        },
+        {
+          "test": "Repeated preset changes restore materials without color drift",
+          "passed": true
+        },
+        {
+          "test": "Palette tab arrows and Escape keep the viewer open",
+          "passed": true
+        },
+        {
+          "test": "Reopening starts with original colors and background",
+          "passed": true
+        },
+        {
+          "test": "OBJ supports palette recoloring",
+          "passed": true
+        },
+        {
+          "test": "OBJ reset restores its configured color",
+          "passed": true
+        },
+        {
+          "test": "Palette is usable by touch at 320×640",
+          "passed": true
+        },
+        {
+          "test": "Palette is usable by touch at 390×844",
+          "passed": true
+        },
+        {
+          "test": "Palette is usable by touch at 820×1180",
+          "passed": true
+        },
+        {
+          "test": "Palette is usable by touch at 844×390",
+          "passed": true
+        },
+        {
+          "test": "No palette JavaScript errors",
+          "passed": true
+        }
+      ]
+    },
+    "material_recolor_regression": {
+      "tests": [
+        {
+          "test": "Invalid color does not alter materials",
+          "passed": true
+        },
+        {
+          "test": "Chosen color applies to single and grouped materials",
+          "passed": true
+        },
+        {
+          "test": "Shared original materials share a single preview copy",
+          "passed": true
+        },
+        {
+          "test": "Original colors and materials remain unchanged",
+          "passed": true
+        },
+        {
+          "test": "Textures, vertex alpha, transparency and physical properties are preserved",
+          "passed": true
+        },
+        {
+          "test": "Repeated color changes reuse the preview copy",
+          "passed": true
+        },
+        {
+          "test": "Restore returns exact original references and material array",
+          "passed": true
+        },
+        {
+          "test": "Disposal restores originals and disposes copies without shared texture disposal",
+          "passed": true
+        }
+      ]
+    },
+    "large_file_regression": {
+      "browser": "153.0.8010.0",
+      "tests": [
+        {
+          "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
+          "passed": true
+        },
+        {
+          "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
+          "passed": true
+        },
+        {
+          "test": "No browser JavaScript errors after large model loading",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "baseline": {
+    "plugin": "Woo Product 3D Viewer",
+    "version": "1.0.2",
+    "date": "2026-10-13",
+    "maxBytes": 83886080,
+    "palette_checks": {
+      "unit": {
+        "tests": [
+          {
+            "test": "Invalid color does not alter materials",
+            "passed": true
+          },
+          {
+            "test": "Chosen color applies to single and grouped materials",
+            "passed": true
+          },
+          {
+            "test": "Shared original materials share a single preview copy",
+            "passed": true
+          },
+          {
+            "test": "Original colors and materials remain unchanged",
+            "passed": true
+          },
+          {
+            "test": "Textures, vertex alpha, transparency and physical properties are preserved",
+            "passed": true
+          },
+          {
+            "test": "Repeated color changes reuse the preview copy",
+            "passed": true
+          },
+          {
+            "test": "Restore returns exact original references and material array",
+            "passed": true
+          },
+          {
+            "test": "Disposal restores originals and disposes copies without shared texture disposal",
+            "passed": true
+          }
+        ]
+      },
+      "browser": {
+        "version": "1.0.2",
+        "browser": "153.0.8010.0",
+        "tests": [
+          {
+            "test": "Palette has separate background/model tabs and ten color presets",
+            "passed": true
+          },
+          {
+            "test": "Background preset updates the visible stage immediately",
+            "passed": true
+          },
+          {
+            "test": "Custom background color and background reset work",
+            "passed": true
+          },
+          {
+            "test": "Model palette repaints a textured GLB",
+            "passed": true
+          },
+          {
+            "test": "Reset restores the exact original GLB colors and textures",
+            "passed": true
+          },
+          {
+            "test": "Custom model color is applied",
+            "passed": true
+          },
+          {
+            "test": "Repeated preset changes restore materials without color drift",
+            "passed": true
+          },
+          {
+            "test": "Palette tab arrows and Escape keep the viewer open",
+            "passed": true
+          },
+          {
+            "test": "Reopening starts with original colors and background",
+            "passed": true
+          },
+          {
+            "test": "OBJ supports palette recoloring",
+            "passed": true
+          },
+          {
+            "test": "OBJ reset restores its configured color",
+            "passed": true
+          },
+          {
+            "test": "Palette is usable by touch at 320×640",
+            "passed": true
+          },
+          {
+            "test": "Palette is usable by touch at 390×844",
+            "passed": true
+          },
+          {
+            "test": "Palette is usable by touch at 820×1180",
+            "passed": true
+          },
+          {
+            "test": "Palette is usable by touch at 844×390",
+            "passed": true
+          },
+          {
+            "test": "No palette JavaScript errors",
+            "passed": true
+          }
+        ]
+      },
+      "pixel": {
+        "alphaMaskPreserved": true,
+        "visibleColorApplied": true,
+        "originalBluePixels": 44,
+        "paintedBluePixels": 53646
+      }
+    },
+    "baseline_1_0_1": {
+      "plugin": "Woo Product 3D Viewer",
+      "version": "1.0.1",
+      "date": "2026-10-13",
+      "maxBytes": 83886080,
+      "update_tests": {
+        "server": [
+          {
+            "test": "Configured limit is exactly 80 MiB",
+            "passed": true
+          },
+          {
+            "test": "Valid GLB 33 MiB passes size and format checks",
+            "passed": true
+          },
+          {
+            "test": "WordPress media sideload accepts 33 MiB model",
+            "passed": true
+          },
+          {
+            "test": "Stored attachment preserves size: 33 MiB",
+            "passed": true
+          },
+          {
+            "test": "Valid GLB 80 MiB passes size and format checks",
+            "passed": true
+          },
+          {
+            "test": "WordPress media sideload accepts 80 MiB model",
+            "passed": true
+          },
+          {
+            "test": "Stored attachment preserves size: 80 MiB",
+            "passed": true
+          },
+          {
+            "test": "80 MiB plus one byte is rejected with current size message",
+            "passed": true
+          },
+          {
+            "test": "Empty model has a separate error message",
+            "passed": true
+          }
+        ],
+        "browser": {
+          "browser": "153.0.8010.0",
+          "tests": [
+            {
+              "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
+              "passed": true
+            },
+            {
+              "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
+              "passed": true
+            },
+            {
+              "test": "No browser JavaScript errors after large model loading",
+              "passed": true
+            }
+          ]
+        }
+      },
+      "baseline_1_0_0": {
+        "plugin": "Woo Product 3D Viewer",
+        "version": "1.0.0",
+        "date": "2026-10-13",
+        "server": {
+          "wordpress": "7.1.3",
+          "woocommerce": "11.2.1",
+          "php": "8.3.30",
+          "tests": [
+            {
+              "test": "Valid GLB accepted",
+              "passed": true
+            },
+            {
+              "test": "Valid OBJ accepted",
+              "passed": true
+            },
+            {
+              "test": "Fake GLB rejected",
+              "passed": true
+            },
+            {
+              "test": "Executable text in OBJ rejected",
+              "passed": true
+            },
+            {
+              "test": "GLB with external resource rejected",
+              "passed": true
+            },
+            {
+              "test": "Product editor can upload models",
+              "passed": true
+            },
+            {
+              "test": "WordPress media sideload and attachment check: glb",
+              "passed": true
+            },
+            {
+              "test": "WordPress media sideload and attachment check: obj",
+              "passed": true
+            },
+            {
+              "test": "Attachment outside uploads rejected",
+              "passed": true
+            },
+            {
+              "test": "Invalid nonce cannot change product",
+              "passed": true
+            },
+            {
+              "test": "Product model saved with valid nonce",
+              "passed": true
+            },
+            {
+              "test": "Speed and yaw bounded",
+              "passed": true
+            },
+            {
+              "test": "Invalid color replaced by safe default",
+              "passed": true
+            },
+            {
+              "test": "Invalid replacement preserves previous model",
+              "passed": true
+            },
+            {
+              "test": "Shortcode outputs escaped button",
+              "passed": true
+            },
+            {
+              "test": "No-model product has no button",
+              "passed": true
+            },
+            {
+              "test": "Private product is not exposed",
+              "passed": true
+            },
+            {
+              "test": "Password-protected product is not exposed",
+              "passed": true
+            },
+            {
+              "test": "Variation inherits parent GLB",
+              "passed": true
+            },
+            {
+              "test": "Variation own OBJ overrides parent",
+              "passed": true
+            },
+            {
+              "test": "Guests cannot enable model uploads",
+              "passed": true
+            },
+            {
+              "test": "Guest upload explicitly rejected",
+              "passed": true
+            },
+            {
+              "test": "Public product remains viewable by guests",
+              "passed": true
+            },
+            {
+              "test": "Shortcode resolves current WooCommerce product",
+              "passed": true
+            }
+          ]
+        },
+        "browser": {
+          "browser": "153.0.8010.0",
+          "renderer": "Chromium / WebGL2 SwiftShader",
+          "tests": [
+            {
+              "test": "3D engine and model stay unloaded before first click",
+              "passed": true
+            },
+            {
+              "test": "GLB opens in a real WebGL2 renderer",
+              "passed": true
+            },
+            {
+              "test": "Fullscreen control enters and exits fullscreen",
+              "passed": true
+            },
+            {
+              "test": "Auto-rotation changes the rendered model",
+              "passed": true
+            },
+            {
+              "test": "Pause stops auto-rotation",
+              "passed": true
+            },
+            {
+              "test": "Zoom buttons change rendered scale",
+              "passed": true
+            },
+            {
+              "test": "Keyboard rotates model and reset restores camera",
+              "passed": true
+            },
+            {
+              "test": "Escape closes, removes canvas and restores button focus",
+              "passed": true
+            },
+            {
+              "test": "Repeated open and close releases the canvas",
+              "passed": true
+            },
+            {
+              "test": "Missing file displays recoverable error",
+              "passed": true
+            },
+            {
+              "test": "Retry loads the model after error",
+              "passed": true
+            },
+            {
+              "test": "WooCommerce variation selection switches to its OBJ",
+              "passed": true
+            },
+            {
+              "test": "OBJ renders and can be zoomed",
+              "passed": true
+            },
+            {
+              "test": "Variation without a model falls back to parent GLB",
+              "passed": true
+            },
+            {
+              "test": "Dialog fits 320×640 with touch controls",
+              "passed": true
+            },
+            {
+              "test": "Dialog fits 390×844 with touch controls",
+              "passed": true
+            },
+            {
+              "test": "Dialog fits 820×1180 with touch controls",
+              "passed": true
+            },
+            {
+              "test": "Dialog fits 844×390 with touch controls",
+              "passed": true
+            },
+            {
+              "test": "Reduced-motion preference disables initial rotation",
+              "passed": true
+            },
+            {
+              "test": "WooCommerce editor shows product 3D settings and stored attachment",
+              "passed": true
+            },
+            {
+              "test": "Admin preview renders selected GLB",
+              "passed": true
+            },
+            {
+              "test": "No frontend JavaScript errors",
+              "passed": true
+            }
+          ]
+        },
+        "php_syntax": [
+          "7.4.33",
+          "8.3.30"
+        ],
+        "malformed_glb": [
+          "POSITION type",
+          "node cycle",
+          "excessive accessor count"
+        ]
+      }
+    }
+  }
+}

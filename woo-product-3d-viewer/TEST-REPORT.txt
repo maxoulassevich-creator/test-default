@@ -1,0 +1,308 @@
+Woo Product 3D Viewer 1.0.3 — кэш, скорость и совместимость Safari
+Дата: 13.10.2026
+
+Реализовано:
+- Копии проверенных моделей на сайте: атомарная запись, SHA-256 содержимого,
+  лимит 512 МиБ, блокировка писателя и очистка каждые 30 дней через WP-Cron.
+- Ручная очистка в WooCommerce > 3D-модели с capability и nonce.
+- Копии медиатеки сохраняются при очистке; папки без маркера не используются.
+- Браузерный кэш IndexedDB с отдельными метаданными, 30-дневным TTL,
+  ограничением 160 / 80 МиБ, не более 8 записей, малым кэшем текущей страницы.
+- Дедупликация загрузки, предварительная загрузка при намерении открыть на ПК,
+  одновременная загрузка модуля и файла, получение файла без второй полной
+  копии массива чанков при известном размере, отмена неиспользуемой загрузки.
+- Возврат к исходному адресу, если копия удалена при очистке; retry исходного
+  файла, ошибки отдельных этапов, диагностика для авторизованного редактора.
+- Отдельная мобильная модель товара/вариации. На телефонах меньше DPR,
+  антиалиасинг выключен, уменьшена карта окружения, один поток декодирования.
+- На Apple-устройствах локальный TextureLoader; обычные большие текстуры
+  уменьшаются до 2048 px перед отправкой на GPU. Исходный GLB не изменяется.
+- Палитра, оригинальные материалы и лимит 80 МиБ сохранены.
+
+Среда:
+WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.30 (PHP-WASM с SQLite в QA).
+Синтаксис четырёх PHP-файлов проверен дополнительно на PHP 7.4.33 и 8.3.30.
+Браузеры: Chromium 153 и Linux WebKit 26.5, локальный HTTP-сервер loopback.
+WebKit запускался с локально извлечёнными библиотеками; это проверка движка,
+не физического iPhone и не GPU Metal. В тесте телефона используется mobile
+viewport, touch, DPR 3 и user-agent iPhone; внутренний DPR просмотрщика — 1.
+
+Ключевые результаты:
+- Модель 33 МиБ открывается из браузерного кэша при блокировке всех сетевых
+  запросов моделей, включая повторное открытие после обновления страницы.
+  Сценарий прошёл в Chromium и WebKit.
+- Истёкшие и повреждённые записи удаляются, файл скачивается заново.
+- Недоступное хранилище не препятствует просмотру.
+- Копии на сайте совпадают с оригиналом по SHA-256; после очистки оригинал
+  остаётся неизменным. Проверены лимит, writer lock и чужая папка/файлы.
+- 4096×4096 PNG в мобильном режиме уменьшается до 2048 px и отображается.
+- Перекраска в WebKit проверена по пикселям: синий цвет появился на модели;
+  сброс вернул в точности исходное изображение (SHA-256 снимка одинаковый).
+- 33 и 80 МиБ загружаются в Chromium; повторно проверены интерфейс палитры,
+  OBJ/GLB, клавиатура, закрытие и размеры 320×640 / 390×844 / 820×1180 / 844×390.
+
+Ограничения проверки:
+Файлы 33/80 МиБ содержат валидную модель кресла и дополнительный неизвестный
+GLB-чанк до нужного размера. Это проверки объёма загрузки и кэша, а не тяжёлой
+геометрии или большого набора текстур. Файл пользователя «КАМИН.glb» не был
+предоставлен: его сложность и причина прежнего сбоя Safari не установлены.
+Физический iPhone, конкретная тема, Elementor, хостинг, Apache/Nginx/CDN,
+ограничения PHP, CSP и CORS пользователя не проверялись. Правила .htaccess
+проверены как записанный файл, а не на реально запущенном Apache.
+Время из локальной QA-среды не является обещанием скорости на сайте.
+Кэш не уменьшает исходный файл и не отменяет подготовку графики; для быстрого
+первого просмотра большого товара нужна подготовленная облегчённая модель.
+WP-Cron зависит от посещений или системного cron. Браузер вправе удалить кэш.
+
+Проверки версии 1.0.3:
+
+server_cache_and_mobile (23):
+[OK] Monthly cleanup interval is exactly 30 days
+[OK] Cron scheduling is idempotent and upgrades schedule without reactivation
+[OK] Media cache fingerprint is the actual SHA-256 of the file
+[OK] Server cache copy is atomic and identical to the original
+[OK] Cached payload retains the original versioned URL as fallback
+[OK] Repeated preparation reuses the existing cached URL
+[OK] Apache cache folder defines MIME types and 30-day immutable headers
+[OK] Cleanup removes copies and preserves original media
+[OK] Cleanup leaves unrelated files untouched
+[OK] Cleanup changes generation to invalidate subsequent cache keys
+[OK] A fresh copy is created on demand after cleanup
+[OK] Cleanup respects an active writer lock and leaves its files intact
+[OK] An unowned directory is not adopted or used as model cache
+[OK] Oldest disposable copies are evicted to enforce the 512 MiB site budget
+[OK] Scheduled cleanup uses the same bounded original-preserving path
+[OK] Deactivation unschedules only plugin cleanup
+[OK] Published product supplies distinct main and optional mobile models
+[OK] A wrong product nonce cannot change the mobile model
+[OK] Variation with its own main model does not inherit a different variant mobile model
+[OK] Variation using the parent main model also inherits the parent mobile model
+[OK] Variation-specific mobile model is supported
+[OK] Draft products expose neither main nor mobile model
+[OK] Real 33 MiB validated file is copied into the bounded server cache
+
+chromium_cache_and_mobile (14):
+[OK] 33 MiB file opens and is persisted without retaining a large memory copy
+[OK] Reopening uses browser cache with model network requests blocked
+[OK] Persistent cache survives page reload and works without model network access
+[OK] Expired browser entry is discarded and fetched again after 30 days
+[OK] Corrupt cached data is evicted and replaced by the valid model
+[OK] Stale page URL after server cleanup falls back to original media
+[OK] Download errors show a usable retry and a DOWNLOAD diagnostic code
+[OK] Storage quota or denied storage never blocks viewing
+[OK] Touch phone automatically selects the optional lighter model
+[OK] Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px
+[OK] Palette stays usable in Apple compatibility mode
+[OK] 33 MiB GLB opens in the Apple mobile rendering mode
+[OK] Older Safari dialog fallback has a centered viewport and working close
+[OK] No unhandled JavaScript errors in cache and compatibility flows
+
+webkit_cache_and_mobile (14):
+[OK] 33 MiB file opens and is persisted without retaining a large memory copy
+[OK] Reopening uses browser cache with model network requests blocked
+[OK] Persistent cache survives page reload and works without model network access
+[OK] Expired browser entry is discarded and fetched again after 30 days
+[OK] Corrupt cached data is evicted and replaced by the valid model
+[OK] Stale page URL after server cleanup falls back to original media
+[OK] Download errors show a usable retry and a DOWNLOAD diagnostic code
+[OK] Storage quota or denied storage never blocks viewing
+[OK] Touch phone automatically selects the optional lighter model
+[OK] Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px
+[OK] Palette stays usable in Apple compatibility mode
+[OK] 33 MiB GLB opens in the Apple mobile rendering mode
+[OK] Older Safari dialog fallback has a centered viewport and working close
+[OK] No unhandled JavaScript errors in cache and compatibility flows
+
+webkit_palette_pixels (2):
+[OK] Touch palette changes rendered texture pixels in WebKit
+[OK] Original color reset restores exact rendered texture pixels in WebKit
+
+palette_regression (16):
+[OK] Palette has separate background/model tabs and ten color presets
+[OK] Background preset updates the visible stage immediately
+[OK] Custom background color and background reset work
+[OK] Model palette repaints a textured GLB
+[OK] Reset restores the exact original GLB colors and textures
+[OK] Custom model color is applied
+[OK] Repeated preset changes restore materials without color drift
+[OK] Palette tab arrows and Escape keep the viewer open
+[OK] Reopening starts with original colors and background
+[OK] OBJ supports palette recoloring
+[OK] OBJ reset restores its configured color
+[OK] Palette is usable by touch at 320×640
+[OK] Palette is usable by touch at 390×844
+[OK] Palette is usable by touch at 820×1180
+[OK] Palette is usable by touch at 844×390
+[OK] No palette JavaScript errors
+
+material_recolor_regression (8):
+[OK] Invalid color does not alter materials
+[OK] Chosen color applies to single and grouped materials
+[OK] Shared original materials share a single preview copy
+[OK] Original colors and materials remain unchanged
+[OK] Textures, vertex alpha, transparency and physical properties are preserved
+[OK] Repeated color changes reuse the preview copy
+[OK] Restore returns exact original references and material array
+[OK] Disposal restores originals and disposes copies without shared texture disposal
+
+large_file_regression (3):
+[OK] 33 MiB GLB opens in WebGL2 and closes cleanly
+[OK] 80 MiB GLB opens in WebGL2 and closes cleanly
+[OK] No browser JavaScript errors after large model loading
+
+--- Результаты предыдущих версий (исторические) ---
+Woo Product 3D Viewer 1.0.2 — палитра фона и модели
+Дата: 13.10.2026
+
+Добавлены: вкладки «Фон»/«Модель», 10 образцов на вкладку, свой цвет,
+независимый возврат к исходному фону и исходным материалам модели.
+Материалы для перекраски клонируются; текстуры и исходные материалы не изменяются.
+Лимит модели: 83 886 080 байт = 80 МиБ.
+
+Проверки материалов:
+[OK] Invalid color does not alter materials
+[OK] Chosen color applies to single and grouped materials
+[OK] Shared original materials share a single preview copy
+[OK] Original colors and materials remain unchanged
+[OK] Textures, vertex alpha, transparency and physical properties are preserved
+[OK] Repeated color changes reuse the preview copy
+[OK] Restore returns exact original references and material array
+[OK] Disposal restores originals and disposes copies without shared texture disposal
+
+Браузер: Chromium 153.0.8010.0 / WebGL2 / SwiftShader.
+WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.30.
+[OK] Palette has separate background/model tabs and ten color presets
+[OK] Background preset updates the visible stage immediately
+[OK] Custom background color and background reset work
+[OK] Model palette repaints a textured GLB
+[OK] Reset restores the exact original GLB colors and textures
+[OK] Custom model color is applied
+[OK] Repeated preset changes restore materials without color drift
+[OK] Palette tab arrows and Escape keep the viewer open
+[OK] Reopening starts with original colors and background
+[OK] OBJ supports palette recoloring
+[OK] OBJ reset restores its configured color
+[OK] Palette is usable by touch at 320×640
+[OK] Palette is usable by touch at 390×844
+[OK] Palette is usable by touch at 820×1180
+[OK] Palette is usable by touch at 844×390
+[OK] No palette JavaScript errors
+
+[OK] Прозрачные участки текстуры сохранились: маска фона до/после совпала по пикселям.
+[OK] Выбранный синий цвет виден на поверхности модели в снимке результата.
+Для визуальной проверки использована GLB-модель с встроенной RGBA-текстурой.
+Проверки касаний выполнены в эмуляции: 320×640, 390×844, 820×1180 и 844×390.
+Физические устройства и сайт пользователя не проверялись.
+PHP-синтаксис: 7.4.33 и 8.3.30; синтаксис JavaScript: Node.js.
+
+Предыдущие проверки версии 1.0.1 (исторический отчёт):
+----------------------------------------------------
+Woo Product 3D Viewer 1.0.1 — проверка лимита 80 МиБ
+Дата: 13.10.2026
+
+Лимит: 83 886 080 байт = 80 × 1024 × 1024.
+Изменены серверная проверка, уведомления выбора файла, проверка загрузки в браузере,
+подсказка админки и инструкция. Версия обновлена для обновления кэша скриптов.
+
+Дополнительные проверки 1.0.1:
+[OK] Configured limit is exactly 80 MiB
+[OK] Valid GLB 33 MiB passes size and format checks
+[OK] WordPress media sideload accepts 33 MiB model
+[OK] Stored attachment preserves size: 33 MiB
+[OK] Valid GLB 80 MiB passes size and format checks
+[OK] WordPress media sideload accepts 80 MiB model
+[OK] Stored attachment preserves size: 80 MiB
+[OK] 80 MiB plus one byte is rejected with current size message
+[OK] Empty model has a separate error message
+[OK] 33 MiB GLB opens in WebGL2 and closes cleanly
+[OK] 80 MiB GLB opens in WebGL2 and closes cleanly
+[OK] No browser JavaScript errors after large model loading
+
+PHP: синтаксис всех PHP-файлов проверен на 7.4.33 и 8.3.30.
+JavaScript: синтаксис admin.js, bootstrap.js и viewer.js проверен.
+В тестовых GLB размер увеличен дополнительным неизвестным GLB-чанком:
+это проверяет передачу большого файла; сложность самой модели не увеличивалась.
+Файл модели пользователя и ограничения его хостинга не проверялись.
+
+Базовый отчёт предыдущей версии 1.0.0:
+-------------------------------------
+Woo Product 3D Viewer 1.0.0 — отчёт о проверках
+Дата: 13.10.2026
+
+Среда серверных проверок:
+WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.30.
+Отдельная локальная установка WordPress, SQLite Database Integration, PHP-WASM.
+Проверка синтаксиса всех PHP-файлов: PHP 7.4.33 и 8.3.30.
+Проверка синтаксиса bootstrap.js, admin.js и исходного viewer.js: Node.js.
+
+Серверные сценарии: 24 / 24 успешно.
+[OK] Valid GLB accepted
+[OK] Valid OBJ accepted
+[OK] Fake GLB rejected
+[OK] Executable text in OBJ rejected
+[OK] GLB with external resource rejected
+[OK] Product editor can upload models
+[OK] WordPress media sideload and attachment check: glb
+[OK] WordPress media sideload and attachment check: obj
+[OK] Attachment outside uploads rejected
+[OK] Invalid nonce cannot change product
+[OK] Product model saved with valid nonce
+[OK] Speed and yaw bounded
+[OK] Invalid color replaced by safe default
+[OK] Invalid replacement preserves previous model
+[OK] Shortcode outputs escaped button
+[OK] No-model product has no button
+[OK] Private product is not exposed
+[OK] Password-protected product is not exposed
+[OK] Variation inherits parent GLB
+[OK] Variation own OBJ overrides parent
+[OK] Guests cannot enable model uploads
+[OK] Guest upload explicitly rejected
+[OK] Public product remains viewable by guests
+[OK] Shortcode resolves current WooCommerce product
+
+Дополнительные проверки валидатора, PHP 7.4.33 и PHP 8.3.30:
+[OK] Некорректный тип ссылки POSITION отклонён без фатальной ошибки.
+[OK] Циклическая иерархия GLB отклонена.
+[OK] Чрезмерное число элементов геометрии отклонено.
+
+Браузерные проверки:
+Chromium 153.0.8010.0, WebGL2 / SwiftShader, Playwright.
+Сценарии: 22 / 22 успешно.
+[OK] 3D engine and model stay unloaded before first click
+[OK] GLB opens in a real WebGL2 renderer
+[OK] Fullscreen control enters and exits fullscreen
+[OK] Auto-rotation changes the rendered model
+[OK] Pause stops auto-rotation
+[OK] Zoom buttons change rendered scale
+[OK] Keyboard rotates model and reset restores camera
+[OK] Escape closes, removes canvas and restores button focus
+[OK] Repeated open and close releases the canvas
+[OK] Missing file displays recoverable error
+[OK] Retry loads the model after error
+[OK] WooCommerce variation selection switches to its OBJ
+[OK] OBJ renders and can be zoomed
+[OK] Variation without a model falls back to parent GLB
+[OK] Dialog fits 320×640 with touch controls
+[OK] Dialog fits 390×844 with touch controls
+[OK] Dialog fits 820×1180 with touch controls
+[OK] Dialog fits 844×390 with touch controls
+[OK] Reduced-motion preference disables initial rotation
+[OK] WooCommerce editor shows product 3D settings and stored attachment
+[OK] Admin preview renders selected GLB
+[OK] No frontend JavaScript errors
+
+Границы проверок:
+- Экран компьютера: 1440×1000; сенсорные экраны: 320×640, 390×844, 820×1180, 844×390.
+- Размеры и касания проверялись в эмуляции Chromium; физических устройств в проверке не было.
+- Safari, Firefox, реальные iPhone/Android и пользовательская тема/Elementor отдельно не проверялись.
+- Минимальные заявленные версии WordPress/WooCommerce не проверялись в полном диапазоне.
+- Работа в магазине пользователя и с его собственными файлами моделей не проверялась.
+- Обычные GLB и OBJ проверены. Draco, Meshopt и KTX2 подключены и включены в сборку;
+  отдельные сжатые модели этих типов в браузерных сценариях не проверялись.
+- Проверка повторного открытия подтверждает удаление canvas и вызовы очистки;
+  долгосрочные замеры памяти на реальном мобильном GPU не выполнялись.
+
+В архиве: исполняемый плагин, исходный просмотрщик, инструкция README-RU.html,
+демонстрационные GLB/OBJ и лицензии зависимостей.
+Никаких тестовых сайтов, учетных записей или тестового WordPress в архиве нет.

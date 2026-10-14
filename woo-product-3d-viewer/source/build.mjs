@@ -1,0 +1,11 @@
+import * as esbuild from 'esbuild';
+import fs from 'node:fs';
+import path from 'node:path';
+const root = path.resolve(import.meta.dirname, '..');
+await esbuild.build({entryPoints: [path.resolve(import.meta.dirname, 'viewer.js')], outfile: root + '/assets/js/viewer.js', bundle: true, format: 'esm', target: ['es2020'], minify: true, legalComments: 'eof', sourcemap: false});
+const three = path.resolve(import.meta.dirname, 'node_modules/three');
+for (const kind of ['draco', 'basis']) fs.mkdirSync(root + '/assets/decoders/' + kind, {recursive: true});
+for (const name of ['draco_decoder.js','draco_decoder.wasm','draco_wasm_wrapper.js']) fs.copyFileSync(three + '/examples/jsm/libs/draco/gltf/' + name, root + '/assets/decoders/draco/' + name);
+for (const name of ['basis_transcoder.js','basis_transcoder.wasm']) fs.copyFileSync(three + '/examples/jsm/libs/basis/' + name, root + '/assets/decoders/basis/' + name);
+fs.copyFileSync(three + '/LICENSE', root + '/LICENSE-THREE.txt');
+console.log('Viewer compiled; local Draco, Meshopt and KTX2 support included.');

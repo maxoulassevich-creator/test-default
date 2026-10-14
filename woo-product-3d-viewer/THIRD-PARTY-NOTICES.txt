@@ -1,0 +1,21 @@
+Woo Product 3D Viewer 1.0.3
+Plugin PHP, JavaScript, CSS and source: GPL-2.0-or-later.
+
+Three.js 0.186.1
+https://github.com/mrdoob/three.js
+MIT License; included verbatim in LICENSE-THREE.txt.
+
+Draco decoder (the files bundled with Three.js 0.186.1)
+https://github.com/google/draco
+Apache License 2.0. Decoder files are bundled unmodified from Three.js.
+
+Basis Universal / KTX2 transcoder (bundled with Three.js 0.186.1)
+https://github.com/BinomialLLC/basis_universal
+Apache License 2.0. Transcoder files are bundled unmodified from Three.js.
+
+Meshoptimizer decoder (bundled with Three.js 0.186.1)
+https://github.com/zeux/meshoptimizer
+MIT License. The full license and copyright notice are included in LICENSE-MESHOPT.txt.
+
+The complete Apache-2.0 license text is included in LICENSE-APACHE.txt.
+Example chair files were generated procedurally for this plugin package.
