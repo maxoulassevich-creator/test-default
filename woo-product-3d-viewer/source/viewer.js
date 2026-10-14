@@ -1,7 +1,7 @@
 import {
   WebGLRenderer, Scene, PerspectiveCamera, HemisphereLight, DirectionalLight,
   MeshStandardMaterial, Group, Box3, Vector3, Sphere, Spherical, MathUtils,
-  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, LoadingManager, DoubleSide, TextureLoader, Loader
+  SRGBColorSpace, ACESFilmicToneMapping, PMREMGenerator, LoadingManager, DoubleSide, TextureLoader, Loader, BufferAttribute
 } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -110,6 +110,34 @@ function loadedTexture(texture) {
   return texture.isDataTexture ? !!image.data : image.width > 0 && image.height > 0;
 }
 
+/**
+ * FBXLoader turns 1- and 2-vertex polygons (loose edges and points) into triangles with NaN corners,
+ * which break the bounding box of the whole model. Drop those triangles from every attribute and group.
+ */
+function dropDegenerateTriangles(geometry) {
+  const position = geometry.getAttribute('position');
+  if (!position || geometry.index || !position.array.some(value => !Number.isFinite(value))) return;
+  const triangles = Math.floor(position.count / 3), stride = position.itemSize * 3, keep = new Uint8Array(triangles), before = new Uint32Array(triangles + 1);
+  for (let t = 0; t < triangles; t++) {
+    keep[t] = 1;
+    for (let k = t * stride; k < (t + 1) * stride; k++) if (!Number.isFinite(position.array[k])) { keep[t] = 0; break; }
+    before[t + 1] = before[t] + keep[t];
+  }
+  const compact = attribute => {
+    const size = attribute.itemSize, target = new attribute.array.constructor(before[triangles] * 3 * size);
+    for (let t = 0, offset = 0; t < triangles; t++) if (keep[t]) { target.set(attribute.array.subarray(t * 3 * size, (t + 1) * 3 * size), offset); offset += 3 * size; }
+    const result = new BufferAttribute(target, size, attribute.normalized); result.name = attribute.name; return result;
+  };
+  for (const name of Object.keys(geometry.attributes)) geometry.setAttribute(name, compact(geometry.attributes[name]));
+  for (const name of Object.keys(geometry.morphAttributes)) geometry.morphAttributes[name] = geometry.morphAttributes[name].map(compact);
+  // Material groups address vertices of the non-indexed geometry; map them onto the kept triangles.
+  geometry.groups = geometry.groups.map(group => {
+    const first = Math.min(Math.floor(group.start / 3), triangles), last = Math.min(Math.floor((group.start + group.count) / 3), triangles);
+    return {start: before[first] * 3, count: (before[last] - before[first]) * 3, materialIndex: group.materialIndex};
+  }).filter(group => group.count > 0);
+  geometry.boundingBox = null; geometry.boundingSphere = null;
+}
+
 /** Brings FBX scenes in line with the GLB pipeline: studio lighting, PBR materials and no placeholder textures. */
 function prepareFBX(model, fallbackColor) {
   model.updateMatrixWorld(true);
@@ -152,6 +180,7 @@ function prepareFBX(model, fallbackColor) {
     geometries.add(child.geometry);
   });
   for (const geometry of geometries) {
+    dropDegenerateTriangles(geometry);
     if (!geometry.getAttribute('normal')) geometry.computeVertexNormals();
     // Some exporters write an empty (all black) color layer; it would hide every material.
     const colors = geometry.getAttribute('color');
@@ -404,16 +433,28 @@ export function mount(host, options, config, callbacks) {
       } else throw new Error('Поддерживаются только GLB, FBX и OBJ.');
       if (disposed || errorState) { disposeObject(resources || model); model = null; resources = null; return; }
       if (timedOut) throw new Error('Загрузка заняла больше 3 минут. Повторите попытку.');
-      let vertexCount = 0, meshCount = 0;
+      let vertexCount = 0, triangleCount = 0, meshCount = 0;
       const textures = new Set();
       model.traverse(child => {
-        if (child.isMesh) { meshCount++; vertexCount += (child.geometry.getAttribute('position')?.count || 0) * (child.isInstancedMesh ? child.count : 1); }
+        if (child.isMesh) {
+          const copies = child.isInstancedMesh ? child.count : 1, positions = child.geometry.getAttribute('position')?.count || 0;
+          meshCount++; vertexCount += positions * copies;
+          triangleCount += Math.floor((child.geometry.index ? child.geometry.index.count : positions) / 3) * copies;
+        }
         for (const material of (Array.isArray(child.material) ? child.material : [child.material])) {
           if (!material) continue;
           for (const texture of Object.values(material)) if (texture && texture.isTexture) textures.add(texture);
         }
       });
-      if (!meshCount || meshCount > 1000 || vertexCount > config.maxVertices * 3) throw new Error('Модель слишком сложная для просмотра или не содержит полигональной геометрии.');
+      // The upload check counts the same values, so an accepted file is not rejected here.
+      if (callbacks.details) callbacks.details({meshes: meshCount, vertices: vertexCount, triangles: triangleCount});
+      const count = value => new Intl.NumberFormat('ru-RU').format(value);
+      const maxMeshes = Number(config.maxMeshes) || 1000, maxVertices = (Number(config.maxVertices) || 1000000) * 3, maxTriangles = Number(config.fbxMaxTriangles) || 1500000;
+      if (!meshCount) throw new Error('В модели нет полигональных сеток: только кривые, точки или пустые объекты. Экспортируйте объекты как сетки (Mesh).');
+      if (meshCount > maxMeshes) throw new Error('Модель состоит из ' + count(meshCount) + ' отдельных сеток, лимит — ' + count(maxMeshes) + '. Объедините детали в 3D-редакторе.');
+      if (options.model.format === 'fbx' ? triangleCount > maxTriangles : vertexCount > maxVertices) {
+        throw new Error('Модель слишком сложная: ' + count(triangleCount) + ' треугольников, ' + count(vertexCount) + ' вершин после загрузки. Лимит: ' + (options.model.format === 'fbx' ? count(maxTriangles) + ' треугольников' : count(maxVertices) + ' вершин') + '. Уменьшите число полигонов или загрузите облегчённую модель.');
+      }
       const resizedImages = new Map();
       const textureLimit = Math.min(constrained ? 2048 : 8192, renderer.capabilities.maxTextureSize);
       for (const texture of textures) {

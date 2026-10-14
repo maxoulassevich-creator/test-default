@@ -3,7 +3,7 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -39,6 +39,18 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.1.1 =
+Fixed: an FBX made of quads or n-gons passed the upload check and was then rejected
+by the viewer ("too complex", code DECODE). Upload validation now counts exactly what
+the viewer builds: triangles after quad/n-gon splitting, copies of shared geometry and
+mesh objects; FBX limit is 1,500,000 triangles (about 1 GB of browser memory
+while parsing). The same scene accounting is applied to
+GLB (nodes reusing a mesh, GPU instancing) and OBJ (number of objects).
+Fixed: FBX with loose edges or points (1-2 vertex polygons) failed with "invalid size".
+Fixed: FBX files that make three.js FBXLoader crash (objects without geometry or links)
+are rejected at upload. ASCII FBX arrays are counted by their actual values.
+Error messages report the actual triangle, vertex and mesh counts; the product editor
+shows why a stored model file is not usable.
 = 1.1.0 =
 Added FBX support: upload validation (binary/ASCII 7.x, structure and complexity limits),
 viewer loading with embedded textures, PBR material conversion and demo-chair.fbx.

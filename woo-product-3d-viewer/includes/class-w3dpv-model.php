@@ -6,6 +6,12 @@ final class W3DPV_Model {
 	const MAX_BYTES = 83886080; // 80 MiB; PHP/WordPress may impose a smaller limit.
 	const MAX_VERTICES = 1000000;
 	const MAX_TRIANGLES = 1000000;
+	const MAX_MESHES = 1000;
+	/**
+	 * FBXLoader builds FBX geometry in plain JavaScript arrays: 1.5M triangles need about 1 GB of memory
+	 * while parsing. This also covers every all-quad mesh with up to 3M polygon indices.
+	 */
+	const FBX_MAX_TRIANGLES = 1500000;
 	/** Supported extensions and the MIME types registered for uploads. FBX has no registered MIME type. */
 	const FORMATS = array( 'glb' => 'model/gltf-binary', 'fbx' => 'application/octet-stream', 'obj' => 'model/obj' );
 	const FBX_BINARY_MAGIC = "Kaydara FBX Binary  \0";
@@ -170,6 +176,67 @@ final class W3DPV_Model {
 		if ( ! $vertices || $vertices > self::MAX_VERTICES || $decoded_bytes > 134217728 ) {
 			return self::error( 'GLB слишком сложный или не содержит геометрии. Лимит: 1 000 000 вершин и 128 МиБ буферов.' );
 		}
+		return self::glb_scene( $json, $nodes );
+	}
+
+	/**
+	 * Counts what GLTFLoader renders from the default scene: one mesh per triangle primitive of every node,
+	 * vertices multiplied by EXT_mesh_gpu_instancing copies. A mesh used by many nodes counts every time.
+	 */
+	private static function glb_scene( $json, $nodes ) {
+		$index = $json['scene'] ?? 0;
+		$scene = is_int( $index ) ? ( $json['scenes'][$index] ?? null ) : null;
+		if ( ! is_array( $scene ) || ( isset( $scene['nodes'] ) && ! is_array( $scene['nodes'] ) ) ) {
+			return self::error( 'GLB не содержит сцены для показа. Экспортируйте модель заново.' );
+		}
+		$meshes = 0;
+		$rendered = 0;
+		$seen = array();
+		$stack = array_values( $scene['nodes'] ?? array() );
+		while ( $stack ) {
+			$id = array_pop( $stack );
+			if ( ! is_int( $id ) || ! isset( $nodes[$id] ) || isset( $seen[$id] ) ) {
+				continue;
+			}
+			$seen[$id] = true;
+			$node = $nodes[$id];
+			foreach ( ( $node['children'] ?? array() ) as $child ) {
+				$stack[] = $child;
+			}
+			if ( ! isset( $node['mesh'] ) ) {
+				continue;
+			}
+			$mesh = is_int( $node['mesh'] ) ? ( $json['meshes'][ $node['mesh'] ] ?? null ) : null;
+			if ( ! is_array( $mesh ) ) {
+				return self::error( 'Некорректная ссылка на сетку GLB.' );
+			}
+			$triangle_modes = array( 4, 5, 6 );
+			$all_triangles = true;
+			foreach ( $mesh['primitives'] as $primitive ) {
+				$all_triangles = $all_triangles && in_array( $primitive['mode'] ?? 4, $triangle_modes, true );
+			}
+			$copies = 1;
+			$instancing = $node['extensions']['EXT_mesh_gpu_instancing']['attributes'] ?? null;
+			if ( $all_triangles && is_array( $instancing ) && $instancing ) {
+				$accessor = reset( $instancing );
+				$copies = is_int( $accessor ) && is_int( $json['accessors'][$accessor]['count'] ?? null ) ? max( 1, $json['accessors'][$accessor]['count'] ) : 1;
+			}
+			foreach ( $mesh['primitives'] as $primitive ) {
+				if ( in_array( $primitive['mode'] ?? 4, $triangle_modes, true ) ) {
+					++$meshes;
+					$rendered += $json['accessors'][ $primitive['attributes']['POSITION'] ]['count'] * $copies;
+				}
+			}
+		}
+		if ( ! $meshes ) {
+			return self::error( 'GLB не содержит полигональных сеток в сцене (только точки, линии или пустые узлы).' );
+		}
+		if ( $meshes > self::MAX_MESHES ) {
+			return self::error( 'GLB содержит ' . self::number( $meshes ) . ' отдельных сеток в сцене, лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
+		}
+		if ( $rendered > self::MAX_VERTICES * 3 ) {
+			return self::error( 'GLB слишком сложный: сцена содержит ' . self::number( $rendered ) . ' вершин с учётом повторяющихся копий, лимит — ' . self::number( self::MAX_VERTICES * 3 ) . '.' );
+		}
 		return true;
 	}
 
@@ -185,14 +252,17 @@ final class W3DPV_Model {
 		return true;
 	}
 
-	/** FBX 7.x (2011+), binary or ASCII. Only record headers are read; compressed arrays are not inflated. */
+	/**
+	 * FBX 7.x (2011+), binary or ASCII. Counts what THREE.FBXLoader will build: one mesh per Model of type "Mesh"
+	 * and n - 2 triangles per n-gon of the connected geometry, so the viewer never rejects an accepted file.
+	 */
 	private static function validate_fbx( $path, $size ) {
 		$handle = fopen( $path, 'rb' );
 		if ( ! $handle ) {
 			return self::error( 'Файл модели недоступен на сервере.', 'w3dpv_unavailable' );
 		}
 		$header = (string) fread( $handle, 27 );
-		$stats = array( 'nodes' => 0, 'vertices' => 0, 'indices' => 0, 'array_bytes' => 0, 'objects' => false );
+		$stats = array( 'nodes' => 0, 'vertices' => 0, 'array_bytes' => 0, 'objects' => false, 'geometries' => array(), 'models' => array(), 'connections' => array() );
 		if ( 0 === strncmp( $header, self::FBX_BINARY_MAGIC, 21 ) ) {
 			$result = 27 === strlen( $header ) ? self::validate_fbx_binary( $handle, $size, unpack( 'V', substr( $header, 23, 4 ) )[1], $stats ) : self::error( 'Файл FBX повреждён: неполный заголовок.' );
 		} else {
@@ -203,16 +273,65 @@ final class W3DPV_Model {
 		if ( is_wp_error( $result ) ) {
 			return $result;
 		}
-		if ( ! $stats['objects'] || ! $stats['vertices'] || $stats['indices'] < 3 ) {
+		$scene = self::fbx_scene( $stats );
+		if ( $scene['broken'] ) {
+			return self::error( 'В FBX есть объект без геометрии или без связей в сцене — такой файл не открывается в браузере. Экспортируйте модель заново.' );
+		}
+		if ( ! $stats['objects'] || ! $scene['meshes'] || ! $scene['triangles'] ) {
 			return self::error( 'FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).' );
 		}
-		if ( $stats['vertices'] > self::MAX_VERTICES || $stats['indices'] > self::MAX_TRIANGLES * 3 ) {
-			return self::error( 'FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.' );
+		if ( $scene['meshes'] > self::MAX_MESHES ) {
+			return self::error( 'FBX содержит ' . self::number( $scene['meshes'] ) . ' отдельных объектов-сеток, лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
+		}
+		if ( $scene['triangles'] > self::FBX_MAX_TRIANGLES || $stats['vertices'] > self::MAX_VERTICES ) {
+			return self::error( 'FBX слишком сложный: ' . self::number( $scene['triangles'] ) . ' треугольников и ' . self::number( $stats['vertices'] ) . ' вершин. Лимит: ' . self::number( self::FBX_MAX_TRIANGLES ) . ' треугольников и ' . self::number( self::MAX_VERTICES ) . ' вершин. Уменьшите число полигонов (Decimate) или загрузите GLB.' );
 		}
 		if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
 			return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
 		}
 		return true;
+	}
+
+	/**
+	 * Mirrors FBXLoader: every Model of type Mesh becomes a mesh with the last geometry connected to it.
+	 * FBXLoader throws on a model or mesh geometry without connections and on a mesh without geometry.
+	 */
+	private static function fbx_scene( $stats ) {
+		$linked = array();
+		$geometry_of = array();
+		foreach ( $stats['connections'] as $connection ) {
+			list( $child, $parent ) = $connection;
+			$linked[$child] = true;
+			$linked[$parent] = true;
+			if ( isset( $stats['geometries'][$child], $stats['models'][$parent] ) ) {
+				$geometry_of[$parent] = $child;
+			}
+		}
+		$broken = false;
+		foreach ( $stats['geometries'] as $id => $geometry ) {
+			$broken = $broken || ( 'Mesh' === $geometry['type'] && ! isset( $linked[$id] ) );
+		}
+		$meshes = 0;
+		$triangles = 0;
+		foreach ( $stats['models'] as $id => $type ) {
+			$broken = $broken || ! isset( $linked[$id] );
+			if ( 'Mesh' !== $type ) {
+				continue;
+			}
+			++$meshes;
+			$geometry = isset( $geometry_of[$id] ) ? $stats['geometries'][ $geometry_of[$id] ] : null;
+			if ( ! $geometry || ! in_array( $geometry['type'], array( 'Mesh', 'NurbsCurve' ), true ) ) {
+				$broken = true;
+			} elseif ( 'Mesh' === $geometry['type'] ) {
+				// Each polygon gives n - 2 triangles; one-vertex polygons (n - 2 = -1) are dropped by the viewer.
+				$triangles += max( 0, $geometry['indices'] - 2 * $geometry['polygons'] + $geometry['singles'] );
+			}
+		}
+		return array( 'meshes' => $meshes, 'triangles' => $triangles, 'broken' => $broken );
+	}
+
+	private static function number( $value ) {
+		return number_format( (float) $value, 0, ',', ' ' );
 	}
 
 	private static function fbx_version_error( $version ) {
@@ -227,7 +346,7 @@ final class W3DPV_Model {
 		$offset = 27;
 		// Same footer detection as THREE.FBXLoader: top-level records end 176 bytes before the file end.
 		while ( ( 0 === $size % 16 ? ( ( $offset + 176 ) & ~0xf ) : $offset + 176 ) < $size ) {
-			$result = self::fbx_record( $handle, $size, $wide, $offset, '', 0, $stats );
+			$result = self::fbx_record( $handle, $size, $wide, $offset, '', 0, $stats, null );
 			if ( is_wp_error( $result ) ) {
 				return $result;
 			}
@@ -237,7 +356,7 @@ final class W3DPV_Model {
 	}
 
 	/** Validates one binary record and its children; returns the offset after it. */
-	private static function fbx_record( $handle, $size, $wide, $offset, $parent, $depth, &$stats ) {
+	private static function fbx_record( $handle, $size, $wide, $offset, $parent, $depth, &$stats, $geometry ) {
 		$broken = self::error( 'Структура FBX повреждена. Экспортируйте файл заново.' );
 		$head_size = $wide ? 25 : 13;
 		if ( $offset + $head_size > $size || 0 !== fseek( $handle, $offset ) ) {
@@ -261,8 +380,16 @@ final class W3DPV_Model {
 			return $broken;
 		}
 		if ( 0 === $depth && 'Objects' === $name ) {
+			// FBXLoader keeps only the last top-level Objects and Connections records.
 			$stats['objects'] = true;
+			$stats['geometries'] = array();
+			$stats['models'] = array();
+		} elseif ( 0 === $depth && 'Connections' === $name ) {
+			$stats['connections'] = array();
 		}
+		// Object ids, types and connections are needed to count meshes the way FBXLoader builds them.
+		$keep = ( 'Objects' === $parent && ( 'Geometry' === $name || 'Model' === $name ) ) || ( 'Connections' === $parent && 'C' === $name );
+		$values = array();
 		$position = $properties;
 		$scalars = array( 'Y' => 2, 'C' => 1, 'I' => 4, 'F' => 4, 'D' => 8, 'L' => 8 );
 		$arrays = array( 'b' => 1, 'c' => 1, 'i' => 4, 'f' => 4, 'd' => 8, 'l' => 8 );
@@ -273,24 +400,39 @@ final class W3DPV_Model {
 			$type = fread( $handle, 1 );
 			++$position;
 			if ( isset( $scalars[$type] ) ) {
+				if ( $keep && 'L' === $type ) {
+					$values[] = unpack( 'P', (string) fread( $handle, 8 ) . str_repeat( "\0", 8 ) )[1];
+				}
 				$position += $scalars[$type];
 			} elseif ( 'S' === $type || 'R' === $type ) {
 				$length = unpack( 'V', (string) fread( $handle, 4 ) . "\0\0\0\0" )[1];
+				if ( $keep && 'S' === $type ) {
+					$values[] = $length <= 1024 && $position + 4 + $length <= $children ? (string) fread( $handle, $length ) : '';
+				}
 				$position += 4 + $length;
 			} elseif ( isset( $arrays[$type] ) ) {
 				$array = unpack( 'Vcount/Vencoding/Vlength', (string) fread( $handle, 12 ) . str_repeat( "\0", 12 ) );
 				$decoded = $array['count'] * $arrays[$type];
 				// THREE.FBXLoader reads uncompressed arrays by count and inflates everything else with zlib.
-				if ( $array['encoding'] > 1 || ( 0 === $array['encoding'] && $array['length'] !== $decoded ) ) {
+				if ( $array['encoding'] > 1 || ( 0 === $array['encoding'] && $array['length'] !== $decoded ) || $position + 12 + $array['length'] > $children ) {
 					return $broken;
 				}
-				$position += 12 + $array['length'];
 				$stats['array_bytes'] += $decoded;
+				if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
+					return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
+				}
 				if ( 'Geometry' === $parent && 'Vertices' === $name ) {
 					$stats['vertices'] += intdiv( $array['count'], 3 );
-				} elseif ( 'Geometry' === $parent && 'PolygonVertexIndex' === $name ) {
-					$stats['indices'] += $array['count'];
+				} elseif ( null !== $geometry && 'PolygonVertexIndex' === $name && 'i' === $type ) {
+					$polygons = self::fbx_polygon_ends( $handle, $array['encoding'], $array['length'], $decoded );
+					if ( false === $polygons ) {
+						return $broken;
+					}
+					$stats['geometries'][$geometry]['indices'] += $array['count'];
+					$stats['geometries'][$geometry]['polygons'] += $polygons[0];
+					$stats['geometries'][$geometry]['singles'] += $polygons[1];
 				}
+				$position += 12 + $array['length'];
 			} else {
 				return $broken;
 			}
@@ -301,8 +443,17 @@ final class W3DPV_Model {
 		if ( $position !== $children ) {
 			return $broken;
 		}
+		$child_geometry = null;
+		if ( $keep && 'Geometry' === $name && is_int( $values[0] ?? null ) ) {
+			$child_geometry = $values[0];
+			$stats['geometries'][$child_geometry] = array( 'type' => (string) ( $values[2] ?? '' ), 'indices' => 0, 'polygons' => 0, 'singles' => 0 );
+		} elseif ( $keep && 'Model' === $name && is_int( $values[0] ?? null ) ) {
+			$stats['models'][ $values[0] ] = (string) ( $values[2] ?? '' );
+		} elseif ( $keep && 'C' === $name && is_int( $values[1] ?? null ) && is_int( $values[2] ?? null ) ) {
+			$stats['connections'][] = array( $values[1], $values[2] );
+		}
 		while ( $position < $head['end'] ) {
-			$position = self::fbx_record( $handle, $size, $wide, $position, $name, $depth + 1, $stats );
+			$position = self::fbx_record( $handle, $size, $wide, $position, $name, $depth + 1, $stats, $child_geometry );
 			if ( is_wp_error( $position ) ) {
 				return $position;
 			}
@@ -310,10 +461,63 @@ final class W3DPV_Model {
 		return $position === $head['end'] ? $position : $broken;
 	}
 
+	/**
+	 * Counts polygon ends (negative indices) and one-vertex polygons (a negative index after another one)
+	 * in a PolygonVertexIndex array without unpacking it into PHP arrays.
+	 * Compressed data is inflated in small steps, so a forged stream cannot expand beyond its declared size.
+	 */
+	private static function fbx_polygon_ends( $handle, $encoding, $length, $expected ) {
+		$inflate = $encoding ? inflate_init( ZLIB_ENCODING_DEFLATE ) : null;
+		if ( $encoding && ! $inflate ) {
+			return false;
+		}
+		$ends = 0;
+		$singles = 0;
+		$decoded = 0;
+		$rest = '';
+		$previous = "\0\0\0\x80"; // The array starts like after a polygon end.
+		for ( $left = $length; $left > 0; ) {
+			$piece = (string) fread( $handle, min( $inflate ? 16384 : 1048576, $left ) );
+			if ( '' === $piece ) {
+				return false;
+			}
+			$left -= strlen( $piece );
+			if ( $inflate ) {
+				$piece = @inflate_add( $inflate, $piece, $left ? ZLIB_SYNC_FLUSH : ZLIB_FINISH );
+				if ( false === $piece ) {
+					return false;
+				}
+			}
+			$decoded += strlen( $piece );
+			if ( $decoded > $expected ) {
+				return false;
+			}
+			$piece = $rest . $piece;
+			$usable = strlen( $piece ) - strlen( $piece ) % 4;
+			// The sign bit of a little-endian int32 is the top bit of its fourth byte.
+			$signs = substr( $piece, 0, $usable ) & str_repeat( "\0\0\0\x80", $usable / 4 );
+			$ends += substr_count( $signs, "\x80" );
+			if ( $usable ) {
+				// Shifting the signs by one value marks values whose predecessor is negative too.
+				$singles += substr_count( $signs & ( $previous . substr( $signs, 0, -4 ) ), "\x80" );
+				$previous = substr( $signs, -4 );
+			}
+			$rest = (string) substr( $piece, $usable );
+		}
+		if ( $inflate && ZLIB_STREAM_END !== inflate_get_status( $inflate ) ) {
+			return false;
+		}
+		return $decoded === $expected ? array( $ends, $singles ) : false;
+	}
+
+	/** ASCII arrays are counted by their actual values: THREE.FBXLoader ignores the declared "*N" length. */
 	private static function validate_fbx_ascii( $handle, &$stats ) {
 		$version = 0;
 		$carry = '';
 		$first = true;
+		$geometry = null;
+		$open = null; // The Vertices or PolygonVertexIndex array being read: kind, geometry and counters.
+		$pattern = '/(?:^|\n)[ \t]*(?:(Geometry|Model):[ \t]*(-?\d{1,20})[ \t]*,[ \t]*"[^"\n]*"[ \t]*,[ \t]*"([^"\n]*)"|(Vertices|PolygonVertexIndex):[ \t]*\*\d+[ \t]*\{|C:[ \t]*"[A-Z]{2}"[ \t]*,[ \t]*(-?\d{1,20})[ \t]*,[ \t]*(-?\d{1,20})|(Objects|Connections):[ \t]*\{)/';
 		while ( ! feof( $handle ) ) {
 			$chunk = (string) fread( $handle, 1048576 );
 			if ( $first ) {
@@ -330,30 +534,79 @@ final class W3DPV_Model {
 			if ( preg_match( '/<\?|<\/?(?:script|html|svg|iframe)\b/i', $buffer ) ) {
 				return self::error( 'FBX содержит неподдерживаемые данные.' );
 			}
-			// Matches are short: keep a tail so a key split between chunks is counted exactly once.
-			$limit = feof( $handle ) ? strlen( $buffer ) : max( 0, strlen( $buffer ) - 256 );
-			preg_match_all( '/(?:^|[\s{])(Vertices|PolygonVertexIndex):\s*\*(\d{1,10})/', $buffer, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE );
-			foreach ( $matches as $match ) {
-				if ( $match[0][1] >= $limit ) {
+			// Keys are short: keep a tail so a key split between chunks is read exactly once.
+			$limit = feof( $handle ) ? strlen( $buffer ) : max( 0, strlen( $buffer ) - 4096 );
+			$position = 0;
+			while ( true ) {
+				if ( null !== $open ) {
+					$close = strpos( $buffer, '}', $position );
+					// Without the closing brace, stop after the last complete value; the rest is read with the next chunk.
+					$comma = false === $close ? strrpos( $buffer, ',', $position ) : false;
+					$end = false !== $close ? $close : ( false !== $comma ? $comma + 1 : $position );
+					$segment = (string) substr( $buffer, $position, $end - $position );
+					$open['commas'] += substr_count( $segment, ',' );
+					$open['minus'] += substr_count( $segment, '-' );
+					$open['digits'] = $open['digits'] || strcspn( $segment, '0123456789' ) < strlen( $segment );
+					if ( 'PolygonVertexIndex' === $open['kind'] && '' !== $segment ) {
+						// A negative value right after another negative one is a one-vertex polygon.
+						$open['singles'] += preg_match_all( '/-\d+\s*,\s*(?=-)/', $segment );
+						$open['singles'] += $open['negative'] && preg_match( '/^[\sa:]*-/', $segment ) ? 1 : 0;
+						$open['negative'] = (bool) preg_match( '/-\d+\s*,\s*$/', $segment );
+					}
+					$position = $end;
+					if ( false === $close ) {
+						break;
+					}
+					$values = $open['digits'] ? $open['commas'] + 1 : 0;
+					if ( 'Vertices' === $open['kind'] ) {
+						$stats['vertices'] += intdiv( $values, 3 );
+						$stats['array_bytes'] += $values * 8;
+					} else {
+						// Every negative index ends a polygon.
+						$stats['geometries'][ $open['geometry'] ]['indices'] += $values;
+						$stats['geometries'][ $open['geometry'] ]['polygons'] += $open['minus'];
+						$stats['geometries'][ $open['geometry'] ]['singles'] += $open['singles'];
+						$stats['array_bytes'] += $values * 4;
+					}
+					$open = null;
+					continue;
+				}
+				if ( ! preg_match( $pattern, $buffer, $match, PREG_OFFSET_CAPTURE, $position ) || $match[0][1] >= $limit ) {
+					$position = max( $position, $limit );
 					break;
 				}
-				$count = (int) $match[2][0];
-				if ( 'Vertices' === $match[1][0] ) {
-					$stats['vertices'] += intdiv( $count, 3 );
-					$stats['array_bytes'] += $count * 8;
-				} else {
-					$stats['indices'] += $count;
-					$stats['array_bytes'] += $count * 4;
+				$position = $match[0][1] + strlen( $match[0][0] );
+				if ( 'Geometry' === ( $match[1][0] ?? '' ) ) {
+					$geometry = $match[2][0];
+					$stats['geometries'][$geometry] = array( 'type' => $match[3][0], 'indices' => 0, 'polygons' => 0, 'singles' => 0 );
+				} elseif ( 'Model' === ( $match[1][0] ?? '' ) ) {
+					$stats['models'][ $match[2][0] ] = $match[3][0];
+					$geometry = null;
+				} elseif ( '' !== ( $match[4][0] ?? '' ) && null !== $geometry ) {
+					$open = array( 'kind' => $match[4][0], 'geometry' => $geometry, 'commas' => 0, 'minus' => 0, 'digits' => false, 'singles' => 0, 'negative' => true );
+				} elseif ( '' !== ( $match[5][0] ?? '' ) ) {
+					$stats['connections'][] = array( $match[5][0], $match[6][0] );
+				} elseif ( 'Objects' === ( $match[7][0] ?? '' ) ) {
+					// FBXLoader keeps only the last top-level Objects and Connections records.
+					$stats['objects'] = true;
+					$stats['geometries'] = array();
+					$stats['models'] = array();
+					$geometry = null;
+				} elseif ( 'Connections' === ( $match[7][0] ?? '' ) ) {
+					$stats['connections'] = array();
 				}
-			}
-			if ( ! $stats['objects'] && preg_match( '/(?:^|\n)Objects:/', substr( $buffer, 0, $limit ) ) ) {
-				$stats['objects'] = true;
+				if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
+					return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
+				}
 			}
 			// THREE.FBXLoader takes the first "FBXVersion: <number>" in the text.
 			if ( ! $version && preg_match( '/FBXVersion: (\d+)/', substr( $buffer, 0, $limit ), $match ) ) {
 				$version = (int) $match[1];
 			}
-			$carry = substr( $buffer, $limit );
+			$carry = (string) substr( $buffer, $position );
+		}
+		if ( null !== $open ) {
+			return self::error( 'Структура FBX повреждена. Экспортируйте файл заново.' );
 		}
 		if ( $version < 7000 || $version >= 8000 ) {
 			return $version ? self::fbx_version_error( $version ) : self::error( 'В FBX не найден номер версии. Экспортируйте модель заново (FBX 7.x).' );
@@ -370,6 +623,9 @@ final class W3DPV_Model {
 		$triangles = 0;
 		$number = '[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?';
 		$error = null;
+		// OBJLoader makes one mesh per o/g object with faces; an object with l/p lines becomes lines or points.
+		$meshes = 0;
+		$object = array( 'declared' => false, 'faces' => false, 'lines' => false );
 		while ( false !== ( $line = fgets( $handle, 1048577 ) ) ) {
 			if ( strlen( $line ) >= 1048576 || false !== strpos( $line, "\0" ) || preg_match( '/<\?|<\/?(?:script|html|svg|iframe)\b/i', $line ) ) {
 				$error = 'OBJ содержит неподдерживаемые данные или слишком длинную строку.';
@@ -407,7 +663,17 @@ final class W3DPV_Model {
 					}
 				}
 				$triangles += count( $parts ) - 2;
-			} elseif ( ! preg_match( '/^(?:o|g|s|usemtl|mtllib|l|p)(?:\s|$)/', $line ) ) {
+				$object['faces'] = true;
+			} elseif ( preg_match( '/^(?:o|g)(?:\s|$)/', $line ) ) {
+				// The first o/g only names the object that already holds earlier faces.
+				if ( $object['declared'] ) {
+					$meshes += $object['faces'] && ! $object['lines'] ? 1 : 0;
+					$object = array( 'declared' => true, 'faces' => false, 'lines' => false );
+				}
+				$object['declared'] = true;
+			} elseif ( preg_match( '/^(?:l|p)(?:\s|$)/', $line ) ) {
+				$object['lines'] = true;
+			} elseif ( ! preg_match( '/^(?:s|usemtl|mtllib)(?:\s|$)/', $line ) ) {
 				$error = 'Поддерживается полигональный OBJ. Экспортируйте поверхности и кривые в виде сетки.';
 				break;
 			}
@@ -417,8 +683,15 @@ final class W3DPV_Model {
 			}
 		}
 		fclose( $handle );
+		$meshes += $object['faces'] && ! $object['lines'] ? 1 : 0;
+		if ( ! $error && $triangles && ! $meshes ) {
+			$error = 'В OBJ грани находятся в объектах с линиями (l) или точками (p), такие объекты показываются как линии. Экспортируйте модель без линий.';
+		}
 		if ( $error || ! $vertices || ! $triangles ) {
 			return self::error( $error ?: 'OBJ должен содержать вершины и полигональные грани.' );
+		}
+		if ( $meshes > self::MAX_MESHES ) {
+			return self::error( 'OBJ содержит ' . self::number( $meshes ) . ' отдельных объектов (o/g), лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
 		}
 		return true;
 	}

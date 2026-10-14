@@ -78,7 +78,7 @@ final class W3DPV_Plugin {
 		<div class="w3dpv-file-field<?php echo $variation ? ' w3dpv-file-field--variation' : ''; ?>">
 			<label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $mobile ? 'Облегчённая модель для телефонов (необязательно)' : 'Файл 3D-модели (GLB, FBX или OBJ)' ); ?></label>
 			<input type="hidden" class="w3dpv-attachment-id" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $attachment_id ); ?>">
-			<div class="w3dpv-file-info" aria-live="polite"><?php echo esc_html( $valid ? $attachment['name'] : ( $attachment_id ? 'Файл недоступен — выберите модель заново.' : 'Модель не выбрана' ) ); ?></div>
+			<div class="w3dpv-file-info" aria-live="polite"><?php echo esc_html( $valid ? $attachment['name'] : ( is_wp_error( $attachment ) ? 'Файл не подходит: ' . $attachment->get_error_message() . ' Выберите модель заново.' : 'Модель не выбрана' ) ); ?></div>
 			<div class="w3dpv-file-actions">
 				<button type="button" class="button w3dpv-select-file"><?php esc_html_e( 'Выбрать / загрузить модель', 'woo-product-3d-viewer' ); ?></button>
 				<button type="button" class="button w3dpv-remove-file"<?php disabled( ! $attachment_id ); ?>><?php esc_html_e( 'Убрать', 'woo-product-3d-viewer' ); ?></button>
@@ -227,7 +227,7 @@ final class W3DPV_Plugin {
 		wp_enqueue_style( 'w3dpv-front', W3DPV_URL . 'assets/css/viewer.css', array(), W3DPV_VERSION );
 		wp_enqueue_script( 'w3dpv-model-cache', W3DPV_URL . 'assets/js/model-cache.js', array(), W3DPV_VERSION, true );
 		wp_enqueue_script( 'w3dpv-front', W3DPV_URL . 'assets/js/bootstrap.js', array( 'w3dpv-model-cache' ), W3DPV_VERSION, true );
-		wp_localize_script( 'w3dpv-model-cache', 'W3DPVConfig', array( 'version' => W3DPV_VERSION, 'viewerUrl' => W3DPV_URL . 'assets/js/viewer.js?ver=' . W3DPV_VERSION, 'decoderUrl' => W3DPV_URL . 'assets/decoders/', 'maxBytes' => W3DPV_Model::MAX_BYTES, 'maxVertices' => W3DPV_Model::MAX_VERTICES, 'cacheTTL' => W3DPV_Cache::TTL, 'cacheNamespace' => substr( hash( 'sha256', home_url( '/' ) ), 0, 12 ), 'cacheGeneration' => W3DPV_Cache::generation(), 'canDiagnose' => current_user_can( 'edit_products' ) ) );
+		wp_localize_script( 'w3dpv-model-cache', 'W3DPVConfig', array( 'version' => W3DPV_VERSION, 'viewerUrl' => W3DPV_URL . 'assets/js/viewer.js?ver=' . W3DPV_VERSION, 'decoderUrl' => W3DPV_URL . 'assets/decoders/', 'maxBytes' => W3DPV_Model::MAX_BYTES, 'maxVertices' => W3DPV_Model::MAX_VERTICES, 'maxMeshes' => W3DPV_Model::MAX_MESHES, 'fbxMaxTriangles' => W3DPV_Model::FBX_MAX_TRIANGLES, 'cacheTTL' => W3DPV_Cache::TTL, 'cacheNamespace' => substr( hash( 'sha256', home_url( '/' ) ), 0, 12 ), 'cacheGeneration' => W3DPV_Cache::generation(), 'canDiagnose' => current_user_can( 'edit_products' ) ) );
 		// A shortcode can execute after wp_head (Elementor, widgets, block templates).
 		// Core prints late enqueued styles in the footer; there are no manual duplicate tags.
 	}
