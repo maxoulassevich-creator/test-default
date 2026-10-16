@@ -3,7 +3,7 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,11 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.4.1 =
+The designer guide in README-RU.html is now for Blender (vertices in Statistics,
+Decimate, Principled BSDF inputs, baking in Cycles, UV, glTF/FBX export options);
+Cinema 4D keeps a short section. Upload messages name Blender first and link to the
+Blender section; dist/blender-guide-ru.html replaces the Cinema 4D page.
 = 1.4.0 =
 Sharper models on phones and tablets: the canvas follows the screen density (2x, within
 2.4 MP; 5 MP on computers) with antialiasing; before, touch devices rendered at 1x without

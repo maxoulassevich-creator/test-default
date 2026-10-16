@@ -20,8 +20,8 @@ final class W3DPV_Model {
 	const FBX_BINARY_MAGIC = "Kaydara FBX Binary  \0";
 	const FBX_MAX_NODES = 2000000;
 	const FBX_MAX_ARRAY_BYTES = 536870912; // 512 MiB of declared decoded arrays.
-	const REDUCE = ' Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или меньший уровень Subdivision Surface, в Blender — Decimate. Подробнее — в инструкции плагина, раздел «Модель из Cinema 4D».';
-	const MERGE = ' Объедините детали: в Cinema 4D выделите объекты и выполните Connect Objects + Delete, в Blender — Join (Ctrl+J).';
+	const REDUCE = ' Уменьшите число полигонов: в Blender — модификатор Decimate или меньший уровень Subdivision Surface, в Cinema 4D — генератор Polygon Reduction. Подробнее — в инструкции плагина, раздел «Подготовка модели в Blender».';
+	const MERGE = ' Объедините детали: в Blender выделите объекты и нажмите Ctrl+J, в Cinema 4D — Connect Objects + Delete.';
 	private static $cache = array();
 	private static $validated = array();
 
