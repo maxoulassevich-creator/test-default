@@ -1,18 +1,461 @@
 {
- "version": "1.3.0",
+ "version": "1.4.0",
  "date": "2026-10-16",
- "maxBytes": 83886080,
+ "maxBytes": 125829120,
  "limits": {
-  "maxVertices": 1000000,
-  "maxMeshes": 1000,
-  "fbxMaxTriangles": 1500000,
-  "objMaxTriangles": 1000000,
-  "glbMaxSceneVertices": 3000000
+  "maxBytes": 125829120,
+  "maxVertices": 2000000,
+  "maxMeshes": 2000,
+  "fbxMaxTriangles": 3000000,
+  "fbxMaxArrayBytes": 536870912,
+  "objMaxTriangles": 2000000,
+  "glbMaxSceneVertices": 6000000,
+  "glbMaxBufferBytes": 268435456
  },
  "environment": "WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.6, Chromium (Playwright, SwiftShader WebGL2)",
  "current": {
+  "render_quality_chromium": {
+   "note": "Canvas density and antialiasing: iPhone 13 before/after, landscape, desktop DPR 1/2, iPad, Pixel 7, pixel budget, light mode after a lost context",
+   "passed": 17,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "iPhone 13 before: canvas drawn at 1x without antialiasing (cause of the pixelation)",
+     "passed": true,
+     "detail": "{\"pixelRatio\":1,\"canvas\":[390,408],\"css\":[390,408],\"dpr\":3,\"error\":null}"
+    },
+    {
+     "test": "iPhone 13 before (1.3.0): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone 13 after: canvas drawn at 2x with antialiasing",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"antialias\":true,\"lightMode\":false,\"canvas\":[780,816],\"css\":[390,408],\"dpr\":3,\"error\":null}"
+    },
+    {
+     "test": "iPhone 13 after rotation to landscape: canvas follows the new size at 2x",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"canvas\":[1688,540],\"css\":[844,270]}"
+    },
+    {
+     "test": "iPhone 13 after: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Desktop DPR 1: {\"pixelRatio\":1,\"antialias\":true}",
+     "passed": true,
+     "detail": "{\"pixelRatio\":1,\"antialias\":true,\"lightMode\":false,\"canvas\":[960,557],\"css\":[960,558],\"dpr\":1,\"error\":null}"
+    },
+    {
+     "test": "Desktop DPR 1: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Desktop DPR 2: {\"pixelRatio\":2,\"antialias\":true}",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"antialias\":true,\"lightMode\":false,\"canvas\":[1920,1115],\"css\":[960,558],\"dpr\":2,\"error\":null}"
+    },
+    {
+     "test": "Desktop DPR 2: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPad 1024x1366 (default window): {\"pixelRatio\":2,\"antialias\":true}",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"antialias\":true,\"lightMode\":false,\"canvas\":[1920,1115],\"css\":[960,558],\"dpr\":2,\"error\":null}"
+    },
+    {
+     "test": "iPad 1024x1366 (default window): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Android Pixel 7: {\"pixelRatio\":2,\"antialias\":true}",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"antialias\":true,\"lightMode\":false,\"canvas\":[824,1166],\"css\":[412,583],\"dpr\":2.625,\"error\":null}"
+    },
+    {
+     "test": "Android Pixel 7: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPad with a 1600x1200 window: pixel ratio lowered to keep the canvas within 2.4 MP",
+     "passed": true,
+     "detail": "{\"pixelRatio\":1.5700766629172445,\"canvas\":[1532,1566],\"css\":[976,998]}"
+    },
+    {
+     "test": "iPad big window: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Lost context: error CONTEXT_LOST, retry opens the model in light mode (1x, no MSAA)",
+     "passed": true,
+     "detail": "{\"code\":\"CONTEXT_LOST\",\"pixelRatio\":1,\"antialias\":false,\"lightMode\":true}"
+    },
+    {
+     "test": "Lost context: only the expected WebGL warning, no page errors",
+     "passed": true
+    }
+   ]
+  },
+  "limits_php": {
+   "note": "Doubled limits and 120 MiB files: fixtures between the old and new limits accepted, above the new limits rejected with counts and Cinema 4D hints",
+   "passed": 10,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Limits doubled: 2 000 000 vertices, 2 000 000 OBJ triangles, 3 000 000 FBX triangles, 2000 meshes, 256 MiB GLB buffers, 512 MiB FBX arrays",
+     "passed": true
+    },
+    {
+     "test": "File size limit is 1.5x: 120 MiB",
+     "passed": true
+    },
+    {
+     "test": "Accepted: 1 200 000 GLB vertices (over the old 1 000 000)",
+     "passed": true,
+     "detail": "0 s"
+    },
+    {
+     "test": "Accepted: 100 MiB GLB (over the old 80 MiB)",
+     "passed": true,
+     "detail": "0 s"
+    },
+    {
+     "test": "Accepted: 2 200 000 FBX triangles (over the old 1 500 000)",
+     "passed": true,
+     "detail": "0.55 s"
+    },
+    {
+     "test": "Accepted: 1 513 800 OBJ triangles (over the old 1 000 000)",
+     "passed": true,
+     "detail": "3.64 s"
+    },
+    {
+     "test": "Rejected with a clear message: GLB with 2 100 000 vertices",
+     "passed": true,
+     "detail": "GLB слишком детализирован: 2 100 000 вершин (точек сетки после экспорта), лимит — 2 000 000. Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или меньший уровень Subdivision Surface, в Blender — Decimate. Подробнее — в инструкции плагина, раздел «Модель из Cinema 4D»."
+    },
+    {
+     "test": "Rejected with a clear message: 125 MiB file",
+     "passed": true,
+     "detail": "Файл модели (125,0 МиБ) превышает лимит плагина: 120 МиБ. Уменьшите текстуры и число полигонов."
+    },
+    {
+     "test": "Rejected with a clear message: GLB declaring 300 MiB of buffers",
+     "passed": true,
+     "detail": "GLB слишком тяжёлый: геометрия и встроенные текстуры занимают 300,0 МиБ, лимит — 256 МиБ. Уменьшите текстуры до 2048–4096 пикселей (JPEG для цвета) и число полигонов."
+    },
+    {
+     "test": "Rejected with a clear message: FBX with 3 200 000 triangles",
+     "passed": true,
+     "detail": "FBX слишком детализирован: 3 200 000 треугольников и 1 602 601 вершин (точек сетки). Лимит: 3 000 000 треугольников и 2 000 000 вершин. Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или меньший уровень Subdivision Surface, в Blender — Decimate. Подробнее — в инструкции плагина, раздел «Модель из Cinema 4D»."
+    }
+   ]
+  },
+  "limits_upload_chromium": {
+   "note": "Media screen uploads of GLB 1.2M vertices, FBX 2.2M triangles, 100 MiB GLB; GLB 2.1M vertices and FBX 3.2M triangles refused",
+   "passed": 10,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "GLB with 1 200 000 vertices uploads",
+     "passed": true,
+     "detail": "glb-1_2Mv glb-1_2Mv-1.glb Edit Copy URL to clipboard"
+    },
+    {
+     "test": "FBX with 2 200 000 triangles uploads",
+     "passed": true,
+     "detail": "fbx-2_2Mtri fbx-2_2Mtri.fbx Edit Copy URL to clipboard"
+    },
+    {
+     "test": "100 MiB GLB uploads",
+     "passed": true,
+     "detail": "glb-pad-100MiB glb-pad-100MiB.glb Edit Copy URL to clipboard"
+    },
+    {
+     "test": "GLB with 2 100 000 vertices is refused with the vertex count and a Cinema 4D hint",
+     "passed": true,
+     "detail": "Dismiss “glb-2_1Mv.glb” has failed to upload. GLB слишком детализирован: 2 100 000 вершин (точек сетки после экспорта), лимит — 2 000 000. Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или меньший уровень Subdivision Surface, в Blender —"
+    },
+    {
+     "test": "FBX with 3 200 000 triangles is refused with the counts",
+     "passed": true,
+     "detail": "Dismiss “fbx-3_2Mtri.fbx” has failed to upload. FBX слишком детализирован: 3 200 000 треугольников и 1 602 601 вершин (точек сетки). Лимит: 3 000 000 треугольников и 2 000 000 вершин. Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или мен"
+    },
+    {
+     "test": "Media screen allows files of at least 120 MiB on this server",
+     "passed": true,
+     "detail": "Maximum upload file size: 130 MB."
+    },
+    {
+     "test": "Test product with three large models created",
+     "passed": true,
+     "detail": "57"
+    },
+    {
+     "test": "Storefront button carries all three large models",
+     "passed": true,
+     "detail": "glb:14400428, fbx:27246336, glb:104858024"
+    },
+    {
+     "test": "Desktop viewer opens GLB 1 200 000 vertices",
+     "passed": true,
+     "detail": "1200000 vertices, 1 meshes, 1.3 s, cache server"
+    },
+    {
+     "test": "Desktop viewer opens FBX 2 200 000 triangles",
+     "passed": true,
+     "detail": "6600000 vertices, 1 meshes, 30.3 s, cache server"
+    }
+   ]
+  },
+  "limits_view_chromium": {
+   "note": "Storefront opens the three large models on desktop; 100 MiB GLB on iPhone 13 at 2x without MSAA",
+   "passed": 8,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Test product with three large models created",
+     "passed": true,
+     "detail": "57"
+    },
+    {
+     "test": "Storefront button carries all three large models",
+     "passed": true,
+     "detail": "glb:14400428, fbx:27246336, glb:104858024"
+    },
+    {
+     "test": "Desktop viewer opens GLB 1 200 000 vertices",
+     "passed": true,
+     "detail": "1200000 vertices, 1 meshes, 1.8 s, cache server"
+    },
+    {
+     "test": "Desktop viewer opens FBX 2 200 000 triangles",
+     "passed": true,
+     "detail": "6600000 vertices, 1 meshes, 23.2 s, cache server"
+    },
+    {
+     "test": "Desktop viewer opens GLB 100 MiB",
+     "passed": true,
+     "detail": "6000 vertices, 1 meshes, 49.7 s, cache network"
+    },
+    {
+     "test": "Desktop: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone 13: 100 MiB GLB opens with 2x pixels and no MSAA",
+     "passed": true,
+     "detail": "{\"pixelRatio\":2,\"antialias\":false,\"cache\":\"server\"}"
+    },
+    {
+     "test": "iPhone 13: no JavaScript errors",
+     "passed": true
+    }
+   ]
+  },
+  "storefront_chromium_regression": {
+   "note": "Storefront regression (formats, FBX, mobile, palette, zoom, variations)",
+   "passed": 42,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Binary FBX 7400 (cube): opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=36 textures=0"
+    },
+    {
+     "test": "Binary FBX 7400 (cube): model is visible and not black",
+     "passed": true,
+     "detail": "coverage=23.2% mean=125,59,92 dark=0%"
+    },
+    {
+     "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7400 (cube): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an external texture path: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=2910 textures=0"
+    },
+    {
+     "test": "Binary FBX with an external texture path: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=9.5% mean=234,234,235 dark=0%"
+    },
+    {
+     "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an external texture path: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=2910 textures=1"
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=9.2% mean=157,159,179 dark=0%"
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=2 vertices=165960 textures=0"
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=3.6% mean=77,149,171 dark=0%"
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=2 vertices=147336 textures=0"
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
+     "passed": true,
+     "detail": "coverage=3.5% mean=219,124,111 dark=0%"
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "ASCII FBX 7500: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=91014 textures=0"
+    },
+    {
+     "test": "ASCII FBX 7500: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=10.6% mean=241,242,242 dark=0%"
+    },
+    {
+     "test": "ASCII FBX 7500: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "ASCII FBX 7500: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Embedded FBX texture is uploaded and used",
+     "passed": true,
+     "detail": "textures=1"
+    },
+    {
+     "test": "Missing external FBX texture is dropped instead of rendering black",
+     "passed": true,
+     "detail": "textures=0"
+    },
+    {
+     "test": "Embedded texture blob URLs are revoked after loading",
+     "passed": true,
+     "detail": "{\"seen\":1,\"alive\":0}"
+    },
+    {
+     "test": "FBX palette: model recolors to the chosen color",
+     "passed": true,
+     "detail": "before=157,159,179 blue=153,196,229"
+    },
+    {
+     "test": "FBX palette: reset restores the original look",
+     "passed": true,
+     "detail": "reset=157,159,179"
+    },
+    {
+     "test": "Escape closes the FBX viewer and removes the canvas",
+     "passed": true
+    },
+    {
+     "test": "GLB chair: opens and renders",
+     "passed": true,
+     "detail": "coverage=11.7% mean=209,189,165"
+    },
+    {
+     "test": "GLB chair: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "OBJ chair: opens and renders",
+     "passed": true,
+     "detail": "coverage=11.9% mean=242,130,124"
+    },
+    {
+     "test": "OBJ chair: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
+     "passed": true,
+     "detail": "coverage=11.8% mean=209,189,165"
+    },
+    {
+     "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Variation with its own FBX opens that FBX",
+     "passed": true,
+     "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false,\"index\":1,\"count\":1}"
+    },
+    {
+     "test": "Variation without a model falls back to the parent GLB",
+     "passed": true,
+     "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false,\"index\":1,\"count\":1}"
+    },
+    {
+     "test": "Variable product: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone emulation: textured FBX opens in the constrained mode",
+     "passed": true,
+     "detail": "apple=true constrained=true coverage=15.1%"
+    },
+    {
+     "test": "iPhone emulation: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Zoom level is kept after a viewport resize",
+     "passed": true,
+     "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+    }
+   ]
+  },
   "palette_switches_chromium": {
-   "note": "Palette modes: both, background only, model only, off, 1.2.0 option migration; live switch-off, keyboard, iPhone 13, settings page and demo",
+   "note": "Palette modes and migration",
    "passed": 51,
    "failed": 0,
    "tests": [
@@ -219,7 +662,7 @@
     {
      "test": "iPhone 13 (background only): one titled panel, tap applies the colour and closes the panel",
      "passed": true,
-     "detail": "{\"title\":\"Цвет фона\",\"bg\":\"rgb(219, 232, 234)\",\"mean\":[162,164,184],\"original\":[159,161,181]}"
+     "detail": "{\"title\":\"Цвет фона\",\"bg\":\"rgb(219, 232, 234)\",\"mean\":[158,160,180],\"original\":[156,158,178]}"
     },
     {
      "test": "iPhone 13 (background only): no JavaScript errors",
@@ -228,7 +671,7 @@
     {
      "test": "iPhone 13 (model only): one titled panel, tap applies the colour and closes the panel",
      "passed": true,
-     "detail": "{\"title\":\"Цвет модели\",\"bg\":\"rgb(242, 244, 247)\",\"mean\":[153,196,229],\"original\":[159,161,181]}"
+     "detail": "{\"title\":\"Цвет модели\",\"bg\":\"rgb(242, 244, 247)\",\"mean\":[153,196,229],\"original\":[156,158,178]}"
     },
     {
      "test": "iPhone 13 (model only): no JavaScript errors",
@@ -261,7 +704,7 @@
    ]
   },
   "style_settings_chromium": {
-   "note": "Settings page: live preview, demo window, save as admin and shop manager, storefront styles, customer blocked",
+   "note": "Settings page and storefront styles",
    "passed": 43,
    "failed": 0,
    "tests": [
@@ -471,7 +914,7 @@
    ]
   },
   "style_settings_sanitize_php": {
-   "note": "W3DPV_Settings::sanitize(), css(), ui() and the 1.2.0 palette migration via WP-CLI, error_reporting=-1",
+   "note": "Settings sanitize/css/ui/migration",
    "passed": 23,
    "failed": 0,
    "tests": [
@@ -573,7 +1016,7 @@
    ]
   },
   "model_switcher_chromium": {
-   "note": "Three models in the window: 5 viewports, keyboard and fast switching",
+   "note": "Three models in the window",
    "passed": 33,
    "failed": 0,
    "tests": [
@@ -735,7 +1178,7 @@
    ]
   },
   "wordpress_admin_chromium": {
-   "note": "Product editor: FBX field, preview, save with nonce, three model slots, variations, cache tab",
+   "note": "Product editor, slots, variations, cache tab",
    "passed": 17,
    "failed": 0,
    "tests": [
@@ -807,7 +1250,7 @@
     {
      "test": "Cache page shows the stored copies",
      "passed": true,
-     "detail": "Копии на сайте: 9; размер: 16.9 MB. Максимум 512 МиБ, затем удаляются самые старые копии."
+     "detail": "Копии на сайте: 12; размер: 156.6 MB. Максимум 512 МиБ, затем удаляются самые старые копии."
     },
     {
      "test": "Clearing the cache returns to the cache tab with a notice",
@@ -820,219 +1263,20 @@
     }
    ]
   },
-  "storefront_chromium_regression": {
-   "note": "Storefront regression (formats, FBX, mobile, palette, zoom, variations)",
-   "passed": 42,
-   "failed": 0,
-   "tests": [
-    {
-     "test": "Binary FBX 7400 (cube): opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=1 vertices=36 textures=0"
-    },
-    {
-     "test": "Binary FBX 7400 (cube): model is visible and not black",
-     "passed": true,
-     "detail": "coverage=23.2% mean=125,59,92 dark=0%"
-    },
-    {
-     "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX 7400 (cube): no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX with an external texture path: opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=1 vertices=2910 textures=0"
-    },
-    {
-     "test": "Binary FBX with an external texture path: model is visible and not black",
-     "passed": true,
-     "detail": "coverage=9.5% mean=234,234,235 dark=0%"
-    },
-    {
-     "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX with an external texture path: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX with an embedded PNG texture: opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=1 vertices=2910 textures=1"
-    },
-    {
-     "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
-     "passed": true,
-     "detail": "coverage=9.2% mean=157,159,179 dark=0%"
-    },
-    {
-     "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Skinned, animated binary FBX 7400: opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=2 vertices=165960 textures=0"
-    },
-    {
-     "test": "Skinned, animated binary FBX 7400: model is visible and not black",
-     "passed": true,
-     "detail": "coverage=3.6% mean=77,149,171 dark=0%"
-    },
-    {
-     "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=2 vertices=147336 textures=0"
-    },
-    {
-     "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
-     "passed": true,
-     "detail": "coverage=3.5% mean=219,124,111 dark=0%"
-    },
-    {
-     "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "ASCII FBX 7500: opens without error",
-     "passed": true,
-     "detail": "phase=ready meshes=1 vertices=91014 textures=0"
-    },
-    {
-     "test": "ASCII FBX 7500: model is visible and not black",
-     "passed": true,
-     "detail": "coverage=10.6% mean=241,242,242 dark=0%"
-    },
-    {
-     "test": "ASCII FBX 7500: no requests outside the site or for external textures",
-     "passed": true
-    },
-    {
-     "test": "ASCII FBX 7500: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Embedded FBX texture is uploaded and used",
-     "passed": true,
-     "detail": "textures=1"
-    },
-    {
-     "test": "Missing external FBX texture is dropped instead of rendering black",
-     "passed": true,
-     "detail": "textures=0"
-    },
-    {
-     "test": "Embedded texture blob URLs are revoked after loading",
-     "passed": true,
-     "detail": "{\"seen\":1,\"alive\":0}"
-    },
-    {
-     "test": "FBX palette: model recolors to the chosen color",
-     "passed": true,
-     "detail": "before=157,159,179 blue=153,196,229"
-    },
-    {
-     "test": "FBX palette: reset restores the original look",
-     "passed": true,
-     "detail": "reset=157,159,179"
-    },
-    {
-     "test": "Escape closes the FBX viewer and removes the canvas",
-     "passed": true
-    },
-    {
-     "test": "GLB chair: opens and renders",
-     "passed": true,
-     "detail": "coverage=11.7% mean=209,189,165"
-    },
-    {
-     "test": "GLB chair: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "OBJ chair: opens and renders",
-     "passed": true,
-     "detail": "coverage=11.9% mean=242,130,124"
-    },
-    {
-     "test": "OBJ chair: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
-     "passed": true,
-     "detail": "coverage=11.8% mean=209,189,165"
-    },
-    {
-     "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Variation with its own FBX opens that FBX",
-     "passed": true,
-     "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false,\"index\":1,\"count\":1}"
-    },
-    {
-     "test": "Variation without a model falls back to the parent GLB",
-     "passed": true,
-     "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false,\"index\":1,\"count\":1}"
-    },
-    {
-     "test": "Variable product: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "iPhone emulation: textured FBX opens in the constrained mode",
-     "passed": true,
-     "detail": "apple=true constrained=true coverage=15.1%"
-    },
-    {
-     "test": "iPhone emulation: no JavaScript errors",
-     "passed": true
-    },
-    {
-     "test": "Zoom level is kept after a viewport resize",
-     "passed": true,
-     "detail": "home=11.7% zoomed=39.4% resized=39.4%"
-    }
-   ]
-  },
   "media_upload_chromium": {
-   "note": "Media screen uploads: binary FBX, ASCII FBX, broken FBX refused",
+   "note": "FBX uploads: binary, ASCII, broken",
    "passed": 3,
    "failed": 0,
    "tests": [
     {
      "test": "Binary FBX 7700 uploads through the media screen",
      "passed": true,
-     "detail": "upload-browser upload-browser-4.fbx Edit Copy URL to clipboard"
+     "detail": "upload-browser upload-browser-5.fbx Edit Copy URL to clipboard"
     },
     {
      "test": "ASCII FBX uploads through the media screen",
      "passed": true,
-     "detail": "upload-ascii upload-ascii-4.fbx Edit Copy URL to clipboard"
+     "detail": "upload-ascii upload-ascii-5.fbx Edit Copy URL to clipboard"
     },
     {
      "test": "Broken FBX is refused with the plugin message",
@@ -1042,7 +1286,7 @@
    ]
   },
   "compatibility_1_1": {
-   "note": "Variation fallback rules and the 1.0-1.1 cache page URL",
+   "note": "Variation fallback and old cache URL",
    "passed": 6,
    "failed": 0,
    "tests": [
@@ -1074,9 +1318,1089 @@
      "detail": "403 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-cache"
     }
    ]
+  },
+  "limits_viewer_parity": {
+   "note": "Viewer verdicts on the limit fixtures (window.W3DPV.open, bypassing upload)",
+   "lines": [
+    "glb-1_2Mv.glb                      READY    1666ms meshes=1 triangles=400000 vertices=1200000",
+    "glb-2_1Mv.glb                      REJECT    374ms meshes=- triangles=- vertices=- Модель не содержит геометрии или превышает лимит сложности.",
+    "fbx-2_2Mtri.fbx                    READY   14922ms meshes=1 triangles=2200000 vertices=6600000",
+    "fbx-3_2Mtri.fbx                    REJECT  20524ms meshes=1 triangles=3200000 vertices=9600000 Модель слишком сложная: 3 200 000 треугольников, 9 600 000 вершин после загрузки. Лимит: 3 000 000 треугольников. Уменьшите число полигонов или загрузите облегчённую модель.",
+    "obj-1_5Mtri.obj                    READY    6493ms meshes=1 triangles=1513800 vertices=4541400"
+   ]
   }
  },
  "previous": [
+  {
+   "version": "1.3.0",
+   "date": "2026-10-16",
+   "current": {
+    "palette_switches_chromium": {
+     "note": "Palette modes: both, background only, model only, off, 1.2.0 option migration; live switch-off, keyboard, iPhone 13, settings page and demo",
+     "passed": 51,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "both parts (default): palette button shown",
+       "passed": true,
+       "detail": "true"
+      },
+      {
+       "test": "both parts (default): palette shows both tabs",
+       "passed": true,
+       "detail": "{\"tabs\":[\"background\",\"model\"],\"title\":null,\"tablist\":true}"
+      },
+      {
+       "test": "both parts (default): focus on the selected tab",
+       "passed": true,
+       "detail": "tab:background"
+      },
+      {
+       "test": "both parts (default): background colour changes, model keeps its materials",
+       "passed": true,
+       "detail": "rgb(219, 232, 234); 157,159,179 → 157,159,180"
+      },
+      {
+       "test": "both parts (default): model recolours",
+       "passed": true,
+       "detail": "157,159,179 → 151,195,229"
+      },
+      {
+       "test": "both parts (default): «Исходные цвета» returns the file's materials",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,180"
+      },
+      {
+       "test": "both parts (default): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "background only: palette button shown",
+       "passed": true,
+       "detail": "true"
+      },
+      {
+       "test": "background only: palette shows only «Цвет фона»",
+       "passed": true,
+       "detail": "{\"tabs\":[],\"title\":\"Цвет фона\",\"tablist\":false}"
+      },
+      {
+       "test": "background only: panel is labelled by the title, focus on the first colour",
+       "passed": true,
+       "detail": "w3dpv-palette-title swatch"
+      },
+      {
+       "test": "background only: hidden «model» tab cannot be selected by script",
+       "passed": true,
+       "detail": "Цвета фона"
+      },
+      {
+       "test": "background only: background colour changes, model keeps its materials",
+       "passed": true,
+       "detail": "rgb(219, 232, 234); 157,159,179 → 157,159,180"
+      },
+      {
+       "test": "background only: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "model only: palette button shown",
+       "passed": true,
+       "detail": "true"
+      },
+      {
+       "test": "model only: palette shows only «Цвет модели»",
+       "passed": true,
+       "detail": "{\"tabs\":[],\"title\":\"Цвет модели\",\"tablist\":false}"
+      },
+      {
+       "test": "model only: panel is labelled by the title, focus on the first colour",
+       "passed": true,
+       "detail": "w3dpv-palette-title swatch"
+      },
+      {
+       "test": "model only: hidden «background» tab cannot be selected by script",
+       "passed": true,
+       "detail": "Цвета модели"
+      },
+      {
+       "test": "model only: model recolours",
+       "passed": true,
+       "detail": "157,159,179 → 153,196,229"
+      },
+      {
+       "test": "model only: background stays as set in the product",
+       "passed": true,
+       "detail": "rgb(242, 244, 247)"
+      },
+      {
+       "test": "model only: «Исходные цвета» returns the file's materials",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,179"
+      },
+      {
+       "test": "model only: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "palette off: palette button hidden",
+       "passed": true,
+       "detail": "false"
+      },
+      {
+       "test": "palette off: a scripted click cannot open the palette",
+       "passed": true
+      },
+      {
+       "test": "palette off: model keeps the file's materials and the product background",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,179, rgb(242, 244, 247)"
+      },
+      {
+       "test": "palette off: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "1.2.0 option show_palette=no: palette button hidden",
+       "passed": true,
+       "detail": "false"
+      },
+      {
+       "test": "1.2.0 option show_palette=no: a scripted click cannot open the palette",
+       "passed": true
+      },
+      {
+       "test": "1.2.0 option show_palette=no: model keeps the file's materials and the product background",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,179, rgb(242, 244, 247)"
+      },
+      {
+       "test": "1.2.0 option show_palette=no: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: palette button shown",
+       "passed": true,
+       "detail": "true"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: palette shows both tabs",
+       "passed": true,
+       "detail": "{\"tabs\":[\"background\",\"model\"],\"title\":null,\"tablist\":true}"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: focus on the selected tab",
+       "passed": true,
+       "detail": "tab:background"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: background colour changes, model keeps its materials",
+       "passed": true,
+       "detail": "rgb(219, 232, 234); 157,159,179 → 157,159,180"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: model recolours",
+       "passed": true,
+       "detail": "157,159,179 → 151,195,229"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: «Исходные цвета» returns the file's materials",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,180"
+      },
+      {
+       "test": "1.2.0 option show_palette=yes: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Live: focus leaves the hidden «Модель» tab for the first colour",
+       "passed": true,
+       "detail": "swatch"
+      },
+      {
+       "test": "Live: turning model recolouring off restores the file materials and keeps the chosen background",
+       "passed": true,
+       "detail": "157,159,179 → 157,159,180; rgb(219, 232, 234); Цвет фона; Цвета фона"
+      },
+      {
+       "test": "Live: turning both off restores the product background and hides the palette",
+       "passed": true,
+       "detail": "{\"bg\":\"rgb(242, 244, 247)\",\"button\":false,\"panel\":false}"
+      },
+      {
+       "test": "Live: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Keyboard (background only): Enter opens on a colour, Escape closes back to the palette button, window stays open",
+       "passed": true,
+       "detail": "swatch → palette"
+      },
+      {
+       "test": "Keyboard: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone 13 (background only): one titled panel, tap applies the colour and closes the panel",
+       "passed": true,
+       "detail": "{\"title\":\"Цвет фона\",\"bg\":\"rgb(219, 232, 234)\",\"mean\":[162,164,184],\"original\":[159,161,181]}"
+      },
+      {
+       "test": "iPhone 13 (background only): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone 13 (model only): one titled panel, tap applies the colour and closes the panel",
+       "passed": true,
+       "detail": "{\"title\":\"Цвет модели\",\"bg\":\"rgb(242, 244, 247)\",\"mean\":[153,196,229],\"original\":[159,161,181]}"
+      },
+      {
+       "test": "iPhone 13 (model only): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Settings page has both palette switches in «Палитра и значок 360°», no old switch",
+       "passed": true,
+       "detail": "[\"Палитра и значок 360°:Палитра: смена фона:true\",\"Палитра и значок 360°:Палитра: перекраска модели:true\",null]"
+      },
+      {
+       "test": "Demo window follows the unsaved switch (background only)",
+       "passed": true,
+       "detail": "{\"title\":\"Цвет фона\",\"tabs\":[]}"
+      },
+      {
+       "test": "Saving stores palette_background=yes, palette_model=no and drops show_palette",
+       "passed": true,
+       "detail": "{\"b\":\"yes\",\"m\":\"no\"}"
+      },
+      {
+       "test": "Storefront config carries the saved switches",
+       "passed": true,
+       "detail": "{\"eyebrow\":\"ПРОСМОТР В 3D\",\"badge\":\"360°\",\"palette\":true,\"paletteBackground\":true,\"paletteModel\":false,\"fullscreen\":true,\"help\":true,\"switcher\":\"bottom\"}"
+      },
+      {
+       "test": "Settings page: no JavaScript errors",
+       "passed": true
+      }
+     ]
+    },
+    "style_settings_chromium": {
+     "note": "Settings page: live preview, demo window, save as admin and shop manager, storefront styles, customer blocked",
+     "passed": 43,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "WooCommerce menu has the «3D-просмотр» item",
+       "passed": true
+      },
+      {
+       "test": "Settings page shows 5 groups of styles",
+       "passed": true,
+       "detail": "Кнопка на странице товара | Окно просмотра | Кнопки управления в окне | Переключатель моделей | Палитра и значок 360°"
+      },
+      {
+       "test": "Every setting has a field",
+       "passed": true,
+       "detail": "62"
+      },
+      {
+       "test": "Preview button uses the default colour",
+       "passed": true,
+       "detail": "rgb(39, 63, 98)"
+      },
+      {
+       "test": "Live preview follows colour, radius, text, icon and width",
+       "passed": true,
+       "detail": "{\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"text\":\"Смотреть 3D\",\"svg\":false,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-theme\",\"width\":816.4375,\"box\":816.4375,\"code\":\"#aa2200\"}"
+      },
+      {
+       "test": "Unchecked fill gives an outline button",
+       "passed": true,
+       "detail": "rgba(0, 0, 0, 0)"
+      },
+      {
+       "test": "Demo window opens with three demo models",
+       "passed": true,
+       "detail": "[\"Кресло GLB\",\"Кресло FBX\",\"Кресло OBJ\"]"
+      },
+      {
+       "test": "Demo window uses unsaved settings",
+       "passed": true,
+       "detail": "{\"open\":true,\"tabs\":[\"Кресло GLB\",\"Кресло FBX\",\"Кресло OBJ\"],\"top\":true,\"palette\":true,\"header\":\"rgb(16, 24, 32)\",\"title\":\"rgb(255, 255, 255)\",\"eyebrow\":\"ДЕМО · 1/3\",\"error\":null}"
+      },
+      {
+       "test": "Demo switcher loads the FBX chair",
+       "passed": true,
+       "detail": "{\"format\":\"fbx\",\"error\":null}"
+      },
+      {
+       "test": "Demo window closes with Escape",
+       "passed": true
+      },
+      {
+       "test": "«Вернуть исходный вид» restores all defaults in the form",
+       "passed": true
+      },
+      {
+       "test": "Saving shows the WordPress notice",
+       "passed": true,
+       "detail": "Settings saved."
+      },
+      {
+       "test": "All saved values come back in the form",
+       "passed": true
+      },
+      {
+       "test": "No JavaScript errors on the settings page",
+       "passed": true
+      },
+      {
+       "test": "desktop: product button uses saved text, colour, radius, height, width",
+       "passed": true,
+       "detail": "{\"text\":\"Смотреть 3D\",\"svg\":false,\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"height\":56,\"width\":618,\"parent\":618,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-center\",\"font\":\"Manrope, sans-serif\",\"body\":\"Manrope, sans-serif\"}"
+      },
+      {
+       "test": "desktop: «Как на сайте» font follows the theme",
+       "passed": true,
+       "detail": "Manrope, sans-serif / Manrope, sans-serif"
+      },
+      {
+       "test": "desktop: model loads with custom styles",
+       "passed": true
+      },
+      {
+       "test": "desktop: hidden parts stay hidden (palette, fullscreen, help, badge)",
+       "passed": true,
+       "detail": "{\"p\":false,\"f\":false,\"h\":false,\"b\":false}"
+      },
+      {
+       "test": "desktop: window colours follow the settings",
+       "passed": true,
+       "detail": "{\"h\":\"rgb(16, 24, 32)\",\"t\":\"rgb(255, 255, 255)\",\"c\":\"rgb(32, 42, 54)\",\"cc\":\"rgb(240, 240, 240)\",\"x\":\"rgb(51, 68, 85)\",\"s\":\"rgb(170, 34, 0)\"}"
+      },
+      {
+       "test": "desktop: empty eyebrow leaves only the counter",
+       "passed": true,
+       "detail": "1/3"
+      },
+      {
+       "test": "desktop: switcher sits at the top of the model area",
+       "passed": true,
+       "detail": "12"
+      },
+      {
+       "test": "desktop: backdrop uses the saved colour and density",
+       "passed": true,
+       "detail": "rgba(0, 0, 0, 0.3)"
+      },
+      {
+       "test": "desktop: control radius and touch size",
+       "passed": true,
+       "detail": "20px 44"
+      },
+      {
+       "test": "desktop: dialog font follows the theme",
+       "passed": true,
+       "detail": "Manrope, sans-serif"
+      },
+      {
+       "test": "desktop: window width and radius follow the settings",
+       "passed": true,
+       "detail": "1100 4px"
+      },
+      {
+       "test": "desktop: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone 13: product button uses saved text, colour, radius, height, width",
+       "passed": true,
+       "detail": "{\"text\":\"Смотреть 3D\",\"svg\":false,\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"height\":56,\"width\":330,\"parent\":330,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-center\",\"font\":\"Manrope, sans-serif\",\"body\":\"Manrope, sans-serif\"}"
+      },
+      {
+       "test": "iPhone 13: «Как на сайте» font follows the theme",
+       "passed": true,
+       "detail": "Manrope, sans-serif / Manrope, sans-serif"
+      },
+      {
+       "test": "iPhone 13: model loads with custom styles",
+       "passed": true
+      },
+      {
+       "test": "iPhone 13: hidden parts stay hidden (palette, fullscreen, help, badge)",
+       "passed": true,
+       "detail": "{\"p\":false,\"f\":false,\"h\":false,\"b\":false}"
+      },
+      {
+       "test": "iPhone 13: window colours follow the settings",
+       "passed": true,
+       "detail": "{\"h\":\"rgb(16, 24, 32)\",\"t\":\"rgb(255, 255, 255)\",\"c\":\"rgb(32, 42, 54)\",\"cc\":\"rgb(240, 240, 240)\",\"x\":\"rgb(51, 68, 85)\",\"s\":\"rgb(170, 34, 0)\"}"
+      },
+      {
+       "test": "iPhone 13: empty eyebrow leaves only the counter",
+       "passed": true,
+       "detail": "1/3"
+      },
+      {
+       "test": "iPhone 13: switcher sits at the top of the model area",
+       "passed": true,
+       "detail": "12"
+      },
+      {
+       "test": "iPhone 13: backdrop uses the saved colour and density",
+       "passed": true,
+       "detail": "rgba(0, 0, 0, 0.3)"
+      },
+      {
+       "test": "iPhone 13: control radius and touch size",
+       "passed": true,
+       "detail": "20px 44"
+      },
+      {
+       "test": "iPhone 13: dialog font follows the theme",
+       "passed": true,
+       "detail": "Manrope, sans-serif"
+      },
+      {
+       "test": "iPhone 13: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Shop manager opens the settings page",
+       "passed": true
+      },
+      {
+       "test": "Shop manager saves settings through options.php",
+       "passed": true,
+       "detail": "http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings"
+      },
+      {
+       "test": "Shop manager sees the cache tab",
+       "passed": true
+      },
+      {
+       "test": "Shop manager: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Customer cannot open the settings page",
+       "passed": true,
+       "detail": "403"
+      },
+      {
+       "test": "Customer POST to options.php does not change settings",
+       "passed": true,
+       "detail": "HTTP 200, label Открыть 3D"
+      }
+     ]
+    },
+    "style_settings_sanitize_php": {
+     "note": "W3DPV_Settings::sanitize(), css(), ui() and the 1.2.0 palette migration via WP-CLI, error_reporting=-1",
+     "passed": 23,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "Short hex expands to six digits",
+       "passed": true,
+       "detail": "#aabbcc"
+      },
+      {
+       "test": "Named and broken colours fall back to defaults",
+       "passed": true
+      },
+      {
+       "test": "Numbers are clamped to their range",
+       "passed": true,
+       "detail": "40/32/16"
+      },
+      {
+       "test": "Non-numeric number falls back to default",
+       "passed": true
+      },
+      {
+       "test": "Unknown select values fall back to defaults",
+       "passed": true
+      },
+      {
+       "test": "Text is stripped of tags",
+       "passed": true,
+       "detail": "Купить"
+      },
+      {
+       "test": "Text is cut to 60 characters (multibyte)",
+       "passed": true
+      },
+      {
+       "test": "Missing checkbox in a submitted form means \"no\"",
+       "passed": true
+      },
+      {
+       "test": "1.2.0 option with the palette off turns both parts off and drops show_palette",
+       "passed": true
+      },
+      {
+       "test": "1.2.0 option with the palette on keeps both parts on",
+       "passed": true
+      },
+      {
+       "test": "A form submission ignores a stray show_palette",
+       "passed": true
+      },
+      {
+       "test": "New keys win over show_palette when both are stored",
+       "passed": true
+      },
+      {
+       "test": "UI: background only keeps the palette button",
+       "passed": true
+      },
+      {
+       "test": "Array instead of scalar is treated as missing",
+       "passed": true
+      },
+      {
+       "test": "Unknown keys are dropped",
+       "passed": true
+      },
+      {
+       "test": "Sanitizing twice is stable (add_option path)",
+       "passed": true
+      },
+      {
+       "test": "Stored partial option keeps defaults for missing keys",
+       "passed": true
+      },
+      {
+       "test": "Defaults round-trip unchanged",
+       "passed": true
+      },
+      {
+       "test": "CSS has no markup or quotes from text fields",
+       "passed": true
+      },
+      {
+       "test": "CSS uses the expanded colour in rgba()",
+       "passed": true
+      },
+      {
+       "test": "Backdrop opacity 0 and 100",
+       "passed": true
+      },
+      {
+       "test": "UI hides palette and keeps badge text",
+       "passed": true
+      },
+      {
+       "test": "Corrupted option (string) yields defaults",
+       "passed": true
+      }
+     ]
+    },
+    "model_switcher_chromium": {
+     "note": "Three models in the window: 5 viewports, keyboard and fast switching",
+     "passed": 33,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "desktop 1280x900: switcher shows 3 models inside the model area",
+       "passed": true,
+       "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+      },
+      {
+       "test": "desktop 1280x900: every switch button is at least 44×44 px",
+       "passed": true,
+       "detail": "109×44, 109×44, 220×44"
+      },
+      {
+       "test": "desktop 1280x900: first model selected, title shows 1/3",
+       "passed": true,
+       "detail": "ПРОСМОТР В 3D · 1/3"
+      },
+      {
+       "test": "desktop 1280x900: second button opens the FBX model",
+       "passed": true,
+       "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+      },
+      {
+       "test": "desktop 1280x900: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone 13 portrait: switcher shows 3 models inside the model area",
+       "passed": true,
+       "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+      },
+      {
+       "test": "iPhone 13 portrait: every switch button is at least 44×44 px",
+       "passed": true,
+       "detail": "116×44, 116×44, 116×44"
+      },
+      {
+       "test": "iPhone 13 portrait: first model selected, title shows 1/3",
+       "passed": true,
+       "detail": "ПРОСМОТР В 3D · 1/3"
+      },
+      {
+       "test": "iPhone 13 portrait: second button opens the FBX model",
+       "passed": true,
+       "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+      },
+      {
+       "test": "iPhone 13 portrait: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "phone landscape 844x390: switcher shows 3 models inside the model area",
+       "passed": true,
+       "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+      },
+      {
+       "test": "phone landscape 844x390: every switch button is at least 44×44 px",
+       "passed": true,
+       "detail": "109×44, 109×44, 220×44"
+      },
+      {
+       "test": "phone landscape 844x390: first model selected, title shows 1/3",
+       "passed": true,
+       "detail": "ПРОСМОТР В 3D · 1/3"
+      },
+      {
+       "test": "phone landscape 844x390: second button opens the FBX model",
+       "passed": true,
+       "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+      },
+      {
+       "test": "phone landscape 844x390: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "tablet 820x1180: switcher shows 3 models inside the model area",
+       "passed": true,
+       "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+      },
+      {
+       "test": "tablet 820x1180: every switch button is at least 44×44 px",
+       "passed": true,
+       "detail": "109×44, 109×44, 220×44"
+      },
+      {
+       "test": "tablet 820x1180: first model selected, title shows 1/3",
+       "passed": true,
+       "detail": "ПРОСМОТР В 3D · 1/3"
+      },
+      {
+       "test": "tablet 820x1180: second button opens the FBX model",
+       "passed": true,
+       "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+      },
+      {
+       "test": "tablet 820x1180: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "small phone 320x640: switcher shows 3 models inside the model area",
+       "passed": true,
+       "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+      },
+      {
+       "test": "small phone 320x640: every switch button is at least 44×44 px",
+       "passed": true,
+       "detail": "93×44, 93×44, 93×44"
+      },
+      {
+       "test": "small phone 320x640: first model selected, title shows 1/3",
+       "passed": true,
+       "detail": "ПРОСМОТР В 3D · 1/3"
+      },
+      {
+       "test": "small phone 320x640: second button opens the FBX model",
+       "passed": true,
+       "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+      },
+      {
+       "test": "small phone 320x640: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Arrow keys move focus between models without loading",
+       "passed": true,
+       "detail": "{\"focused\":\"2\",\"loaded\":1}"
+      },
+      {
+       "test": "Enter loads the focused model (OBJ)",
+       "passed": true
+      },
+      {
+       "test": "Digit key 1 on the model selects the first model",
+       "passed": true
+      },
+      {
+       "test": "Fast switching during loading ends on the last chosen model with one canvas",
+       "passed": true,
+       "detail": "fbx ready canvases=1"
+      },
+      {
+       "test": "Background chosen in the palette stays after switching models",
+       "passed": true
+      },
+      {
+       "test": "Escape closes the window after switching",
+       "passed": true
+      },
+      {
+       "test": "Keyboard/fast switching: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Product with one model has no switcher",
+       "passed": true,
+       "detail": "{\"hidden\":true,\"eyebrow\":\"ПРОСМОТР В 3D\"}"
+      }
+     ]
+    },
+    "wordpress_admin_chromium": {
+     "note": "Product editor: FBX field, preview, save with nonce, three model slots, variations, cache tab",
+     "passed": 17,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "Product list does not load viewer/admin scripts",
+       "passed": true
+      },
+      {
+       "test": "Editor shows the saved FBX file",
+       "passed": true,
+       "detail": "monkey_embedded_texture.fbx"
+      },
+      {
+       "test": "Editor field names the supported formats",
+       "passed": true,
+       "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
+      },
+      {
+       "test": "Admin preview renders the FBX",
+       "passed": true
+      },
+      {
+       "test": "Saving the product stores the newly selected FBX",
+       "passed": true,
+       "detail": "vCube.fbx"
+      },
+      {
+       "test": "Yaw setting is saved",
+       "passed": true
+      },
+      {
+       "test": "Variation editor lists the variation FBX",
+       "passed": true,
+       "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
+      },
+      {
+       "test": "Editor shows three model slots",
+       "passed": true,
+       "detail": "Модель 1 (открывается первой) | Модель 2 (необязательно) | Модель 3 (необязательно)"
+      },
+      {
+       "test": "Slots 2 and 3 save their files and names",
+       "passed": true,
+       "detail": "demo-chair.glb / Спереди | demo-chair.fbx / Вид FBX | demo-chair.obj / Вид OBJ"
+      },
+      {
+       "test": "Storefront button carries three models in slot order",
+       "passed": true,
+       "detail": "glb:Спереди,fbx:Вид FBX,obj:Вид OBJ"
+      },
+      {
+       "test": "Slot 2 preview renders its FBX",
+       "passed": true
+      },
+      {
+       "test": "Removing slot 3 leaves two models",
+       "passed": true,
+       "detail": "2"
+      },
+      {
+       "test": "Product with one model keeps the single-model payload",
+       "passed": true,
+       "detail": "1"
+      },
+      {
+       "test": "Plugin list links to the settings page",
+       "passed": true
+      },
+      {
+       "test": "Cache page shows the stored copies",
+       "passed": true,
+       "detail": "Копии на сайте: 9; размер: 16.9 MB. Максимум 512 МиБ, затем удаляются самые старые копии."
+      },
+      {
+       "test": "Clearing the cache returns to the cache tab with a notice",
+       "passed": true,
+       "detail": "http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache&w3dpv_cleared=1"
+      },
+      {
+       "test": "No JavaScript errors in the admin",
+       "passed": true
+      }
+     ]
+    },
+    "storefront_chromium_regression": {
+     "note": "Storefront regression (formats, FBX, mobile, palette, zoom, variations)",
+     "passed": 42,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "Binary FBX 7400 (cube): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=36 textures=0"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=23.2% mean=125,59,92 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=0"
+      },
+      {
+       "test": "Binary FBX with an external texture path: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.5% mean=234,234,235 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=1"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.2% mean=157,159,179 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=165960 textures=0"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.6% mean=77,149,171 dark=0%"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=147336 textures=0"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.5% mean=219,124,111 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=91014 textures=0"
+      },
+      {
+       "test": "ASCII FBX 7500: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=10.6% mean=241,242,242 dark=0%"
+      },
+      {
+       "test": "ASCII FBX 7500: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Embedded FBX texture is uploaded and used",
+       "passed": true,
+       "detail": "textures=1"
+      },
+      {
+       "test": "Missing external FBX texture is dropped instead of rendering black",
+       "passed": true,
+       "detail": "textures=0"
+      },
+      {
+       "test": "Embedded texture blob URLs are revoked after loading",
+       "passed": true,
+       "detail": "{\"seen\":1,\"alive\":0}"
+      },
+      {
+       "test": "FBX palette: model recolors to the chosen color",
+       "passed": true,
+       "detail": "before=157,159,179 blue=153,196,229"
+      },
+      {
+       "test": "FBX palette: reset restores the original look",
+       "passed": true,
+       "detail": "reset=157,159,179"
+      },
+      {
+       "test": "Escape closes the FBX viewer and removes the canvas",
+       "passed": true
+      },
+      {
+       "test": "GLB chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.7% mean=209,189,165"
+      },
+      {
+       "test": "GLB chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "OBJ chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.9% mean=242,130,124"
+      },
+      {
+       "test": "OBJ chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
+       "passed": true,
+       "detail": "coverage=11.8% mean=209,189,165"
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Variation with its own FBX opens that FBX",
+       "passed": true,
+       "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false,\"index\":1,\"count\":1}"
+      },
+      {
+       "test": "Variation without a model falls back to the parent GLB",
+       "passed": true,
+       "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false,\"index\":1,\"count\":1}"
+      },
+      {
+       "test": "Variable product: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone emulation: textured FBX opens in the constrained mode",
+       "passed": true,
+       "detail": "apple=true constrained=true coverage=15.1%"
+      },
+      {
+       "test": "iPhone emulation: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Zoom level is kept after a viewport resize",
+       "passed": true,
+       "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+      }
+     ]
+    },
+    "media_upload_chromium": {
+     "note": "Media screen uploads: binary FBX, ASCII FBX, broken FBX refused",
+     "passed": 3,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "Binary FBX 7700 uploads through the media screen",
+       "passed": true,
+       "detail": "upload-browser upload-browser-4.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "ASCII FBX uploads through the media screen",
+       "passed": true,
+       "detail": "upload-ascii upload-ascii-4.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "Broken FBX is refused with the plugin message",
+       "passed": true,
+       "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
+      }
+     ]
+    },
+    "compatibility_1_1": {
+     "note": "Variation fallback rules and the 1.0-1.1 cache page URL",
+     "passed": 6,
+     "failed": 0,
+     "tests": [
+      {
+       "test": "Variation with its own FBX shows only it",
+       "passed": true
+      },
+      {
+       "test": "Variation with an unusable own file shows no model (not the parent's)",
+       "passed": true
+      },
+      {
+       "test": "Variation without a file inherits the parent models (1)",
+       "passed": true
+      },
+      {
+       "test": "admin: old cache URL redirects to the cache tab",
+       "passed": true,
+       "detail": "200 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache"
+      },
+      {
+       "test": "manager: old cache URL redirects to the cache tab",
+       "passed": true,
+       "detail": "200 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache"
+      },
+      {
+       "test": "buyer: old cache URL stays closed",
+       "passed": true,
+       "detail": "403 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-cache"
+      }
+     ]
+    }
+   }
+  },
   {
    "version": "1.2.0",
    "date": "2026-10-16",
