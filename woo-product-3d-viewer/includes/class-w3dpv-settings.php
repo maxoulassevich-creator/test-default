@@ -93,7 +93,6 @@ final class W3DPV_Settings {
 					'ctl_radius' => array( 'int', 9, 'Скругление кнопок, px', '', array( 0, 24 ), '--w3dpv-ctl-radius' ),
 					'ctl_size' => array( 'int', 44, 'Высота кнопок, px', 'На сенсорных экранах не меньше 44 px.', array( 36, 60 ), '--w3dpv-ctl-size' ),
 					'ctl_font_size' => array( 'int', 13, 'Размер текста, px', '', array( 11, 18 ), '--w3dpv-ctl-font-size' ),
-					'show_palette' => array( 'bool', 'yes', 'Показывать палитру цветов' ),
 					'show_fullscreen' => array( 'bool', 'yes', 'Показывать кнопку полного экрана' ),
 					'show_help' => array( 'bool', 'yes', 'Показывать подсказку под кнопками' ),
 				),
@@ -112,6 +111,8 @@ final class W3DPV_Settings {
 			'extras' => array(
 				'title' => 'Палитра и значок 360°',
 				'fields' => array(
+					'palette_background' => array( 'bool', 'yes', 'Палитра: смена фона', 'Покупатель может выбрать другой цвет фона за моделью. Если выключено, фон всегда такой, как задан в товаре.' ),
+					'palette_model' => array( 'bool', 'yes', 'Палитра: перекраска модели', 'Если выключено, модель всегда показывается с материалами, текстурами и цветами из файла (OBJ и сетки FBX без материала — цветом «Цвет без материалов» из товара). Если выключить оба пункта, кнопки «Палитра» в окне не будет.' ),
 					'pal_bg' => array( 'color', '#ffffff', 'Фон палитры', '', null, '--w3dpv-pal-bg' ),
 					'pal_color' => array( 'color', '#273f62', 'Текст палитры', '', null, '--w3dpv-pal-color' ),
 					'show_badge' => array( 'bool', 'yes', 'Показывать значок' ),
@@ -150,6 +151,10 @@ final class W3DPV_Settings {
 
 	public static function sanitize( $input ) {
 		$input = is_array( $input ) ? $input : array();
+		// 1.2.0 stored one switch for the whole palette.
+		if ( isset( $input['show_palette'] ) && ! isset( $input['_submitted'] ) ) {
+			$input += array( 'palette_background' => $input['show_palette'], 'palette_model' => $input['show_palette'] );
+		}
 		$clean = array();
 		foreach ( self::definitions() as $key => $field ) {
 			list( $type, $default ) = $field;
@@ -212,7 +217,9 @@ final class W3DPV_Settings {
 		return array(
 			'eyebrow' => $values['dlg_eyebrow'],
 			'badge' => 'yes' === $values['show_badge'] ? $values['badge_text'] : '',
-			'palette' => 'yes' === $values['show_palette'],
+			'palette' => 'yes' === $values['palette_background'] || 'yes' === $values['palette_model'],
+			'paletteBackground' => 'yes' === $values['palette_background'],
+			'paletteModel' => 'yes' === $values['palette_model'],
 			'fullscreen' => 'yes' === $values['show_fullscreen'],
 			'help' => 'yes' === $values['show_help'],
 			'switcher' => $values['sw_position'],

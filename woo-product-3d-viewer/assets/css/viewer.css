@@ -60,6 +60,7 @@
 .w3dpv-palette-panel{position:absolute;right:12px;bottom:12px;z-index:4;width:min(360px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;overscroll-behavior:contain;touch-action:pan-y;padding:14px;border:1px solid #dce4ed;border-radius:14px;background:var(--w3dpv-pal-bg,#fff);box-shadow:0 10px 32px #172b4c26;color:var(--w3dpv-pal-color,#273f62)}
 .w3dpv-palette-heading{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .w3dpv-palette-tabs{display:flex;gap:4px;flex:1;min-width:0}
+.w3dpv-palette-title{flex:1;min-width:0;font:600 14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:inherit}
 .w3dpv-palette-tabs button{flex:1;min-width:66px}
 .w3dpv-dialog .w3dpv-palette-tabs button[aria-selected=true],.w3dpv-dialog button[data-action=palette][aria-expanded=true]{background:var(--w3dpv-ctl-active-bg,#eaf0f9);border-color:var(--w3dpv-ctl-active-border,#cbd8ec)}
 .w3dpv-swatch-grid{display:grid;grid-template-columns:repeat(5,minmax(44px,1fr));gap:8px}

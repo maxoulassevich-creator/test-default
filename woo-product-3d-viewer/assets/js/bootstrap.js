@@ -27,7 +27,9 @@
   };
   const validColor = color => /^#[0-9a-f]{6}$/i.test(color || '');
   const MAX_MODELS = 3;
-  const ui = () => ({eyebrow: 'ПРОСМОТР В 3D', badge: '360°', palette: true, fullscreen: true, help: true, switcher: 'bottom', ...(config.ui || {})});
+  const ui = () => ({eyebrow: 'ПРОСМОТР В 3D', badge: '360°', palette: true, paletteBackground: true, paletteModel: true, fullscreen: true, help: true, switcher: 'bottom', ...(config.ui || {})});
+  /** Palette tabs the shop allows; "palette: false" from 1.2.0 markup turns both off. */
+  const paletteTabs = () => { const settings = ui(); return settings.palette === false ? [] : ['background', 'model'].filter(tab => settings[tab === 'background' ? 'paletteBackground' : 'paletteModel'] !== false); };
 
   function createDialog() {
     if (dialog) return;
@@ -38,7 +40,7 @@
     dialog.innerHTML = '<div class="w3dpv-shell">' +
       '<header class="w3dpv-header"><div class="w3dpv-heading"><span class="w3dpv-eyebrow"></span><h2 id="w3dpv-dialog-title"></h2></div><button type="button" class="w3dpv-icon-button w3dpv-close" data-action="close" aria-label="Закрыть просмотр">' + svg('close') + '</button></header>' +
       '<div class="w3dpv-stage" id="w3dpv-stage"><div class="w3dpv-canvas-host"></div><div class="w3dpv-status" role="status" aria-live="polite"><span class="w3dpv-spinner" aria-hidden="true"></span><strong class="w3dpv-status-title">Подготовка просмотра</strong><p class="w3dpv-status-detail">Загружаем 3D-модель…</p><button type="button" class="w3dpv-retry" data-action="retry" hidden>Попробовать снова</button></div><span class="w3dpv-stage-badge" aria-hidden="true"></span><div class="w3dpv-models" role="tablist" aria-label="Модели товара" hidden></div>' +
-      '<section class="w3dpv-palette-panel" id="w3dpv-palette-panel" aria-label="Палитра просмотра" hidden><div class="w3dpv-palette-heading"><div class="w3dpv-palette-tabs" role="tablist" aria-label="Что перекрасить"><button type="button" id="w3dpv-tab-background" data-color-tab="background" role="tab" aria-controls="w3dpv-color-options" aria-selected="true">Фон</button><button type="button" id="w3dpv-tab-model" data-color-tab="model" role="tab" aria-controls="w3dpv-color-options" aria-selected="false" tabindex="-1">Модель</button></div><button type="button" class="w3dpv-icon-button" data-action="palette-close" aria-label="Закрыть палитру">' + svg('close') + '</button></div><div id="w3dpv-color-options" role="tabpanel" aria-labelledby="w3dpv-tab-background"><div class="w3dpv-swatch-grid" role="group" aria-label="Цвета фона"></div><div class="w3dpv-custom-row"><label class="w3dpv-custom-color" for="w3dpv-custom-color"><input type="color" id="w3dpv-custom-color" value="#f2f4f7"><span>Свой цвет</span></label><button type="button" data-action="palette-reset">Исходный фон</button></div><output class="w3dpv-color-value" for="w3dpv-custom-color" aria-live="polite"></output></div><p class="w3dpv-palette-note">Цвета меняются только для просмотра.</p></section></div>' +
+      '<section class="w3dpv-palette-panel" id="w3dpv-palette-panel" aria-label="Палитра просмотра" hidden><div class="w3dpv-palette-heading"><strong class="w3dpv-palette-title" id="w3dpv-palette-title" hidden></strong><div class="w3dpv-palette-tabs" role="tablist" aria-label="Что перекрасить"><button type="button" id="w3dpv-tab-background" data-color-tab="background" role="tab" aria-controls="w3dpv-color-options" aria-selected="true">Фон</button><button type="button" id="w3dpv-tab-model" data-color-tab="model" role="tab" aria-controls="w3dpv-color-options" aria-selected="false" tabindex="-1">Модель</button></div><button type="button" class="w3dpv-icon-button" data-action="palette-close" aria-label="Закрыть палитру">' + svg('close') + '</button></div><div id="w3dpv-color-options" role="tabpanel" aria-labelledby="w3dpv-tab-background"><div class="w3dpv-swatch-grid" role="group" aria-label="Цвета фона"></div><div class="w3dpv-custom-row"><label class="w3dpv-custom-color" for="w3dpv-custom-color"><input type="color" id="w3dpv-custom-color" value="#f2f4f7"><span>Свой цвет</span></label><button type="button" data-action="palette-reset">Исходный фон</button></div><output class="w3dpv-color-value" for="w3dpv-custom-color" aria-live="polite"></output></div><p class="w3dpv-palette-note">Цвета меняются только для просмотра.</p></section></div>' +
       '<div class="w3dpv-footer"><div class="w3dpv-toolbar" role="group" aria-label="Управление 3D-моделью"><div class="w3dpv-zoom-controls"><button type="button" class="w3dpv-icon-button" data-action="minus" aria-label="Отдалить модель" title="Отдалить">' + svg('minus') + '</button><button type="button" class="w3dpv-icon-button" data-action="plus" aria-label="Приблизить модель" title="Приблизить">' + svg('plus') + '</button></div><button type="button" class="w3dpv-control-button" data-action="rotate" aria-pressed="false">' + svg('rotate') + '<span>Включить вращение</span></button><button type="button" class="w3dpv-control-button" data-action="reset">' + svg('reset') + '<span>Сбросить вид</span></button><button type="button" class="w3dpv-icon-button" data-action="fullscreen" aria-label="Полный экран" title="Полный экран">' + svg('fullscreen') + '</button></div><p id="w3dpv-help" class="w3dpv-help"></p></div></div>';
     const paletteButton = document.createElement('button');
     paletteButton.type = 'button'; paletteButton.className = 'w3dpv-control-button';
@@ -119,8 +121,25 @@
     const multiple = current && current.settings.models.length > 1;
     dialog.querySelector('#w3dpv-help').textContent = 'Потяните модель для вращения. Масштаб — колёсиком, двумя пальцами или кнопками + и −. С клавиатуры: фокус на модели и стрелки' + (multiple ? ', цифры 1–' + current.settings.models.length + ' — модели.' : '.');
     dialog.querySelector('#w3dpv-help').hidden = !settings.help;
-    dialog.querySelector('[data-action="palette"]').hidden = !settings.palette;
-    if (!settings.palette) showPalette(false);
+    const tabs = paletteTabs(), single = tabs.length === 1, panel = dialog.querySelector('.w3dpv-palette-panel');
+    const focusInPanel = panel.contains(document.activeElement);
+    dialog.querySelector('[data-action="palette"]').hidden = !tabs.length;
+    dialog.querySelectorAll('[data-color-tab]').forEach(button => { button.hidden = !tabs.includes(button.getAttribute('data-color-tab')); });
+    dialog.querySelector('.w3dpv-palette-tabs').hidden = tabs.length < 2;
+    dialog.querySelector('.w3dpv-palette-title').hidden = !single;
+    dialog.querySelector('.w3dpv-palette-title').textContent = single ? (tabs[0] === 'background' ? 'Цвет фона' : 'Цвет модели') : '';
+    if (current) {
+      // A switched-off part returns to the product background or the file's own materials.
+      if (!tabs.includes('background') && current.background !== current.defaultBackground) { current.background = current.defaultBackground; dialog.querySelector('.w3dpv-stage').style.backgroundColor = current.background; }
+      if (!tabs.includes('model') && current.modelColor) { current.modelColor = null; if (current.controller) current.controller.resetModelColor(); }
+      if (tabs.length && !tabs.includes(current.paletteTab)) current.paletteTab = tabs[0];
+      if (tabs.length && !panel.hidden) {
+        renderPalette();
+        // A focused tab that was just hidden would leave focus on the page.
+        if (focusInPanel && (!panel.contains(document.activeElement) || document.activeElement.closest('[hidden]'))) showPalette(true);
+      }
+    }
+    if (!tabs.length) showPalette(false);
     const full = dialog.querySelector('[data-action="fullscreen"]');
     full.hidden = !settings.fullscreen || !document.fullscreenEnabled || typeof dialog.querySelector('.w3dpv-shell').requestFullscreen !== 'function';
     const top = settings.switcher === 'top';
@@ -197,7 +216,7 @@
       const selected = button.getAttribute('data-color-tab') === tab;
       button.setAttribute('aria-selected', String(selected)); button.tabIndex = selected ? 0 : -1;
     });
-    dialog.querySelector('#w3dpv-color-options').setAttribute('aria-labelledby', 'w3dpv-tab-' + tab);
+    dialog.querySelector('#w3dpv-color-options').setAttribute('aria-labelledby', paletteTabs().length === 1 ? 'w3dpv-palette-title' : 'w3dpv-tab-' + tab);
     const custom = dialog.querySelector('#w3dpv-custom-color');
     const customValue = color || (validColor(current.settings.color) ? current.settings.color : '#9aa7b7');
     if (custom.value !== customValue) custom.value = customValue;
@@ -207,7 +226,7 @@
   }
 
   function setPaletteTab(tab) {
-    if (!current || !palettes[tab]) return;
+    if (!current || !palettes[tab] || !paletteTabs().includes(tab)) return;
     current.paletteTab = tab; renderPalette();
   }
 
@@ -216,12 +235,17 @@
     dialog.querySelector('.w3dpv-palette-panel').hidden = !show;
     const button = dialog.querySelector('[data-action="palette"]');
     button.setAttribute('aria-expanded', String(show));
-    if (show) { renderPalette(); dialog.querySelector('[data-color-tab="' + current.paletteTab + '"]').focus({preventScroll: true}); }
+    if (show) {
+      renderPalette();
+      // With one part allowed there are no tabs; focus goes to the first colour.
+      const target = paletteTabs().length > 1 ? dialog.querySelector('[data-color-tab="' + current.paletteTab + '"]') : dialog.querySelector('.w3dpv-swatch');
+      if (target) target.focus({preventScroll: true});
+    }
     else if (returnFocus) button.focus({preventScroll: true});
   }
 
   function applyPaletteColor(color) {
-    if (!current || !validColor(color)) return;
+    if (!current || !validColor(color) || !paletteTabs().includes(current.paletteTab)) return;
     color = color.toLowerCase();
     if (current.paletteTab === 'background') {
       if (current.background === color) return;
@@ -390,7 +414,7 @@
       else fallback();
       return;
     }
-    if (name === 'palette') { showPalette(dialog.querySelector('.w3dpv-palette-panel').hidden); return; }
+    if (name === 'palette') { if (paletteTabs().length) showPalette(dialog.querySelector('.w3dpv-palette-panel').hidden); return; }
     if (name === 'palette-close') { showPalette(false, true); return; }
     if (name === 'palette-reset') { restorePaletteColor(); return; }
     if (name === 'fullscreen') {

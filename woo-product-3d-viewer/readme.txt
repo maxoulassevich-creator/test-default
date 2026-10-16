@@ -3,7 +3,7 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,7 @@ See README-RU.html for the complete Russian guide and TEST-REPORT.txt for checks
 * Style settings for the product button and every part of the viewer window
   (colors, sizes, radius, fonts, backdrop, visible controls) with a live preview
   and a demo window; available to shop managers.
+* Background change and model recoloring in the palette can be switched off separately.
 * Orbit, slow rotation with pause, zoom, camera reset, keyboard controls.
 * Background/model color palette, a custom color picker and original color reset.
 * Per-variation model with a parent product fallback.
@@ -45,6 +46,14 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.3.0 =
+The viewer palette has two separate switches on the settings page (Палитра и значок
+360°): background change and model recoloring. With recoloring off the model always
+keeps the materials, textures and colors of its file; with background change off the
+background stays as set in the product. With one part allowed the palette has no tabs,
+only a title and focus goes to the first color; with both off there is no palette
+button. Switching a part off while the window is open restores that part. The 1.2.0
+"show palette" setting is migrated to both switches with the same value.
 = 1.2.0 =
 Added up to three models per product (each with an optional mobile file and a switcher
 label). The viewer window shows a model switcher: equal-width 44 px buttons at the

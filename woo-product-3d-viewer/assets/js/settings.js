@@ -60,7 +60,7 @@
   function openDemo(trigger) {
     if (!window.W3DPV || !data.demo.length) return;
     const v = values();
-    window.W3DPVConfig.ui = {eyebrow: v.dlg_eyebrow, badge: v.show_badge === 'yes' ? v.badge_text : '', palette: v.show_palette === 'yes', fullscreen: v.show_fullscreen === 'yes', help: v.show_help === 'yes', switcher: v.sw_position};
+    window.W3DPVConfig.ui = {eyebrow: v.dlg_eyebrow, badge: v.show_badge === 'yes' ? v.badge_text : '', palette: v.palette_background === 'yes' || v.palette_model === 'yes', paletteBackground: v.palette_background === 'yes', paletteModel: v.palette_model === 'yes', fullscreen: v.show_fullscreen === 'yes', help: v.show_help === 'yes', switcher: v.sw_position};
     window.W3DPV.applyUI();
     window.W3DPV.open({models: data.demo, title: 'Демонстрационное кресло', auto: false, speed: 8, yaw: 0, color: '#9aa7b7', background: '#f2f4f7'}, trigger);
   }
