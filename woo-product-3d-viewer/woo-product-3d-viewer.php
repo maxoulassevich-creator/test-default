@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Woo Product 3D Viewer
- * Description: GLB/FBX/OBJ-модели товаров WooCommerce, адаптивное окно и шорткод [product_3d_button].
- * Version: 1.1.2
+ * Description: До трёх GLB/FBX/OBJ-моделей на товар WooCommerce, адаптивное окно с переключателем, настройка вида кнопки и окна, шорткод [product_3d_button].
+ * Version: 1.2.0
  * Requires at least: 6.5
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
@@ -13,7 +13,7 @@
  */
 
 defined( 'ABSPATH' ) || exit;
-define( 'W3DPV_VERSION', '1.1.2' );
+define( 'W3DPV_VERSION', '1.2.0' );
 define( 'W3DPV_FILE', __FILE__ );
 define( 'W3DPV_PATH', plugin_dir_path( __FILE__ ) );
 define( 'W3DPV_URL', plugin_dir_url( __FILE__ ) );
@@ -21,6 +21,7 @@ define( 'W3DPV_URL', plugin_dir_url( __FILE__ ) );
 require_once W3DPV_PATH . 'includes/class-w3dpv-model.php';
 require_once W3DPV_PATH . 'includes/class-w3dpv-cache.php';
 require_once W3DPV_PATH . 'includes/class-w3dpv-plugin.php';
+require_once W3DPV_PATH . 'includes/class-w3dpv-settings.php';
 W3DPV_Cache::init();
 register_deactivation_hook( __FILE__, array( 'W3DPV_Cache', 'deactivate' ) );
 
@@ -43,5 +44,6 @@ add_action( 'plugins_loaded', static function () {
 		return;
 	}
 	load_plugin_textdomain( 'woo-product-3d-viewer', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
-	new W3DPV_Plugin();
+	W3DPV_Plugin::instance();
+	W3DPV_Settings::init();
 } );

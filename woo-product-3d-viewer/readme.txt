@@ -3,16 +3,17 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Local GLB/FBX/OBJ product viewer with an accessible responsive modal and a shortcode.
+Local GLB/FBX/OBJ product viewer: up to three models per product, an accessible responsive modal with a model switcher, style settings and a shortcode.
 
 == Installation ==
 Upload the plugin ZIP via Plugins > Add New > Upload Plugin, then activate.
 Activate WooCommerce first. Open a product in the classic WooCommerce editor,
-select Product Data > 3D model, upload a model, and save.
+select Product Data > 3D model, upload up to three models, and save.
+Button and window styles: WooCommerce > 3D-просмотр.
 Place [product_3d_button] in a shortcode block or Elementor Shortcode widget.
 See README-RU.html for the complete Russian guide and TEST-REPORT.txt for checks.
 
@@ -23,6 +24,11 @@ See README-RU.html for the complete Russian guide and TEST-REPORT.txt for checks
   not loaded; such surfaces keep their material color. Lights, cameras and curves
   from the file are ignored; animations and skins stay in the bind pose.
 * Polygonal OBJ geometry; external MTL/textures are not supported.
+* Up to three models per product with switcher labels; touch-friendly switcher
+  (44 px targets, bottom of the model area), click, arrow keys + Enter and keys 1-3.
+* Style settings for the product button and every part of the viewer window
+  (colors, sizes, radius, fonts, backdrop, visible controls) with a live preview
+  and a demo window; available to shop managers.
 * Orbit, slow rotation with pause, zoom, camera reset, keyboard controls.
 * Background/model color palette, a custom color picker and original color reset.
 * Per-variation model with a parent product fallback.
@@ -39,6 +45,23 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.2.0 =
+Added up to three models per product (each with an optional mobile file and a switcher
+label). The viewer window shows a model switcher: equal-width 44 px buttons at the
+bottom of the model area on phones, click and keyboard (arrows + Enter, Home/End,
+keys 1-3) on desktop. Switching cancels the previous download and keeps the chosen
+background and model color. Variations keep one model; without their own file they
+show all parent models. Product payload keeps the 1.1 model/mobileModel fields.
+Added WooCommerce > 3D-просмотр settings page: product button (text, icon, width,
+alignment, font, fill, colors, border, radius, size, height, padding, shadow), window
+(eyebrow, font, size, radius, colors, backdrop color/opacity/blur, loading screen),
+controls (colors, hover/active states, close button, focus ring, radius, height, text,
+palette/fullscreen/help visibility), switcher (position, colors, radius), palette and
+360° badge. Live preview, demo window with three models, reset to defaults.
+Shop managers can save the settings. The cache page moved to the "Кэш моделей" tab;
+the old page=w3dpv-cache address redirects there.
+Hover styles apply only to devices with a hover pointer (no sticky hover after a tap).
+Empty optional model slots are not stored as product meta.
 = 1.1.2 =
 The upload check follows FBXLoader's parsing rules: object ids of any numeric type,
 duplicate ids, skin bones, model cycles, ASCII names with commas and line layout;

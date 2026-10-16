@@ -9,3 +9,18 @@
 .w3dpv-file-field--variation{clear:both;width:100%;box-sizing:border-box;padding:15px 0;border-top:1px solid #eee;margin-top:10px}
 #w3dpv_product_data input[type=color]{width:64px;height:36px;padding:2px}
 @media(max-width:782px){.w3dpv-file-field .w3dpv-file-actions .button{min-height:44px}#w3dpv_product_data .form-field{padding-left:16px!important}}
+#w3dpv_product_data .w3dpv-slot{margin:0 16px 14px;padding:0 0 4px;border:1px solid #dfe4ea;border-radius:8px;background:#fcfdfe}
+#w3dpv_product_data .w3dpv-slot legend{margin-left:12px;padding:0 6px;font-weight:600}
+#w3dpv_product_data .w3dpv-slot .w3dpv-file-field{padding:8px 14px 10px}
+#w3dpv_product_data .w3dpv-slot .form-field{margin-bottom:6px}
+.w3dpv-settings-page .w3dpv-settings-lead{max-width:760px}
+.w3dpv-settings-preview{position:sticky;top:32px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;margin:16px 0;padding:16px 20px;border:1px solid #dcdcde;border-radius:8px;background:#fff}
+.w3dpv-settings-preview .description{flex-basis:100%;margin:0}
+.w3dpv-settings-preview-button{flex:1 1 280px;min-width:0}
+.w3dpv-settings-group{margin:0 0 12px;border:1px solid #dcdcde;border-radius:8px;background:#fff}
+.w3dpv-settings-group summary{padding:14px 18px;font-size:14px;font-weight:600;cursor:pointer}
+.w3dpv-settings-group .form-table{margin:0 18px 8px;width:calc(100% - 36px)}
+.w3dpv-settings-group .form-table th{width:280px}
+.w3dpv-settings-page input[type=color]{width:56px;height:34px;padding:2px;vertical-align:middle}
+.w3dpv-color-code{margin-left:8px;vertical-align:middle}
+@media(max-width:782px){.w3dpv-settings-preview{position:static}.w3dpv-settings-group .form-table th{width:auto}}

@@ -26,6 +26,8 @@
     ]
   };
   const validColor = color => /^#[0-9a-f]{6}$/i.test(color || '');
+  const MAX_MODELS = 3;
+  const ui = () => ({eyebrow: 'ПРОСМОТР В 3D', badge: '360°', palette: true, fullscreen: true, help: true, switcher: 'bottom', ...(config.ui || {})});
 
   function createDialog() {
     if (dialog) return;
@@ -34,10 +36,10 @@
     dialog.setAttribute('aria-labelledby', 'w3dpv-dialog-title');
     dialog.setAttribute('aria-describedby', 'w3dpv-help');
     dialog.innerHTML = '<div class="w3dpv-shell">' +
-      '<header class="w3dpv-header"><div class="w3dpv-heading"><span class="w3dpv-eyebrow">ПРОСМОТР В 3D</span><h2 id="w3dpv-dialog-title"></h2></div><button type="button" class="w3dpv-icon-button w3dpv-close" data-action="close" aria-label="Закрыть просмотр">' + svg('close') + '</button></header>' +
-      '<div class="w3dpv-stage"><div class="w3dpv-canvas-host"></div><div class="w3dpv-status" role="status" aria-live="polite"><span class="w3dpv-spinner" aria-hidden="true"></span><strong class="w3dpv-status-title">Подготовка просмотра</strong><p class="w3dpv-status-detail">Загружаем 3D-модель…</p><button type="button" class="w3dpv-retry" data-action="retry" hidden>Попробовать снова</button></div><span class="w3dpv-stage-badge" aria-hidden="true">360°</span>' +
+      '<header class="w3dpv-header"><div class="w3dpv-heading"><span class="w3dpv-eyebrow"></span><h2 id="w3dpv-dialog-title"></h2></div><button type="button" class="w3dpv-icon-button w3dpv-close" data-action="close" aria-label="Закрыть просмотр">' + svg('close') + '</button></header>' +
+      '<div class="w3dpv-stage" id="w3dpv-stage"><div class="w3dpv-canvas-host"></div><div class="w3dpv-status" role="status" aria-live="polite"><span class="w3dpv-spinner" aria-hidden="true"></span><strong class="w3dpv-status-title">Подготовка просмотра</strong><p class="w3dpv-status-detail">Загружаем 3D-модель…</p><button type="button" class="w3dpv-retry" data-action="retry" hidden>Попробовать снова</button></div><span class="w3dpv-stage-badge" aria-hidden="true"></span><div class="w3dpv-models" role="tablist" aria-label="Модели товара" hidden></div>' +
       '<section class="w3dpv-palette-panel" id="w3dpv-palette-panel" aria-label="Палитра просмотра" hidden><div class="w3dpv-palette-heading"><div class="w3dpv-palette-tabs" role="tablist" aria-label="Что перекрасить"><button type="button" id="w3dpv-tab-background" data-color-tab="background" role="tab" aria-controls="w3dpv-color-options" aria-selected="true">Фон</button><button type="button" id="w3dpv-tab-model" data-color-tab="model" role="tab" aria-controls="w3dpv-color-options" aria-selected="false" tabindex="-1">Модель</button></div><button type="button" class="w3dpv-icon-button" data-action="palette-close" aria-label="Закрыть палитру">' + svg('close') + '</button></div><div id="w3dpv-color-options" role="tabpanel" aria-labelledby="w3dpv-tab-background"><div class="w3dpv-swatch-grid" role="group" aria-label="Цвета фона"></div><div class="w3dpv-custom-row"><label class="w3dpv-custom-color" for="w3dpv-custom-color"><input type="color" id="w3dpv-custom-color" value="#f2f4f7"><span>Свой цвет</span></label><button type="button" data-action="palette-reset">Исходный фон</button></div><output class="w3dpv-color-value" for="w3dpv-custom-color" aria-live="polite"></output></div><p class="w3dpv-palette-note">Цвета меняются только для просмотра.</p></section></div>' +
-      '<div class="w3dpv-footer"><div class="w3dpv-toolbar" role="group" aria-label="Управление 3D-моделью"><div class="w3dpv-zoom-controls"><button type="button" class="w3dpv-icon-button" data-action="minus" aria-label="Отдалить модель" title="Отдалить">' + svg('minus') + '</button><button type="button" class="w3dpv-icon-button" data-action="plus" aria-label="Приблизить модель" title="Приблизить">' + svg('plus') + '</button></div><button type="button" class="w3dpv-control-button" data-action="rotate" aria-pressed="false">' + svg('rotate') + '<span>Включить вращение</span></button><button type="button" class="w3dpv-control-button" data-action="reset">' + svg('reset') + '<span>Сбросить вид</span></button><button type="button" class="w3dpv-icon-button" data-action="fullscreen" aria-label="Полный экран" title="Полный экран">' + svg('fullscreen') + '</button></div><p id="w3dpv-help" class="w3dpv-help">Потяните модель для вращения. Масштаб — колёсиком, двумя пальцами или кнопками + и −. С клавиатуры: фокус на модели и стрелки.</p></div></div>';
+      '<div class="w3dpv-footer"><div class="w3dpv-toolbar" role="group" aria-label="Управление 3D-моделью"><div class="w3dpv-zoom-controls"><button type="button" class="w3dpv-icon-button" data-action="minus" aria-label="Отдалить модель" title="Отдалить">' + svg('minus') + '</button><button type="button" class="w3dpv-icon-button" data-action="plus" aria-label="Приблизить модель" title="Приблизить">' + svg('plus') + '</button></div><button type="button" class="w3dpv-control-button" data-action="rotate" aria-pressed="false">' + svg('rotate') + '<span>Включить вращение</span></button><button type="button" class="w3dpv-control-button" data-action="reset">' + svg('reset') + '<span>Сбросить вид</span></button><button type="button" class="w3dpv-icon-button" data-action="fullscreen" aria-label="Полный экран" title="Полный экран">' + svg('fullscreen') + '</button></div><p id="w3dpv-help" class="w3dpv-help"></p></div></div>';
     const paletteButton = document.createElement('button');
     paletteButton.type = 'button'; paletteButton.className = 'w3dpv-control-button';
     paletteButton.setAttribute('data-action', 'palette'); paletteButton.setAttribute('aria-expanded', 'false');
@@ -55,6 +57,8 @@
     dialog.addEventListener('click', e => {
       const tab = e.target.closest('[data-color-tab]');
       if (tab) { setPaletteTab(tab.getAttribute('data-color-tab')); return; }
+      const modelTab = e.target.closest('[data-model-index]');
+      if (modelTab) { select(Number(modelTab.getAttribute('data-model-index'))); return; }
       const swatch = e.target.closest('[data-color-swatch]');
       if (swatch) { applyPaletteColor(swatch.getAttribute('data-color-swatch')); revealColorResult(); return; }
       const button = e.target.closest('[data-action]');
@@ -79,6 +83,18 @@
         const next = e.key === 'Home' ? 'background' : e.key === 'End' ? 'model' : current.paletteTab === 'background' ? 'model' : 'background';
         setPaletteTab(next); dialog.querySelector('[data-color-tab="' + next + '"]').focus(); return;
       }
+      const tab = e.target.closest('[data-model-index]');
+      if (tab && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) {
+        // Arrows move focus; Enter or Space loads the focused model (a model can be large).
+        e.preventDefault();
+        const tabs = [...dialog.querySelectorAll('[data-model-index]')], index = tabs.indexOf(tab);
+        const next = e.key === 'Home' ? 0 : e.key === 'End' ? tabs.length - 1 : (index + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1) + tabs.length) % tabs.length;
+        tabs.forEach((item, i) => { item.tabIndex = i === next ? 0 : -1; });
+        tabs[next].focus(); return;
+      }
+      if (/^[1-9]$/.test(e.key) && !e.altKey && !e.ctrlKey && !e.metaKey && !e.target.matches('input, textarea, select') && current && Number(e.key) <= current.settings.models.length) {
+        e.preventDefault(); select(Number(e.key) - 1); return;
+      }
       if (e.key === 'Tab' && typeof dialog.showModal !== 'function') {
         const focusable = [...dialog.querySelectorAll('button:not(:disabled):not([hidden]):not([tabindex="-1"]), input:not(:disabled), canvas')].filter(el => el.getClientRects().length);
         const first = focusable[0], last = focusable[focusable.length - 1];
@@ -86,13 +102,79 @@
         if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     });
-    const full = dialog.querySelector('[data-action="fullscreen"]');
-    full.hidden = !document.fullscreenEnabled || typeof dialog.querySelector('.w3dpv-shell').requestFullscreen !== 'function';
+    applyUI();
     if (config.canDiagnose) {
       const diagnostic = document.createElement('button'); diagnostic.type = 'button'; diagnostic.className = 'w3dpv-diagnostics'; diagnostic.hidden = true;
       diagnostic.setAttribute('data-action', 'diagnostics'); diagnostic.textContent = 'Скопировать диагностику';
       dialog.querySelector('.w3dpv-status').appendChild(diagnostic);
     }
+  }
+
+  /** Texts and visibility from WooCommerce > 3D-просмотр; can be re-applied by the settings preview. */
+  function applyUI() {
+    if (!dialog) return;
+    const settings = ui();
+    dialog.querySelector('.w3dpv-eyebrow').textContent = settings.eyebrow || '';
+    dialog.querySelector('.w3dpv-stage-badge').textContent = settings.badge || '';
+    const multiple = current && current.settings.models.length > 1;
+    dialog.querySelector('#w3dpv-help').textContent = 'Потяните модель для вращения. Масштаб — колёсиком, двумя пальцами или кнопками + и −. С клавиатуры: фокус на модели и стрелки' + (multiple ? ', цифры 1–' + current.settings.models.length + ' — модели.' : '.');
+    dialog.querySelector('#w3dpv-help').hidden = !settings.help;
+    dialog.querySelector('[data-action="palette"]').hidden = !settings.palette;
+    if (!settings.palette) showPalette(false);
+    const full = dialog.querySelector('[data-action="fullscreen"]');
+    full.hidden = !settings.fullscreen || !document.fullscreenEnabled || typeof dialog.querySelector('.w3dpv-shell').requestFullscreen !== 'function';
+    const top = settings.switcher === 'top';
+    dialog.querySelector('.w3dpv-models').classList.toggle('w3dpv-models--top', top);
+    dialog.querySelector('.w3dpv-stage').classList.toggle('w3dpv-stage--models', !!multiple && !top);
+    dialog.querySelector('.w3dpv-stage').classList.toggle('w3dpv-stage--models-top', !!multiple && top);
+    if (current) markModel();
+  }
+
+  /** Accepts the 1.2 format ({models: [...]}) and the earlier single-model format ({model, mobileModel}). */
+  function normalize(settings) {
+    if (!settings || typeof settings !== 'object') return null;
+    const list = Array.isArray(settings.models) && settings.models.length ? settings.models : [{model: settings.model, mobileModel: settings.mobileModel || null, label: ''}];
+    const models = list.filter(entry => entry && entry.model && entry.model.url).slice(0, MAX_MODELS);
+    return models.length ? {...settings, models} : null;
+  }
+
+  function modelLabel(entry, index) {
+    return (entry && typeof entry.label === 'string' && entry.label.trim()) || 'Модель ' + (index + 1);
+  }
+
+  function renderModels() {
+    const bar = dialog.querySelector('.w3dpv-models'), models = current.settings.models;
+    bar.replaceChildren();
+    bar.hidden = models.length < 2;
+    models.forEach((entry, index) => {
+      const tab = document.createElement('button');
+      tab.type = 'button'; tab.className = 'w3dpv-model-tab'; tab.setAttribute('role', 'tab');
+      tab.setAttribute('data-model-index', String(index));
+      tab.setAttribute('aria-controls', 'w3dpv-stage');
+      tab.textContent = modelLabel(entry, index); tab.title = tab.textContent;
+      bar.appendChild(tab);
+    });
+    applyUI();
+  }
+
+  function markModel() {
+    const count = current.settings.models.length;
+    dialog.querySelectorAll('[data-model-index]').forEach(tab => {
+      const selected = Number(tab.getAttribute('data-model-index')) === current.index;
+      tab.setAttribute('aria-selected', String(selected)); tab.tabIndex = selected ? 0 : -1;
+    });
+    const eyebrow = ui().eyebrow || '';
+    dialog.querySelector('.w3dpv-eyebrow').textContent = count > 1 ? (eyebrow ? eyebrow + ' · ' : '') + (current.index + 1) + '/' + count : eyebrow;
+  }
+
+  /** Shows another model of the product in the open window; the background and palette stay. */
+  function select(index) {
+    if (!current || index === current.index || index < 0 || index >= current.settings.models.length) return;
+    current.index = index;
+    current.model = modelFor(current.settings.models[index]);
+    markModel();
+    mount(++generation);
+    document.dispatchEvent(new CustomEvent('w3dpv:model', {detail: {index, modelId: current.model.id || 0}}));
   }
 
   function renderPalette() {
@@ -200,10 +282,11 @@
     if (messages[value]) status(messages[value][0], messages[value][1], false);
   }
 
-  function selectedSettings(settings) {
+  /** Phones and tablets get the lighter file of a model when one is set. */
+  function modelFor(entry) {
     const apple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const small = apple || matchMedia('(max-width: 767px)').matches || (matchMedia('(pointer: coarse)').matches && matchMedia('(max-width: 1024px)').matches);
-    return {...settings, model: small && settings.mobileModel && settings.mobileModel.url ? settings.mobileModel : settings.model};
+    return small && entry.mobileModel && entry.mobileModel.url ? entry.mobileModel : entry.model;
   }
 
   function module() {
@@ -220,20 +303,21 @@
   function diagnostics() {
     if (!current) return null;
     return {...current.diagnostics, version: config.version, browser: navigator.userAgent, viewport: {width: innerWidth, height: innerHeight}, secure: window.isSecureContext,
-      model: {id: current.settings.model.id, format: current.settings.model.format, bytes: Number(current.settings.model.bytes), mobile: current.settings.model === current.settings.mobileModel},
+      model: {id: current.model.id, format: current.model.format, bytes: Number(current.model.bytes), mobile: current.model === current.settings.models[current.index].mobileModel, index: current.index + 1, count: current.settings.models.length},
       cache: window.W3DPVModelCache ? window.W3DPVModelCache.diagnostics() : {source: 'unavailable'}};
   }
 
   async function mount(token, refresh = false) {
     controlsEnabled(false);
-    status('Подготовка просмотра', 'Загружаем 3D-модель…', false);
+    const count = current.settings.models.length;
+    status('Подготовка просмотра', count > 1 ? 'Загружаем «' + modelLabel(current.settings.models[current.index], current.index) + '» (' + (current.index + 1) + ' из ' + count + ')…' : 'Загружаем 3D-модель…', false);
     if (current.downloadAbort) current.downloadAbort.abort();
     if (current.controller) { current.controller.dispose(); current.controller = null; }
     current.diagnostics = {phase: 'download'};
     current.downloadAbort = new AbortController();
     const state = current;
     try {
-      const downloadPromise = window.W3DPVModelCache.load(state.settings.model, {
+      const downloadPromise = window.W3DPVModelCache.load(state.model, {
         signal: state.downloadAbort.signal, refresh,
         progress: percent => { if (current === state && token === generation) status('Загрузка модели', percent === null ? 'Подождите немного…' : percent + '%', false); },
         stage: value => { if (current === state && token === generation) stage(value); }
@@ -241,7 +325,7 @@
       downloadPromise.catch(() => {});
       const viewer = await module();
       if (!current || token !== generation) return;
-      current.controller = viewer.mount(dialog.querySelector('.w3dpv-canvas-host'), {...current.settings, downloadPromise}, config, {
+      current.controller = viewer.mount(dialog.querySelector('.w3dpv-canvas-host'), {...current.settings, model: current.model, downloadPromise}, config, {
         progress: () => {},
         stage: value => { if (current && token === generation) stage(value); },
         details: details => { if (current && token === generation) Object.assign(current.diagnostics, details); },
@@ -255,16 +339,18 @@
     }
   }
 
-  function open(settings, trigger) {
-    if (!settings || !settings.model || !settings.model.url) return;
-    settings = selectedSettings(settings);
+  function open(settings, trigger, index = 0) {
+    settings = normalize(settings);
+    if (!settings) return;
     if (current) close();
     createDialog();
+    index = Math.min(Math.max(Number(index) || 0, 0), settings.models.length - 1);
     const scrollY = window.scrollY, bodyStyle = document.body.getAttribute('style');
     const gap = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
     const defaultBackground = validColor(settings.background) ? settings.background.toLowerCase() : '#f2f4f7';
-    current = {settings, trigger: trigger || document.activeElement, scrollY, bodyStyle, controller: null, defaultBackground, background: defaultBackground, modelColor: null, paletteTab: 'background', diagnostics: {phase: 'module'}};
+    current = {settings, index, model: modelFor(settings.models[index]), trigger: trigger || document.activeElement, scrollY, bodyStyle, controller: null, defaultBackground, background: defaultBackground, modelColor: null, paletteTab: 'background', diagnostics: {phase: 'module'}};
     dialog.querySelector('#w3dpv-dialog-title').textContent = settings.title || '3D-модель товара';
+    renderModels();
     dialog.querySelector('.w3dpv-stage').style.backgroundColor = defaultBackground;
     showPalette(false);
     document.body.style.position = 'fixed'; document.body.style.top = '-' + scrollY + 'px';
@@ -274,7 +360,7 @@
     else { dialog.hidden = false; dialog.setAttribute('open', ''); if (backdrop) backdrop.hidden = false; }
     dialog.querySelector('.w3dpv-close').focus({preventScroll: true});
     mount(++generation);
-    document.dispatchEvent(new CustomEvent('w3dpv:open', {detail: {modelId: settings.model.id || 0}}));
+    document.dispatchEvent(new CustomEvent('w3dpv:open', {detail: {modelId: current.model.id || 0, index, count: settings.models.length}}));
   }
 
   function close() {
@@ -337,7 +423,7 @@
       const settings = variation ? (variation.w3dpv || null) : initial;
       button.setAttribute('data-w3dpv', JSON.stringify(settings));
       button.disabled = !settings;
-      button.querySelector('span').textContent = settings ? (button.getAttribute('data-label') || 'Посмотреть в 3D') : 'Выберите вариант для 3D';
+      button.querySelector('span').textContent = settings ? (button.getAttribute('data-label') || 'Посмотреть в 3D') : (button.getAttribute('data-label-disabled') || 'Выберите вариант для 3D');
     });
   }
 
@@ -351,11 +437,12 @@
     const button = e.target.closest('.w3dpv-trigger');
     if (!button || button.disabled || (e.relatedTarget && button.contains(e.relatedTarget))) return;
     try {
-      const settings = selectedSettings(JSON.parse(button.getAttribute('data-w3dpv')));
-      if (!settings.model) return;
+      const settings = normalize(JSON.parse(button.getAttribute('data-w3dpv')));
+      if (!settings) return;
       module().catch(() => {});
-      const key = settings.model.url;
-      if (!matchMedia('(pointer: coarse)').matches && !warmed.has(key)) { warmed.add(key); window.W3DPVModelCache.warm(settings.model); }
+      // Only the model that opens first is preloaded.
+      const first = modelFor(settings.models[0]), key = first.url;
+      if (!matchMedia('(pointer: coarse)').matches && !warmed.has(key)) { warmed.add(key); window.W3DPVModelCache.warm(first); }
     } catch (error) { /* Markup controlled by third-party builders may be incomplete. */ }
   }
   document.addEventListener('pointerover', prewarm);
@@ -372,5 +459,5 @@
       });
     });
   }
-  window.W3DPV = {open, close, diagnostics};
+  window.W3DPV = {open, close, select, diagnostics, applyUI};
 })();

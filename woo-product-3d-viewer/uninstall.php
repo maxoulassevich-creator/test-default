@@ -9,6 +9,7 @@ function w3dpv_uninstall_site() {
 	wp_clear_scheduled_hook( 'w3dpv_monthly_cache_cleanup' );
 	delete_option( 'w3dpv_cache_generation' );
 	delete_option( 'w3dpv_cache_last_cleanup' );
+	delete_option( 'w3dpv_style' );
 	foreach ( array( '_w3dpv_validated', '_w3dpv_fingerprint', '_w3dpv_invalid' ) as $key ) {
 		delete_post_meta_by_key( $key );
 	}

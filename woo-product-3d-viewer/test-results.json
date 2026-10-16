@@ -1,2066 +1,2868 @@
 {
-  "version": "1.1.2",
-  "date": "2026-10-14",
-  "maxBytes": 83886080,
-  "limits": {
-    "maxVertices": 1000000,
-    "maxMeshes": 1000,
-    "fbxMaxTriangles": 1500000,
-    "objMaxTriangles": 1000000,
-    "glbMaxSceneVertices": 3000000
+ "version": "1.2.0",
+ "date": "2026-10-16",
+ "maxBytes": 83886080,
+ "limits": {
+  "maxVertices": 1000000,
+  "maxMeshes": 1000,
+  "fbxMaxTriangles": 1500000,
+  "objMaxTriangles": 1000000,
+  "glbMaxSceneVertices": 3000000
+ },
+ "environment": "WordPress 7.1.3, WooCommerce 11.2.1, PHP 8.3.6, Chromium (Playwright, SwiftShader WebGL2)",
+ "current": {
+  "model_switcher_chromium": {
+   "note": "Three models in the window: 5 viewports (desktop, iPhone 13, phone landscape, tablet, 320 px), keyboard and fast switching",
+   "passed": 33,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "desktop 1280x900: switcher shows 3 models inside the model area",
+     "passed": true,
+     "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+    },
+    {
+     "test": "desktop 1280x900: every switch button is at least 44×44 px",
+     "passed": true,
+     "detail": "109×44, 109×44, 220×44"
+    },
+    {
+     "test": "desktop 1280x900: first model selected, title shows 1/3",
+     "passed": true,
+     "detail": "ПРОСМОТР В 3D · 1/3"
+    },
+    {
+     "test": "desktop 1280x900: second button opens the FBX model",
+     "passed": true,
+     "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+    },
+    {
+     "test": "desktop 1280x900: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone 13 portrait: switcher shows 3 models inside the model area",
+     "passed": true,
+     "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+    },
+    {
+     "test": "iPhone 13 portrait: every switch button is at least 44×44 px",
+     "passed": true,
+     "detail": "116×44, 116×44, 116×44"
+    },
+    {
+     "test": "iPhone 13 portrait: first model selected, title shows 1/3",
+     "passed": true,
+     "detail": "ПРОСМОТР В 3D · 1/3"
+    },
+    {
+     "test": "iPhone 13 portrait: second button opens the FBX model",
+     "passed": true,
+     "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+    },
+    {
+     "test": "iPhone 13 portrait: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "phone landscape 844x390: switcher shows 3 models inside the model area",
+     "passed": true,
+     "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+    },
+    {
+     "test": "phone landscape 844x390: every switch button is at least 44×44 px",
+     "passed": true,
+     "detail": "109×44, 109×44, 220×44"
+    },
+    {
+     "test": "phone landscape 844x390: first model selected, title shows 1/3",
+     "passed": true,
+     "detail": "ПРОСМОТР В 3D · 1/3"
+    },
+    {
+     "test": "phone landscape 844x390: second button opens the FBX model",
+     "passed": true,
+     "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+    },
+    {
+     "test": "phone landscape 844x390: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "tablet 820x1180: switcher shows 3 models inside the model area",
+     "passed": true,
+     "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+    },
+    {
+     "test": "tablet 820x1180: every switch button is at least 44×44 px",
+     "passed": true,
+     "detail": "109×44, 109×44, 220×44"
+    },
+    {
+     "test": "tablet 820x1180: first model selected, title shows 1/3",
+     "passed": true,
+     "detail": "ПРОСМОТР В 3D · 1/3"
+    },
+    {
+     "test": "tablet 820x1180: second button opens the FBX model",
+     "passed": true,
+     "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+    },
+    {
+     "test": "tablet 820x1180: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "small phone 320x640: switcher shows 3 models inside the model area",
+     "passed": true,
+     "detail": "{\"inside\":true,\"overlap\":false,\"overflow\":false}"
+    },
+    {
+     "test": "small phone 320x640: every switch button is at least 44×44 px",
+     "passed": true,
+     "detail": "93×44, 93×44, 93×44"
+    },
+    {
+     "test": "small phone 320x640: first model selected, title shows 1/3",
+     "passed": true,
+     "detail": "ПРОСМОТР В 3D · 1/3"
+    },
+    {
+     "test": "small phone 320x640: second button opens the FBX model",
+     "passed": true,
+     "detail": "ready fbx ПРОСМОТР В 3D · 2/3"
+    },
+    {
+     "test": "small phone 320x640: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Arrow keys move focus between models without loading",
+     "passed": true,
+     "detail": "{\"focused\":\"2\",\"loaded\":1}"
+    },
+    {
+     "test": "Enter loads the focused model (OBJ)",
+     "passed": true
+    },
+    {
+     "test": "Digit key 1 on the model selects the first model",
+     "passed": true
+    },
+    {
+     "test": "Fast switching during loading ends on the last chosen model with one canvas",
+     "passed": true,
+     "detail": "fbx ready canvases=1"
+    },
+    {
+     "test": "Background chosen in the palette stays after switching models",
+     "passed": true
+    },
+    {
+     "test": "Escape closes the window after switching",
+     "passed": true
+    },
+    {
+     "test": "Keyboard/fast switching: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Product with one model has no switcher",
+     "passed": true,
+     "detail": "{\"hidden\":true,\"eyebrow\":\"ПРОСМОТР В 3D\"}"
+    }
+   ]
   },
-  "current": {
+  "style_settings_chromium": {
+   "note": "Settings page: live preview, demo window, save as admin and shop manager, storefront reflects saved styles on desktop and iPhone 13, customer blocked",
+   "passed": 43,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "WooCommerce menu has the «3D-просмотр» item",
+     "passed": true
+    },
+    {
+     "test": "Settings page shows 5 groups of styles",
+     "passed": true,
+     "detail": "Кнопка на странице товара | Окно просмотра | Кнопки управления в окне | Переключатель моделей | Палитра и значок 360°"
+    },
+    {
+     "test": "Every setting has a field",
+     "passed": true,
+     "detail": "61"
+    },
+    {
+     "test": "Preview button uses the default colour",
+     "passed": true,
+     "detail": "rgb(39, 63, 98)"
+    },
+    {
+     "test": "Live preview follows colour, radius, text, icon and width",
+     "passed": true,
+     "detail": "{\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"text\":\"Смотреть 3D\",\"svg\":false,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-theme\",\"width\":816.4375,\"box\":816.4375,\"code\":\"#aa2200\"}"
+    },
+    {
+     "test": "Unchecked fill gives an outline button",
+     "passed": true,
+     "detail": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "test": "Demo window opens with three demo models",
+     "passed": true,
+     "detail": "[\"Кресло GLB\",\"Кресло FBX\",\"Кресло OBJ\"]"
+    },
+    {
+     "test": "Demo window uses unsaved settings",
+     "passed": true,
+     "detail": "{\"open\":true,\"tabs\":[\"Кресло GLB\",\"Кресло FBX\",\"Кресло OBJ\"],\"top\":true,\"palette\":true,\"header\":\"rgb(16, 24, 32)\",\"title\":\"rgb(255, 255, 255)\",\"eyebrow\":\"ДЕМО · 1/3\",\"error\":null}"
+    },
+    {
+     "test": "Demo switcher loads the FBX chair",
+     "passed": true,
+     "detail": "{\"format\":\"fbx\",\"error\":null}"
+    },
+    {
+     "test": "Demo window closes with Escape",
+     "passed": true
+    },
+    {
+     "test": "«Вернуть исходный вид» restores all defaults in the form",
+     "passed": true
+    },
+    {
+     "test": "Saving shows the WordPress notice",
+     "passed": true,
+     "detail": "Settings saved."
+    },
+    {
+     "test": "All saved values come back in the form",
+     "passed": true
+    },
+    {
+     "test": "No JavaScript errors on the settings page",
+     "passed": true
+    },
+    {
+     "test": "desktop: product button uses saved text, colour, radius, height, width",
+     "passed": true,
+     "detail": "{\"text\":\"Смотреть 3D\",\"svg\":false,\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"height\":56,\"width\":618,\"parent\":618,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-center\",\"font\":\"Manrope, sans-serif\",\"body\":\"Manrope, sans-serif\"}"
+    },
+    {
+     "test": "desktop: «Как на сайте» font follows the theme",
+     "passed": true,
+     "detail": "Manrope, sans-serif / Manrope, sans-serif"
+    },
+    {
+     "test": "desktop: model loads with custom styles",
+     "passed": true
+    },
+    {
+     "test": "desktop: hidden parts stay hidden (palette, fullscreen, help, badge)",
+     "passed": true,
+     "detail": "{\"p\":false,\"f\":false,\"h\":false,\"b\":false}"
+    },
+    {
+     "test": "desktop: window colours follow the settings",
+     "passed": true,
+     "detail": "{\"h\":\"rgb(16, 24, 32)\",\"t\":\"rgb(255, 255, 255)\",\"c\":\"rgb(32, 42, 54)\",\"cc\":\"rgb(240, 240, 240)\",\"x\":\"rgb(51, 68, 85)\",\"s\":\"rgb(170, 34, 0)\"}"
+    },
+    {
+     "test": "desktop: empty eyebrow leaves only the counter",
+     "passed": true,
+     "detail": "1/3"
+    },
+    {
+     "test": "desktop: switcher sits at the top of the model area",
+     "passed": true,
+     "detail": "12"
+    },
+    {
+     "test": "desktop: backdrop uses the saved colour and density",
+     "passed": true,
+     "detail": "rgba(0, 0, 0, 0.3)"
+    },
+    {
+     "test": "desktop: control radius and touch size",
+     "passed": true,
+     "detail": "20px 44"
+    },
+    {
+     "test": "desktop: dialog font follows the theme",
+     "passed": true,
+     "detail": "Manrope, sans-serif"
+    },
+    {
+     "test": "desktop: window width and radius follow the settings",
+     "passed": true,
+     "detail": "1100 4px"
+    },
+    {
+     "test": "desktop: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone 13: product button uses saved text, colour, radius, height, width",
+     "passed": true,
+     "detail": "{\"text\":\"Смотреть 3D\",\"svg\":false,\"bg\":\"rgb(170, 34, 0)\",\"radius\":\"24px\",\"height\":56,\"width\":330,\"parent\":330,\"wrap\":\"w3dpv-button-wrap w3dpv-width-full w3dpv-align-center\",\"font\":\"Manrope, sans-serif\",\"body\":\"Manrope, sans-serif\"}"
+    },
+    {
+     "test": "iPhone 13: «Как на сайте» font follows the theme",
+     "passed": true,
+     "detail": "Manrope, sans-serif / Manrope, sans-serif"
+    },
+    {
+     "test": "iPhone 13: model loads with custom styles",
+     "passed": true
+    },
+    {
+     "test": "iPhone 13: hidden parts stay hidden (palette, fullscreen, help, badge)",
+     "passed": true,
+     "detail": "{\"p\":false,\"f\":false,\"h\":false,\"b\":false}"
+    },
+    {
+     "test": "iPhone 13: window colours follow the settings",
+     "passed": true,
+     "detail": "{\"h\":\"rgb(16, 24, 32)\",\"t\":\"rgb(255, 255, 255)\",\"c\":\"rgb(32, 42, 54)\",\"cc\":\"rgb(240, 240, 240)\",\"x\":\"rgb(51, 68, 85)\",\"s\":\"rgb(170, 34, 0)\"}"
+    },
+    {
+     "test": "iPhone 13: empty eyebrow leaves only the counter",
+     "passed": true,
+     "detail": "1/3"
+    },
+    {
+     "test": "iPhone 13: switcher sits at the top of the model area",
+     "passed": true,
+     "detail": "12"
+    },
+    {
+     "test": "iPhone 13: backdrop uses the saved colour and density",
+     "passed": true,
+     "detail": "rgba(0, 0, 0, 0.3)"
+    },
+    {
+     "test": "iPhone 13: control radius and touch size",
+     "passed": true,
+     "detail": "20px 44"
+    },
+    {
+     "test": "iPhone 13: dialog font follows the theme",
+     "passed": true,
+     "detail": "Manrope, sans-serif"
+    },
+    {
+     "test": "iPhone 13: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Shop manager opens the settings page",
+     "passed": true
+    },
+    {
+     "test": "Shop manager saves settings through options.php",
+     "passed": true,
+     "detail": "http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings"
+    },
+    {
+     "test": "Shop manager sees the cache tab",
+     "passed": true
+    },
+    {
+     "test": "Shop manager: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Customer cannot open the settings page",
+     "passed": true,
+     "detail": "403"
+    },
+    {
+     "test": "Customer POST to options.php does not change settings",
+     "passed": true,
+     "detail": "HTTP 200, label Открыть 3D"
+    }
+   ]
+  },
+  "style_settings_sanitize_php": {
+   "note": "W3DPV_Settings::sanitize(), css() and ui() through WP-CLI with error_reporting=-1",
+   "passed": 18,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Short hex expands to six digits",
+     "passed": true,
+     "detail": "#aabbcc"
+    },
+    {
+     "test": "Named and broken colours fall back to defaults",
+     "passed": true
+    },
+    {
+     "test": "Numbers are clamped to their range",
+     "passed": true,
+     "detail": "40/32/16"
+    },
+    {
+     "test": "Non-numeric number falls back to default",
+     "passed": true
+    },
+    {
+     "test": "Unknown select values fall back to defaults",
+     "passed": true
+    },
+    {
+     "test": "Text is stripped of tags",
+     "passed": true,
+     "detail": "Купить"
+    },
+    {
+     "test": "Text is cut to 60 characters (multibyte)",
+     "passed": true
+    },
+    {
+     "test": "Missing checkbox in a submitted form means \"no\"",
+     "passed": true
+    },
+    {
+     "test": "Array instead of scalar is treated as missing",
+     "passed": true
+    },
+    {
+     "test": "Unknown keys are dropped",
+     "passed": true
+    },
+    {
+     "test": "Sanitizing twice is stable (add_option path)",
+     "passed": true
+    },
+    {
+     "test": "Stored partial option keeps defaults for missing keys",
+     "passed": true
+    },
+    {
+     "test": "Defaults round-trip unchanged",
+     "passed": true
+    },
+    {
+     "test": "CSS has no markup or quotes from text fields",
+     "passed": true
+    },
+    {
+     "test": "CSS uses the expanded colour in rgba()",
+     "passed": true
+    },
+    {
+     "test": "Backdrop opacity 0 and 100",
+     "passed": true
+    },
+    {
+     "test": "UI hides palette and keeps badge text",
+     "passed": true
+    },
+    {
+     "test": "Corrupted option (string) yields defaults",
+     "passed": true
+    }
+   ]
+  },
+  "wordpress_admin_chromium": {
+   "note": "Product editor: FBX field, preview, save with nonce, three model slots, variations, cache tab",
+   "passed": 17,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Product list does not load viewer/admin scripts",
+     "passed": true
+    },
+    {
+     "test": "Editor shows the saved FBX file",
+     "passed": true,
+     "detail": "monkey_embedded_texture.fbx"
+    },
+    {
+     "test": "Editor field names the supported formats",
+     "passed": true,
+     "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
+    },
+    {
+     "test": "Admin preview renders the FBX",
+     "passed": true
+    },
+    {
+     "test": "Saving the product stores the newly selected FBX",
+     "passed": true,
+     "detail": "vCube.fbx"
+    },
+    {
+     "test": "Yaw setting is saved",
+     "passed": true
+    },
+    {
+     "test": "Variation editor lists the variation FBX",
+     "passed": true,
+     "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
+    },
+    {
+     "test": "Editor shows three model slots",
+     "passed": true,
+     "detail": "Модель 1 (открывается первой) | Модель 2 (необязательно) | Модель 3 (необязательно)"
+    },
+    {
+     "test": "Slots 2 and 3 save their files and names",
+     "passed": true,
+     "detail": "demo-chair.glb / Спереди | demo-chair.fbx / Вид FBX | demo-chair.obj / Вид OBJ"
+    },
+    {
+     "test": "Storefront button carries three models in slot order",
+     "passed": true,
+     "detail": "glb:Спереди,fbx:Вид FBX,obj:Вид OBJ"
+    },
+    {
+     "test": "Slot 2 preview renders its FBX",
+     "passed": true
+    },
+    {
+     "test": "Removing slot 3 leaves two models",
+     "passed": true,
+     "detail": "2"
+    },
+    {
+     "test": "Product with one model keeps the single-model payload",
+     "passed": true,
+     "detail": "1"
+    },
+    {
+     "test": "Plugin list links to the settings page",
+     "passed": true
+    },
+    {
+     "test": "Cache page shows the stored copies",
+     "passed": true,
+     "detail": "Копии на сайте: 4; размер: 2.4 MB. Максимум 512 МиБ, затем удаляются самые старые копии."
+    },
+    {
+     "test": "Clearing the cache returns to the cache tab with a notice",
+     "passed": true,
+     "detail": "http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache&w3dpv_cleared=1"
+    },
+    {
+     "test": "No JavaScript errors in the admin",
+     "passed": true
+    }
+   ]
+  },
+  "storefront_chromium_regression": {
+   "note": "Storefront regression of 1.1.2 checks (formats, FBX, mobile, palette, zoom, variations)",
+   "passed": 42,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Binary FBX 7400 (cube): opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=36 textures=0"
+    },
+    {
+     "test": "Binary FBX 7400 (cube): model is visible and not black",
+     "passed": true,
+     "detail": "coverage=23.2% mean=125,59,92 dark=0%"
+    },
+    {
+     "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7400 (cube): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an external texture path: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=2910 textures=0"
+    },
+    {
+     "test": "Binary FBX with an external texture path: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=9.5% mean=234,234,235 dark=0%"
+    },
+    {
+     "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an external texture path: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=2910 textures=1"
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=9.2% mean=157,159,179 dark=0%"
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=2 vertices=165960 textures=0"
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=3.6% mean=77,149,171 dark=0%"
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=2 vertices=147336 textures=0"
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
+     "passed": true,
+     "detail": "coverage=3.5% mean=219,124,111 dark=0%"
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "ASCII FBX 7500: opens without error",
+     "passed": true,
+     "detail": "phase=ready meshes=1 vertices=91014 textures=0"
+    },
+    {
+     "test": "ASCII FBX 7500: model is visible and not black",
+     "passed": true,
+     "detail": "coverage=10.6% mean=241,242,242 dark=0%"
+    },
+    {
+     "test": "ASCII FBX 7500: no requests outside the site or for external textures",
+     "passed": true
+    },
+    {
+     "test": "ASCII FBX 7500: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Embedded FBX texture is uploaded and used",
+     "passed": true,
+     "detail": "textures=1"
+    },
+    {
+     "test": "Missing external FBX texture is dropped instead of rendering black",
+     "passed": true,
+     "detail": "textures=0"
+    },
+    {
+     "test": "Embedded texture blob URLs are revoked after loading",
+     "passed": true,
+     "detail": "{\"seen\":1,\"alive\":0}"
+    },
+    {
+     "test": "FBX palette: model recolors to the chosen color",
+     "passed": true,
+     "detail": "before=157,159,179 blue=153,196,229"
+    },
+    {
+     "test": "FBX palette: reset restores the original look",
+     "passed": true,
+     "detail": "reset=157,159,179"
+    },
+    {
+     "test": "Escape closes the FBX viewer and removes the canvas",
+     "passed": true
+    },
+    {
+     "test": "GLB chair: opens and renders",
+     "passed": true,
+     "detail": "coverage=11.7% mean=209,189,165"
+    },
+    {
+     "test": "GLB chair: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "OBJ chair: opens and renders",
+     "passed": true,
+     "detail": "coverage=11.9% mean=242,130,124"
+    },
+    {
+     "test": "OBJ chair: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
+     "passed": true,
+     "detail": "coverage=11.8% mean=209,189,165"
+    },
+    {
+     "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Variation with its own FBX opens that FBX",
+     "passed": true,
+     "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false,\"index\":1,\"count\":1}"
+    },
+    {
+     "test": "Variation without a model falls back to the parent GLB",
+     "passed": true,
+     "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false,\"index\":1,\"count\":1}"
+    },
+    {
+     "test": "Variable product: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "iPhone emulation: textured FBX opens in the constrained mode",
+     "passed": true,
+     "detail": "apple=true constrained=true coverage=15.1%"
+    },
+    {
+     "test": "iPhone emulation: no JavaScript errors",
+     "passed": true
+    },
+    {
+     "test": "Zoom level is kept after a viewport resize",
+     "passed": true,
+     "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+    }
+   ]
+  },
+  "media_upload_chromium": {
+   "note": "Media screen uploads: binary FBX, ASCII FBX, broken FBX refused",
+   "passed": 3,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Binary FBX 7700 uploads through the media screen",
+     "passed": true,
+     "detail": "upload-browser upload-browser-3.fbx Edit Copy URL to clipboard"
+    },
+    {
+     "test": "ASCII FBX uploads through the media screen",
+     "passed": true,
+     "detail": "upload-ascii upload-ascii-3.fbx Edit Copy URL to clipboard"
+    },
+    {
+     "test": "Broken FBX is refused with the plugin message",
+     "passed": true,
+     "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
+    }
+   ]
+  },
+  "compatibility_1_1": {
+   "note": "Variation fallback rules and the 1.0-1.1 cache page URL",
+   "passed": 6,
+   "failed": 0,
+   "tests": [
+    {
+     "test": "Variation with its own FBX shows only it",
+     "passed": true
+    },
+    {
+     "test": "Variation with an unusable own file shows no model (not the parent's)",
+     "passed": true
+    },
+    {
+     "test": "Variation without a file inherits the parent models (1)",
+     "passed": true
+    },
+    {
+     "test": "admin: old cache URL redirects to the cache tab",
+     "passed": true,
+     "detail": "200 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache"
+    },
+    {
+     "test": "manager: old cache URL redirects to the cache tab",
+     "passed": true,
+     "detail": "200 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-settings&tab=cache"
+    },
+    {
+     "test": "buyer: old cache URL stays closed",
+     "passed": true,
+     "detail": "403 http://127.0.0.1:8089/wp-admin/admin.php?page=w3dpv-cache"
+    }
+   ]
+  }
+ },
+ "previous": [
+  {
+   "version": "1.1.2",
+   "date": "2026-10-14",
+   "current": {
     "upload_viewer_consistency": {
-      "note": "PHP upload verdict equals viewer verdict",
-      "tests": [
-        {
-          "test": "ascii-instanced-3x-2_16Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2160000"
-        },
-        {
-          "test": "ascii-lying-counts.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 180000"
-        },
-        {
-          "test": "ascii-objects-twice.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 2"
-        },
-        {
-          "test": "ascii-quads-600k.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
-        },
-        {
-          "test": "ascii-quads-wrapped-600k.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
-        },
-        {
-          "test": "ascii-stress-1-wrap0.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 8438"
-        },
-        {
-          "test": "ascii-stress-2-wrap0.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 8690"
-        },
-        {
-          "test": "ascii-stress-3-wrap13.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 7768"
-        },
-        {
-          "test": "ascii-stress-4-wrap1.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 8186"
-        },
-        {
-          "test": "fbx-1000-meshes.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 2000"
-        },
-        {
-          "test": "fbx-1001-meshes.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2002"
-        },
-        {
-          "test": "fbx-instanced-2x-1_44Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 1440000"
-        },
-        {
-          "test": "fbx-instanced-3x-2_16Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2160000"
-        },
-        {
-          "test": "fbx-loose-edges.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 20000"
-        },
-        {
-          "test": "fbx-loose-points.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 20000"
-        },
-        {
-          "test": "fbx-mesh-without-geometry.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
-        },
-        {
-          "test": "fbx-ngons-9000tri.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 9000"
-        },
-        {
-          "test": "fbx-orphan-geometry.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
-        },
-        {
-          "test": "fbx-orphan-model.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
-        },
-        {
-          "test": "fbx-quads-7500-1_3Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 780000"
-        },
-        {
-          "test": "fbx-quads-dup-3_9Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 3920000"
-        },
-        {
-          "test": "fbx-quads-raw-600k.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
-        },
-        {
-          "test": "fbx-stress-1.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 8438"
-        },
-        {
-          "test": "glb-1001-nodes.glb",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2002"
-        },
-        {
-          "test": "glb-instanced-300.glb",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 6000000"
-        },
-        {
-          "test": "glb-reused-mesh-290-nodes.glb",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 5800000"
-        },
-        {
-          "test": "glb-reused-mesh-300-nodes.glb",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 6000000"
-        },
-        {
-          "test": "obj-1000-objects.obj",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 1000"
-        },
-        {
-          "test": "obj-1001-objects.obj",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1001"
-        },
-        {
-          "test": "obj-faces-with-lines.obj",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 0"
-        },
-        {
-          "test": "fbx-quads-1_96Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1960200"
-        },
-        {
-          "test": "user-size-jamon.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 1197930"
-        },
-        {
-          "test": "user-size-2instances.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 1199700"
-        },
-        {
-          "test": "user-q750k.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт, треугольников: 1499400"
-        },
-        {
-          "test": "user-q1000k.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1999396"
-        }
-      ]
+     "note": "PHP upload verdict equals viewer verdict",
+     "tests": [
+      {
+       "test": "ascii-instanced-3x-2_16Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2160000"
+      },
+      {
+       "test": "ascii-lying-counts.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 180000"
+      },
+      {
+       "test": "ascii-objects-twice.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 2"
+      },
+      {
+       "test": "ascii-quads-600k.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
+      },
+      {
+       "test": "ascii-quads-wrapped-600k.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
+      },
+      {
+       "test": "ascii-stress-1-wrap0.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 8438"
+      },
+      {
+       "test": "ascii-stress-2-wrap0.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 8690"
+      },
+      {
+       "test": "ascii-stress-3-wrap13.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 7768"
+      },
+      {
+       "test": "ascii-stress-4-wrap1.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 8186"
+      },
+      {
+       "test": "fbx-1000-meshes.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 2000"
+      },
+      {
+       "test": "fbx-1001-meshes.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2002"
+      },
+      {
+       "test": "fbx-instanced-2x-1_44Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 1440000"
+      },
+      {
+       "test": "fbx-instanced-3x-2_16Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2160000"
+      },
+      {
+       "test": "fbx-loose-edges.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 20000"
+      },
+      {
+       "test": "fbx-loose-points.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 20000"
+      },
+      {
+       "test": "fbx-mesh-without-geometry.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
+      },
+      {
+       "test": "fbx-ngons-9000tri.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 9000"
+      },
+      {
+       "test": "fbx-orphan-geometry.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
+      },
+      {
+       "test": "fbx-orphan-model.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: -"
+      },
+      {
+       "test": "fbx-quads-7500-1_3Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 780000"
+      },
+      {
+       "test": "fbx-quads-dup-3_9Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 3920000"
+      },
+      {
+       "test": "fbx-quads-raw-600k.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 600000"
+      },
+      {
+       "test": "fbx-stress-1.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 8438"
+      },
+      {
+       "test": "glb-1001-nodes.glb",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 2002"
+      },
+      {
+       "test": "glb-instanced-300.glb",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 6000000"
+      },
+      {
+       "test": "glb-reused-mesh-290-nodes.glb",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 5800000"
+      },
+      {
+       "test": "glb-reused-mesh-300-nodes.glb",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 6000000"
+      },
+      {
+       "test": "obj-1000-objects.obj",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 1000"
+      },
+      {
+       "test": "obj-1001-objects.obj",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1001"
+      },
+      {
+       "test": "obj-faces-with-lines.obj",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 0"
+      },
+      {
+       "test": "fbx-quads-1_96Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1960200"
+      },
+      {
+       "test": "user-size-jamon.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 1197930"
+      },
+      {
+       "test": "user-size-2instances.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 1199700"
+      },
+      {
+       "test": "user-q750k.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт, треугольников: 1499400"
+      },
+      {
+       "test": "user-q1000k.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён, треугольников: 1999396"
+      }
+     ]
     },
     "drop_degenerate_triangles_node": {
-      "three": "0.186.1",
-      "tests": [
-        {
-          "test": "NaN triangles removed, others kept",
-          "passed": true
-        },
-        {
-          "test": "positions are all finite",
-          "passed": true
-        },
-        {
-          "test": "normals follow their triangles",
-          "passed": true
-        },
-        {
-          "test": "uvs follow their triangles",
-          "passed": true
-        },
-        {
-          "test": "skin indices keep their type and order",
-          "passed": true
-        },
-        {
-          "test": "morph targets follow their triangles",
-          "passed": true
-        },
-        {
-          "test": "groups re-aligned",
-          "passed": true,
-          "detail": "[{\"start\":0,\"count\":6,\"materialIndex\":0},{\"start\":6,\"count\":6,\"materialIndex\":1}]"
-        },
-        {
-          "test": "bounding box finite",
-          "passed": true
-        },
-        {
-          "test": "clean geometry left untouched",
-          "passed": true
-        },
-        {
-          "test": "fully degenerate group dropped, Infinity group clamped",
-          "passed": true,
-          "detail": "[{\"start\":0,\"count\":3,\"materialIndex\":0},{\"start\":3,\"count\":3,\"materialIndex\":2}]"
-        },
-        {
-          "test": "indexed geometry left as is",
-          "passed": true
-        }
-      ]
+     "three": "0.186.1",
+     "tests": [
+      {
+       "test": "NaN triangles removed, others kept",
+       "passed": true
+      },
+      {
+       "test": "positions are all finite",
+       "passed": true
+      },
+      {
+       "test": "normals follow their triangles",
+       "passed": true
+      },
+      {
+       "test": "uvs follow their triangles",
+       "passed": true
+      },
+      {
+       "test": "skin indices keep their type and order",
+       "passed": true
+      },
+      {
+       "test": "morph targets follow their triangles",
+       "passed": true
+      },
+      {
+       "test": "groups re-aligned",
+       "passed": true,
+       "detail": "[{\"start\":0,\"count\":6,\"materialIndex\":0},{\"start\":6,\"count\":6,\"materialIndex\":1}]"
+      },
+      {
+       "test": "bounding box finite",
+       "passed": true
+      },
+      {
+       "test": "clean geometry left untouched",
+       "passed": true
+      },
+      {
+       "test": "fully degenerate group dropped, Infinity group clamped",
+       "passed": true,
+       "detail": "[{\"start\":0,\"count\":3,\"materialIndex\":0},{\"start\":3,\"count\":3,\"materialIndex\":2}]"
+      },
+      {
+       "test": "indexed geometry left as is",
+       "passed": true
+      }
+     ]
     },
     "wordpress_admin_chromium": {
-      "tests": [
-        {
-          "test": "Product list does not load viewer/admin scripts",
-          "passed": true
-        },
-        {
-          "test": "Editor shows the saved FBX file",
-          "passed": true,
-          "detail": "monkey_embedded_texture.fbx"
-        },
-        {
-          "test": "Editor field names the supported formats",
-          "passed": true,
-          "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
-        },
-        {
-          "test": "Admin preview renders the FBX",
-          "passed": true
-        },
-        {
-          "test": "Saving the product stores the newly selected FBX",
-          "passed": true,
-          "detail": "vCube.fbx"
-        },
-        {
-          "test": "Yaw setting is saved",
-          "passed": true
-        },
-        {
-          "test": "Variation editor lists the variation FBX",
-          "passed": true,
-          "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
-        },
-        {
-          "test": "Cache page shows the stored copies",
-          "passed": true
-        },
-        {
-          "test": "No JavaScript errors in the admin",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX 7700 uploads through the media screen",
-          "passed": true,
-          "detail": "upload-browser upload-browser-2.fbx Edit Copy URL to clipboard"
-        },
-        {
-          "test": "ASCII FBX uploads through the media screen",
-          "passed": true,
-          "detail": "upload-ascii upload-ascii-2.fbx Edit Copy URL to clipboard"
-        },
-        {
-          "test": "Broken FBX is refused with the plugin message",
-          "passed": true,
-          "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
-        }
-      ]
+     "tests": [
+      {
+       "test": "Product list does not load viewer/admin scripts",
+       "passed": true
+      },
+      {
+       "test": "Editor shows the saved FBX file",
+       "passed": true,
+       "detail": "monkey_embedded_texture.fbx"
+      },
+      {
+       "test": "Editor field names the supported formats",
+       "passed": true,
+       "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
+      },
+      {
+       "test": "Admin preview renders the FBX",
+       "passed": true
+      },
+      {
+       "test": "Saving the product stores the newly selected FBX",
+       "passed": true,
+       "detail": "vCube.fbx"
+      },
+      {
+       "test": "Yaw setting is saved",
+       "passed": true
+      },
+      {
+       "test": "Variation editor lists the variation FBX",
+       "passed": true,
+       "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
+      },
+      {
+       "test": "Cache page shows the stored copies",
+       "passed": true
+      },
+      {
+       "test": "No JavaScript errors in the admin",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 uploads through the media screen",
+       "passed": true,
+       "detail": "upload-browser upload-browser-2.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "ASCII FBX uploads through the media screen",
+       "passed": true,
+       "detail": "upload-ascii upload-ascii-2.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "Broken FBX is refused with the plugin message",
+       "passed": true,
+       "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
+      }
+     ]
     },
     "storefront_chromium_regression": {
-      "tests": [
-        {
-          "test": "Binary FBX 7400 (cube): opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=1 vertices=36 textures=0"
-        },
-        {
-          "test": "Binary FBX 7400 (cube): model is visible and not black",
-          "passed": true,
-          "detail": "coverage=23.2% mean=125,59,92 dark=0%"
-        },
-        {
-          "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX 7400 (cube): no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX with an external texture path: opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=1 vertices=2910 textures=0"
-        },
-        {
-          "test": "Binary FBX with an external texture path: model is visible and not black",
-          "passed": true,
-          "detail": "coverage=9.5% mean=234,234,235 dark=0%"
-        },
-        {
-          "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX with an external texture path: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX with an embedded PNG texture: opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=1 vertices=2910 textures=1"
-        },
-        {
-          "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
-          "passed": true,
-          "detail": "coverage=9.2% mean=157,159,179 dark=0%"
-        },
-        {
-          "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Skinned, animated binary FBX 7400: opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=2 vertices=165960 textures=0"
-        },
-        {
-          "test": "Skinned, animated binary FBX 7400: model is visible and not black",
-          "passed": true,
-          "detail": "coverage=3.6% mean=77,149,171 dark=0%"
-        },
-        {
-          "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=2 vertices=147336 textures=0"
-        },
-        {
-          "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
-          "passed": true,
-          "detail": "coverage=3.5% mean=219,124,111 dark=0%"
-        },
-        {
-          "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "ASCII FBX 7500: opens without error",
-          "passed": true,
-          "detail": "phase=ready meshes=1 vertices=91014 textures=0"
-        },
-        {
-          "test": "ASCII FBX 7500: model is visible and not black",
-          "passed": true,
-          "detail": "coverage=10.6% mean=241,242,242 dark=0%"
-        },
-        {
-          "test": "ASCII FBX 7500: no requests outside the site or for external textures",
-          "passed": true
-        },
-        {
-          "test": "ASCII FBX 7500: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Embedded FBX texture is uploaded and used",
-          "passed": true,
-          "detail": "textures=1"
-        },
-        {
-          "test": "Missing external FBX texture is dropped instead of rendering black",
-          "passed": true,
-          "detail": "textures=0"
-        },
-        {
-          "test": "Embedded texture blob URLs are revoked after loading",
-          "passed": true,
-          "detail": "{\"seen\":1,\"alive\":0}"
-        },
-        {
-          "test": "FBX palette: model recolors to the chosen color",
-          "passed": true,
-          "detail": "before=157,159,179 blue=153,196,229"
-        },
-        {
-          "test": "FBX palette: reset restores the original look",
-          "passed": true,
-          "detail": "reset=157,159,179"
-        },
-        {
-          "test": "Escape closes the FBX viewer and removes the canvas",
-          "passed": true
-        },
-        {
-          "test": "GLB chair: opens and renders",
-          "passed": true,
-          "detail": "coverage=11.7% mean=209,189,165"
-        },
-        {
-          "test": "GLB chair: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "OBJ chair: opens and renders",
-          "passed": true,
-          "detail": "coverage=11.9% mean=242,130,124"
-        },
-        {
-          "test": "OBJ chair: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
-          "passed": true,
-          "detail": "coverage=11.8% mean=209,189,165"
-        },
-        {
-          "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Variation with its own FBX opens that FBX",
-          "passed": true,
-          "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false}"
-        },
-        {
-          "test": "Variation without a model falls back to the parent GLB",
-          "passed": true,
-          "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false}"
-        },
-        {
-          "test": "Variable product: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "iPhone emulation: textured FBX opens in the constrained mode",
-          "passed": true,
-          "detail": "apple=true constrained=true coverage=15.1%"
-        },
-        {
-          "test": "iPhone emulation: no JavaScript errors",
-          "passed": true
-        },
-        {
-          "test": "Zoom level is kept after a viewport resize",
-          "passed": true,
-          "detail": "home=11.7% zoomed=39.4% resized=39.4%"
-        }
-      ]
+     "tests": [
+      {
+       "test": "Binary FBX 7400 (cube): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=36 textures=0"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=23.2% mean=125,59,92 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=0"
+      },
+      {
+       "test": "Binary FBX with an external texture path: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.5% mean=234,234,235 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=1"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.2% mean=157,159,179 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=165960 textures=0"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.6% mean=77,149,171 dark=0%"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=147336 textures=0"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.5% mean=219,124,111 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=91014 textures=0"
+      },
+      {
+       "test": "ASCII FBX 7500: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=10.6% mean=241,242,242 dark=0%"
+      },
+      {
+       "test": "ASCII FBX 7500: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Embedded FBX texture is uploaded and used",
+       "passed": true,
+       "detail": "textures=1"
+      },
+      {
+       "test": "Missing external FBX texture is dropped instead of rendering black",
+       "passed": true,
+       "detail": "textures=0"
+      },
+      {
+       "test": "Embedded texture blob URLs are revoked after loading",
+       "passed": true,
+       "detail": "{\"seen\":1,\"alive\":0}"
+      },
+      {
+       "test": "FBX palette: model recolors to the chosen color",
+       "passed": true,
+       "detail": "before=157,159,179 blue=153,196,229"
+      },
+      {
+       "test": "FBX palette: reset restores the original look",
+       "passed": true,
+       "detail": "reset=157,159,179"
+      },
+      {
+       "test": "Escape closes the FBX viewer and removes the canvas",
+       "passed": true
+      },
+      {
+       "test": "GLB chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.7% mean=209,189,165"
+      },
+      {
+       "test": "GLB chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "OBJ chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.9% mean=242,130,124"
+      },
+      {
+       "test": "OBJ chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
+       "passed": true,
+       "detail": "coverage=11.8% mean=209,189,165"
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Variation with its own FBX opens that FBX",
+       "passed": true,
+       "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false}"
+      },
+      {
+       "test": "Variation without a model falls back to the parent GLB",
+       "passed": true,
+       "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false}"
+      },
+      {
+       "test": "Variable product: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone emulation: textured FBX opens in the constrained mode",
+       "passed": true,
+       "detail": "apple=true constrained=true coverage=15.1%"
+      },
+      {
+       "test": "iPhone emulation: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Zoom level is kept after a viewport resize",
+       "passed": true,
+       "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+      }
+     ]
     },
     "review_fixtures_upload_vs_viewer": {
-      "note": "reviewer fixtures; viewer verdict from FBXLoader 0.186.1 in Node with the viewer counting rules",
-      "tests": [
-        {
-          "test": "a-base.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "a-bom-crlf.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "a-comma-in-geometry-name.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-comma-in-names.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-comments.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "a-crlf.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "a-exponent-minus-1_6Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-indented-continuation.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-minus-zero-small.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "a-nested-objects-1_6Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-nested-objects2-1_6Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-spaces-indent.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "a-trailing-comma.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "blendshape.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "bone-is-mesh-no-geometry.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "bone-is-mesh-with-geometry.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "cyclic-models.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "dup-geometry-id.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "geometry-first-parent-root.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "geometry-id-int32.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "ids-above-2p53-bigfirst.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "ids-above-2p53.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "ids-negative.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "multi-geometry.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "nurbs-on-mesh-380k.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "nurbs-on-mesh-small.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
-        },
-        {
-          "test": "op-connections.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "pvi-double-small.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
-        },
-        {
-          "test": "pvi-int64-1_6Mtri.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "pvi-int64-small.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
-        },
-        {
-          "test": "pvi-missing.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "pvi-twice.fbx",
-          "passed": true,
-          "detail": "загрузка: принят, просмотр: открыт"
-        },
-        {
-          "test": "r-ascii-no-newlines.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "r-ascii-unclosed-nocomma.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "r-vertices-zlib-truncated.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "r-zlib-bomb.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "r-zlib-garbage.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "r-zlib-truncated.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        },
-        {
-          "test": "shape-on-model.fbx",
-          "passed": true,
-          "detail": "загрузка: отклонён, просмотр: отклонён"
-        }
-      ]
+     "note": "reviewer fixtures; viewer verdict from FBXLoader 0.186.1 in Node with the viewer counting rules",
+     "tests": [
+      {
+       "test": "a-base.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "a-bom-crlf.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "a-comma-in-geometry-name.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-comma-in-names.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-comments.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "a-crlf.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "a-exponent-minus-1_6Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-indented-continuation.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-minus-zero-small.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "a-nested-objects-1_6Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-nested-objects2-1_6Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-spaces-indent.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "a-trailing-comma.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "blendshape.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "bone-is-mesh-no-geometry.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "bone-is-mesh-with-geometry.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "cyclic-models.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "dup-geometry-id.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "geometry-first-parent-root.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "geometry-id-int32.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "ids-above-2p53-bigfirst.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "ids-above-2p53.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "ids-negative.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "multi-geometry.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "nurbs-on-mesh-380k.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "nurbs-on-mesh-small.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+      },
+      {
+       "test": "op-connections.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "pvi-double-small.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+      },
+      {
+       "test": "pvi-int64-1_6Mtri.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "pvi-int64-small.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: открыт (сервер строже: файл нестандартный)"
+      },
+      {
+       "test": "pvi-missing.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "pvi-twice.fbx",
+       "passed": true,
+       "detail": "загрузка: принят, просмотр: открыт"
+      },
+      {
+       "test": "r-ascii-no-newlines.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "r-ascii-unclosed-nocomma.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "r-vertices-zlib-truncated.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "r-zlib-bomb.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "r-zlib-garbage.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "r-zlib-truncated.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      },
+      {
+       "test": "shape-on-model.fbx",
+       "passed": true,
+       "detail": "загрузка: отклонён, просмотр: отклонён"
+      }
+     ]
     }
+   }
   },
-  "previous": [
-    {
-      "version": "1.1.0",
-      "date": "2026-10-14",
-      "results": {
-        "fbx_validator": {
-          "php": "8.3.6",
-          "tests": [
-            {
-              "file": "Samba_Dancing.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "mixamo.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "monkey.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "monkey_embedded_texture.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "nurbs.fbx",
-              "expected": "reject",
-              "result": "REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).",
-              "passed": true
-            },
-            {
-              "file": "stanford-bunny.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "vCube.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "demo-chair.fbx",
-              "expected": "accept",
-              "result": "OK",
-              "passed": true
-            },
-            {
-              "file": "ascii-huge-count.fbx",
-              "expected": "reject",
-              "result": "REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.",
-              "passed": true
-            },
-            {
-              "file": "ascii-noversion.fbx",
-              "expected": "reject",
-              "result": "REJECT: В FBX не найден номер версии. Экспортируйте модель заново (FBX 7.x).",
-              "passed": true
-            },
-            {
-              "file": "ascii-old.fbx",
-              "expected": "reject",
-              "result": "REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.",
-              "passed": true
-            },
-            {
-              "file": "ascii-php.fbx",
-              "expected": "reject",
-              "result": "REJECT: FBX содержит неподдерживаемые данные.",
-              "passed": true
-            },
-            {
-              "file": "bad-encoding.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            },
-            {
-              "file": "bad-endoffset-64.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            },
-            {
-              "file": "bad-endoffset.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            },
-            {
-              "file": "bad-proptype.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            },
-            {
-              "file": "bomb-declared.fbx",
-              "expected": "reject",
-              "result": "REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.",
-              "passed": true
-            },
-            {
-              "file": "bomb-uncompressed-mismatch.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            },
-            {
-              "file": "glb-renamed.fbx",
-              "expected": "reject",
-              "result": "REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).",
-              "passed": true
-            },
-            {
-              "file": "header-only.fbx",
-              "expected": "reject",
-              "result": "REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).",
-              "passed": true
-            },
-            {
-              "file": "html.fbx",
-              "expected": "reject",
-              "result": "REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).",
-              "passed": true
-            },
-            {
-              "file": "old-6100.fbx",
-              "expected": "reject",
-              "result": "REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.",
-              "passed": true
-            },
-            {
-              "file": "truncated.fbx",
-              "expected": "reject",
-              "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
-              "passed": true
-            }
-          ]
-        },
-        "wordpress_server": {
-          "wordpress": "7.1.3",
-          "woocommerce": "11.2.1",
-          "php": "8.3.6",
-          "tests": [
-            {
-              "test": "Old cache .htaccess is upgraded with FBX rules",
-              "passed": true
-            },
-            {
-              "test": "FBX copy is served from the server cache with the .fbx extension",
-              "passed": true,
-              "detail": "http://127.0.0.1:8089/wp-content/uploads/w3dpv-model-cache/w3dpv-e8804b72e6a3551391682cdf3608e9e4c9baaafd074927ab35e50e82a2911574.fbx"
-            },
-            {
-              "test": "Server FBX copy is identical to the original",
-              "passed": true
-            },
-            {
-              "test": "Cache statistics include FBX copies",
-              "passed": true,
-              "detail": "files=2 fbx=2"
-            },
-            {
-              "test": "Broken attachment is rejected and the result is stored",
-              "passed": true,
-              "detail": "Структура FBX повреждена. Экспортируйте файл заново."
-            },
-            {
-              "test": "HPOS compatibility is declared",
-              "passed": true,
-              "detail": "woo-product-3d-viewer/woo-product-3d-viewer.php"
-            },
-            {
-              "test": "Product block editor declaration",
-              "passed": null,
-              "detail": "the feature no longer exists in WooCommerce 11.2.1"
-            },
-            {
-              "test": "Next request reuses the stored rejection without parsing",
-              "passed": true
-            },
-            {
-              "test": "A changed file is validated again",
-              "passed": true
-            },
-            {
-              "test": "Options removed",
-              "passed": true
-            },
-            {
-              "test": "Validation meta removed",
-              "passed": true
-            },
-            {
-              "test": "Cleanup is unscheduled",
-              "passed": true
-            },
-            {
-              "test": "Product model assignments are kept",
-              "passed": true
-            },
-            {
-              "test": "Media originals are kept",
-              "passed": true
-            },
-            {
-              "test": "Foreign file keeps the folder; only plugin files are removed",
-              "passed": true,
-              "detail": "keep-me.txt"
-            },
-            {
-              "test": "Cache folder is removed",
-              "passed": true
-            }
-          ]
-        },
-        "wordpress_admin_chromium": {
-          "tests": [
-            {
-              "test": "Product list does not load viewer/admin scripts",
-              "passed": true
-            },
-            {
-              "test": "Editor shows the saved FBX file",
-              "passed": true,
-              "detail": "monkey_embedded_texture.fbx"
-            },
-            {
-              "test": "Editor field names the supported formats",
-              "passed": true,
-              "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
-            },
-            {
-              "test": "Admin preview renders the FBX",
-              "passed": true
-            },
-            {
-              "test": "Saving the product stores the newly selected FBX",
-              "passed": true,
-              "detail": "vCube.fbx"
-            },
-            {
-              "test": "Yaw setting is saved",
-              "passed": true
-            },
-            {
-              "test": "Variation editor lists the variation FBX",
-              "passed": true,
-              "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
-            },
-            {
-              "test": "Cache page shows the stored copies",
-              "passed": true
-            },
-            {
-              "test": "No JavaScript errors in the admin",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX 7700 uploads through the media screen",
-              "passed": true,
-              "detail": "upload-browser upload-browser-1.fbx Edit Copy URL to clipboard"
-            },
-            {
-              "test": "ASCII FBX uploads through the media screen",
-              "passed": true,
-              "detail": "upload-ascii upload-ascii-1.fbx Edit Copy URL to clipboard"
-            },
-            {
-              "test": "Broken FBX is refused with the plugin message",
-              "passed": true,
-              "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
-            }
-          ]
-        },
-        "storefront_chromium": {
-          "browser": "Chromium (Playwright 1.56.1, build 1194), WebGL2 via SwiftShader",
-          "tests": [
-            {
-              "test": "Binary FBX 7400 (cube): opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=1 vertices=36 textures=0"
-            },
-            {
-              "test": "Binary FBX 7400 (cube): model is visible and not black",
-              "passed": true,
-              "detail": "coverage=23.2% mean=125,59,92 dark=0%"
-            },
-            {
-              "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX 7400 (cube): no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX with an external texture path: opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=1 vertices=2910 textures=0"
-            },
-            {
-              "test": "Binary FBX with an external texture path: model is visible and not black",
-              "passed": true,
-              "detail": "coverage=9.5% mean=234,234,235 dark=0%"
-            },
-            {
-              "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX with an external texture path: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX with an embedded PNG texture: opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=1 vertices=2910 textures=1"
-            },
-            {
-              "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
-              "passed": true,
-              "detail": "coverage=9.2% mean=157,159,179 dark=0%"
-            },
-            {
-              "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Skinned, animated binary FBX 7400: opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=2 vertices=165960 textures=0"
-            },
-            {
-              "test": "Skinned, animated binary FBX 7400: model is visible and not black",
-              "passed": true,
-              "detail": "coverage=3.6% mean=77,149,171 dark=0%"
-            },
-            {
-              "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=2 vertices=147336 textures=0"
-            },
-            {
-              "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
-              "passed": true,
-              "detail": "coverage=3.5% mean=219,124,111 dark=0%"
-            },
-            {
-              "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "ASCII FBX 7500: opens without error",
-              "passed": true,
-              "detail": "phase=ready meshes=1 vertices=91014 textures=0"
-            },
-            {
-              "test": "ASCII FBX 7500: model is visible and not black",
-              "passed": true,
-              "detail": "coverage=10.6% mean=241,242,242 dark=0%"
-            },
-            {
-              "test": "ASCII FBX 7500: no requests outside the site or for external textures",
-              "passed": true
-            },
-            {
-              "test": "ASCII FBX 7500: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Embedded FBX texture is uploaded and used",
-              "passed": true,
-              "detail": "textures=1"
-            },
-            {
-              "test": "Missing external FBX texture is dropped instead of rendering black",
-              "passed": true,
-              "detail": "textures=0"
-            },
-            {
-              "test": "Embedded texture blob URLs are revoked after loading",
-              "passed": true,
-              "detail": "{\"seen\":1,\"alive\":0}"
-            },
-            {
-              "test": "FBX palette: model recolors to the chosen color",
-              "passed": true,
-              "detail": "before=157,159,179 blue=153,196,229"
-            },
-            {
-              "test": "FBX palette: reset restores the original look",
-              "passed": true,
-              "detail": "reset=157,159,179"
-            },
-            {
-              "test": "Escape closes the FBX viewer and removes the canvas",
-              "passed": true
-            },
-            {
-              "test": "GLB chair: opens and renders",
-              "passed": true,
-              "detail": "coverage=11.7% mean=209,189,165"
-            },
-            {
-              "test": "GLB chair: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "OBJ chair: opens and renders",
-              "passed": true,
-              "detail": "coverage=11.9% mean=242,130,124"
-            },
-            {
-              "test": "OBJ chair: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
-              "passed": true,
-              "detail": "coverage=11.8% mean=209,189,165"
-            },
-            {
-              "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Variation with its own FBX opens that FBX",
-              "passed": true,
-              "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false}"
-            },
-            {
-              "test": "Variation without a model falls back to the parent GLB",
-              "passed": true,
-              "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false}"
-            },
-            {
-              "test": "Variable product: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "iPhone emulation: textured FBX opens in the constrained mode",
-              "passed": true,
-              "detail": "apple=true constrained=true coverage=15.1%"
-            },
-            {
-              "test": "iPhone emulation: no JavaScript errors",
-              "passed": true
-            },
-            {
-              "test": "Zoom level is kept after a viewport resize",
-              "passed": true,
-              "detail": "home=11.7% zoomed=39.4% resized=39.4%"
-            }
-          ]
-        }
+  {
+   "version": "1.1.0",
+   "date": "2026-10-14",
+   "results": {
+    "fbx_validator": {
+     "php": "8.3.6",
+     "tests": [
+      {
+       "file": "Samba_Dancing.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "mixamo.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "monkey.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "monkey_embedded_texture.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "nurbs.fbx",
+       "expected": "reject",
+       "result": "REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).",
+       "passed": true
+      },
+      {
+       "file": "stanford-bunny.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "vCube.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "demo-chair.fbx",
+       "expected": "accept",
+       "result": "OK",
+       "passed": true
+      },
+      {
+       "file": "ascii-huge-count.fbx",
+       "expected": "reject",
+       "result": "REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.",
+       "passed": true
+      },
+      {
+       "file": "ascii-noversion.fbx",
+       "expected": "reject",
+       "result": "REJECT: В FBX не найден номер версии. Экспортируйте модель заново (FBX 7.x).",
+       "passed": true
+      },
+      {
+       "file": "ascii-old.fbx",
+       "expected": "reject",
+       "result": "REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.",
+       "passed": true
+      },
+      {
+       "file": "ascii-php.fbx",
+       "expected": "reject",
+       "result": "REJECT: FBX содержит неподдерживаемые данные.",
+       "passed": true
+      },
+      {
+       "file": "bad-encoding.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
+      },
+      {
+       "file": "bad-endoffset-64.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
+      },
+      {
+       "file": "bad-endoffset.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
+      },
+      {
+       "file": "bad-proptype.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
+      },
+      {
+       "file": "bomb-declared.fbx",
+       "expected": "reject",
+       "result": "REJECT: FBX слишком сложный. Лимит: 1 000 000 вершин и около 1 000 000 треугольников.",
+       "passed": true
+      },
+      {
+       "file": "bomb-uncompressed-mismatch.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
+      },
+      {
+       "file": "glb-renamed.fbx",
+       "expected": "reject",
+       "result": "REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).",
+       "passed": true
+      },
+      {
+       "file": "header-only.fbx",
+       "expected": "reject",
+       "result": "REJECT: FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).",
+       "passed": true
+      },
+      {
+       "file": "html.fbx",
+       "expected": "reject",
+       "result": "REJECT: Файл не похож на FBX. Экспортируйте модель в формате FBX (двоичный или ASCII).",
+       "passed": true
+      },
+      {
+       "file": "old-6100.fbx",
+       "expected": "reject",
+       "result": "REJECT: Версия FBX 6100 не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.",
+       "passed": true
+      },
+      {
+       "file": "truncated.fbx",
+       "expected": "reject",
+       "result": "REJECT: Структура FBX повреждена. Экспортируйте файл заново.",
+       "passed": true
       }
+     ]
     },
-    {
-      "version": "1.0.3",
-      "date": "2026-10-13",
-      "results": {
-        "server_cache_and_mobile": {
-          "version": "1.0.3",
-          "wordpress": "7.1.3",
-          "woocommerce": "11.2.1",
-          "tests": [
-            {
-              "test": "Monthly cleanup interval is exactly 30 days",
-              "passed": true
-            },
-            {
-              "test": "Cron scheduling is idempotent and upgrades schedule without reactivation",
-              "passed": true
-            },
-            {
-              "test": "Media cache fingerprint is the actual SHA-256 of the file",
-              "passed": true
-            },
-            {
-              "test": "Server cache copy is atomic and identical to the original",
-              "passed": true
-            },
-            {
-              "test": "Cached payload retains the original versioned URL as fallback",
-              "passed": true
-            },
-            {
-              "test": "Repeated preparation reuses the existing cached URL",
-              "passed": true
-            },
-            {
-              "test": "Apache cache folder defines MIME types and 30-day immutable headers",
-              "passed": true
-            },
-            {
-              "test": "Cleanup removes copies and preserves original media",
-              "passed": true
-            },
-            {
-              "test": "Cleanup leaves unrelated files untouched",
-              "passed": true
-            },
-            {
-              "test": "Cleanup changes generation to invalidate subsequent cache keys",
-              "passed": true
-            },
-            {
-              "test": "A fresh copy is created on demand after cleanup",
-              "passed": true
-            },
-            {
-              "test": "Cleanup respects an active writer lock and leaves its files intact",
-              "passed": true
-            },
-            {
-              "test": "An unowned directory is not adopted or used as model cache",
-              "passed": true
-            },
-            {
-              "test": "Oldest disposable copies are evicted to enforce the 512 MiB site budget",
-              "passed": true
-            },
-            {
-              "test": "Scheduled cleanup uses the same bounded original-preserving path",
-              "passed": true
-            },
-            {
-              "test": "Deactivation unschedules only plugin cleanup",
-              "passed": true
-            },
-            {
-              "test": "Published product supplies distinct main and optional mobile models",
-              "passed": true
-            },
-            {
-              "test": "A wrong product nonce cannot change the mobile model",
-              "passed": true
-            },
-            {
-              "test": "Variation with its own main model does not inherit a different variant mobile model",
-              "passed": true
-            },
-            {
-              "test": "Variation using the parent main model also inherits the parent mobile model",
-              "passed": true
-            },
-            {
-              "test": "Variation-specific mobile model is supported",
-              "passed": true
-            },
-            {
-              "test": "Draft products expose neither main nor mobile model",
-              "passed": true
-            },
-            {
-              "test": "Real 33 MiB validated file is copied into the bounded server cache",
-              "passed": true
-            }
-          ],
-          "mobile_product_id": 35,
-          "mobile_parent_id": 36,
-          "mobile_own_variation_id": 37,
-          "mobile_fallback_variation_id": 38
-        },
-        "chromium_cache_and_mobile": {
-          "version": "1.0.3",
-          "engine": "chromium",
-          "browser": "153.0.8010.0",
-          "deviceScope": "Chromium with mobile viewport and iPhone UA; physical iPhone not tested",
-          "tests": [
-            {
-              "test": "33 MiB file opens and is persisted without retaining a large memory copy",
-              "passed": true
-            },
-            {
-              "test": "Reopening uses browser cache with model network requests blocked",
-              "passed": true
-            },
-            {
-              "test": "Persistent cache survives page reload and works without model network access",
-              "passed": true
-            },
-            {
-              "test": "Expired browser entry is discarded and fetched again after 30 days",
-              "passed": true
-            },
-            {
-              "test": "Corrupt cached data is evicted and replaced by the valid model",
-              "passed": true
-            },
-            {
-              "test": "Stale page URL after server cleanup falls back to original media",
-              "passed": true
-            },
-            {
-              "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
-              "passed": true
-            },
-            {
-              "test": "Storage quota or denied storage never blocks viewing",
-              "passed": true
-            },
-            {
-              "test": "Touch phone automatically selects the optional lighter model",
-              "passed": true
-            },
-            {
-              "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
-              "passed": true
-            },
-            {
-              "test": "Palette stays usable in Apple compatibility mode",
-              "passed": true
-            },
-            {
-              "test": "33 MiB GLB opens in the Apple mobile rendering mode",
-              "passed": true
-            },
-            {
-              "test": "Older Safari dialog fallback has a centered viewport and working close",
-              "passed": true
-            },
-            {
-              "test": "No unhandled JavaScript errors in cache and compatibility flows",
-              "passed": true
-            }
-          ],
-          "timings": [
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 2855
-            },
-            {
-              "bytes": 34603008,
-              "source": "browser",
-              "elapsedMs": 625
-            },
-            {
-              "bytes": 34603008,
-              "source": "browser",
-              "elapsedMs": 5424
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 3319
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 4916
-            },
-            {
-              "bytes": 386064,
-              "source": "network",
-              "elapsedMs": 424
-            },
-            {
-              "bytes": 386064,
-              "source": "server",
-              "elapsedMs": 4480
-            },
-            {
-              "bytes": 1982403,
-              "source": "server",
-              "elapsedMs": 1194
-            },
-            {
-              "bytes": 487228,
-              "source": "server",
-              "elapsedMs": 1719
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 949
-            },
-            {
-              "bytes": 386064,
-              "source": "server",
-              "elapsedMs": 1069
-            }
-          ]
-        },
-        "webkit_cache_and_mobile": {
-          "version": "1.0.3",
-          "engine": "webkit",
-          "browser": "26.5",
-          "deviceScope": "Linux WebKit with mobile viewport and iPhone UA; physical iPhone not tested",
-          "tests": [
-            {
-              "test": "33 MiB file opens and is persisted without retaining a large memory copy",
-              "passed": true
-            },
-            {
-              "test": "Reopening uses browser cache with model network requests blocked",
-              "passed": true
-            },
-            {
-              "test": "Persistent cache survives page reload and works without model network access",
-              "passed": true
-            },
-            {
-              "test": "Expired browser entry is discarded and fetched again after 30 days",
-              "passed": true
-            },
-            {
-              "test": "Corrupt cached data is evicted and replaced by the valid model",
-              "passed": true
-            },
-            {
-              "test": "Stale page URL after server cleanup falls back to original media",
-              "passed": true
-            },
-            {
-              "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
-              "passed": true
-            },
-            {
-              "test": "Storage quota or denied storage never blocks viewing",
-              "passed": true
-            },
-            {
-              "test": "Touch phone automatically selects the optional lighter model",
-              "passed": true
-            },
-            {
-              "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
-              "passed": true
-            },
-            {
-              "test": "Palette stays usable in Apple compatibility mode",
-              "passed": true
-            },
-            {
-              "test": "33 MiB GLB opens in the Apple mobile rendering mode",
-              "passed": true
-            },
-            {
-              "test": "Older Safari dialog fallback has a centered viewport and working close",
-              "passed": true
-            },
-            {
-              "test": "No unhandled JavaScript errors in cache and compatibility flows",
-              "passed": true
-            }
-          ],
-          "timings": [
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 2107
-            },
-            {
-              "bytes": 34603008,
-              "source": "browser",
-              "elapsedMs": 988
-            },
-            {
-              "bytes": 34603008,
-              "source": "browser",
-              "elapsedMs": 1563
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 2183
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 1568
-            },
-            {
-              "bytes": 386064,
-              "source": "network",
-              "elapsedMs": 1118
-            },
-            {
-              "bytes": 386064,
-              "source": "server",
-              "elapsedMs": 1212
-            },
-            {
-              "bytes": 1982403,
-              "source": "server",
-              "elapsedMs": 1743
-            },
-            {
-              "bytes": 487228,
-              "source": "server",
-              "elapsedMs": 2722
-            },
-            {
-              "bytes": 34603008,
-              "source": "server",
-              "elapsedMs": 2022
-            },
-            {
-              "bytes": 386064,
-              "source": "server",
-              "elapsedMs": 1077
-            }
-          ]
-        },
-        "webkit_palette_pixels": {
-          "version": "1.0.3",
-          "engine": "WebKit 26.5",
-          "tests": [
-            {
-              "test": "Touch palette changes rendered texture pixels in WebKit",
-              "passed": true
-            },
-            {
-              "test": "Original color reset restores exact rendered texture pixels in WebKit",
-              "passed": true
-            }
-          ]
-        },
-        "palette_regression": {
-          "version": "1.0.2",
-          "browser": "153.0.8010.0",
-          "tests": [
-            {
-              "test": "Palette has separate background/model tabs and ten color presets",
-              "passed": true
-            },
-            {
-              "test": "Background preset updates the visible stage immediately",
-              "passed": true
-            },
-            {
-              "test": "Custom background color and background reset work",
-              "passed": true
-            },
-            {
-              "test": "Model palette repaints a textured GLB",
-              "passed": true
-            },
-            {
-              "test": "Reset restores the exact original GLB colors and textures",
-              "passed": true
-            },
-            {
-              "test": "Custom model color is applied",
-              "passed": true
-            },
-            {
-              "test": "Repeated preset changes restore materials without color drift",
-              "passed": true
-            },
-            {
-              "test": "Palette tab arrows and Escape keep the viewer open",
-              "passed": true
-            },
-            {
-              "test": "Reopening starts with original colors and background",
-              "passed": true
-            },
-            {
-              "test": "OBJ supports palette recoloring",
-              "passed": true
-            },
-            {
-              "test": "OBJ reset restores its configured color",
-              "passed": true
-            },
-            {
-              "test": "Palette is usable by touch at 320×640",
-              "passed": true
-            },
-            {
-              "test": "Palette is usable by touch at 390×844",
-              "passed": true
-            },
-            {
-              "test": "Palette is usable by touch at 820×1180",
-              "passed": true
-            },
-            {
-              "test": "Palette is usable by touch at 844×390",
-              "passed": true
-            },
-            {
-              "test": "No palette JavaScript errors",
-              "passed": true
-            }
-          ]
-        },
-        "material_recolor_regression": {
-          "tests": [
-            {
-              "test": "Invalid color does not alter materials",
-              "passed": true
-            },
-            {
-              "test": "Chosen color applies to single and grouped materials",
-              "passed": true
-            },
-            {
-              "test": "Shared original materials share a single preview copy",
-              "passed": true
-            },
-            {
-              "test": "Original colors and materials remain unchanged",
-              "passed": true
-            },
-            {
-              "test": "Textures, vertex alpha, transparency and physical properties are preserved",
-              "passed": true
-            },
-            {
-              "test": "Repeated color changes reuse the preview copy",
-              "passed": true
-            },
-            {
-              "test": "Restore returns exact original references and material array",
-              "passed": true
-            },
-            {
-              "test": "Disposal restores originals and disposes copies without shared texture disposal",
-              "passed": true
-            }
-          ]
-        },
-        "large_file_regression": {
-          "browser": "153.0.8010.0",
-          "tests": [
-            {
-              "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
-              "passed": true
-            },
-            {
-              "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
-              "passed": true
-            },
-            {
-              "test": "No browser JavaScript errors after large model loading",
-              "passed": true
-            }
-          ]
-        }
-      }
-    }
-  ],
-  "baseline": {
-    "plugin": "Woo Product 3D Viewer",
-    "version": "1.0.2",
-    "date": "2026-10-13",
-    "maxBytes": 83886080,
-    "palette_checks": {
-      "unit": {
-        "tests": [
-          {
-            "test": "Invalid color does not alter materials",
-            "passed": true
-          },
-          {
-            "test": "Chosen color applies to single and grouped materials",
-            "passed": true
-          },
-          {
-            "test": "Shared original materials share a single preview copy",
-            "passed": true
-          },
-          {
-            "test": "Original colors and materials remain unchanged",
-            "passed": true
-          },
-          {
-            "test": "Textures, vertex alpha, transparency and physical properties are preserved",
-            "passed": true
-          },
-          {
-            "test": "Repeated color changes reuse the preview copy",
-            "passed": true
-          },
-          {
-            "test": "Restore returns exact original references and material array",
-            "passed": true
-          },
-          {
-            "test": "Disposal restores originals and disposes copies without shared texture disposal",
-            "passed": true
-          }
-        ]
+    "wordpress_server": {
+     "wordpress": "7.1.3",
+     "woocommerce": "11.2.1",
+     "php": "8.3.6",
+     "tests": [
+      {
+       "test": "Old cache .htaccess is upgraded with FBX rules",
+       "passed": true
       },
-      "browser": {
-        "version": "1.0.2",
-        "browser": "153.0.8010.0",
-        "tests": [
-          {
-            "test": "Palette has separate background/model tabs and ten color presets",
-            "passed": true
-          },
-          {
-            "test": "Background preset updates the visible stage immediately",
-            "passed": true
-          },
-          {
-            "test": "Custom background color and background reset work",
-            "passed": true
-          },
-          {
-            "test": "Model palette repaints a textured GLB",
-            "passed": true
-          },
-          {
-            "test": "Reset restores the exact original GLB colors and textures",
-            "passed": true
-          },
-          {
-            "test": "Custom model color is applied",
-            "passed": true
-          },
-          {
-            "test": "Repeated preset changes restore materials without color drift",
-            "passed": true
-          },
-          {
-            "test": "Palette tab arrows and Escape keep the viewer open",
-            "passed": true
-          },
-          {
-            "test": "Reopening starts with original colors and background",
-            "passed": true
-          },
-          {
-            "test": "OBJ supports palette recoloring",
-            "passed": true
-          },
-          {
-            "test": "OBJ reset restores its configured color",
-            "passed": true
-          },
-          {
-            "test": "Palette is usable by touch at 320×640",
-            "passed": true
-          },
-          {
-            "test": "Palette is usable by touch at 390×844",
-            "passed": true
-          },
-          {
-            "test": "Palette is usable by touch at 820×1180",
-            "passed": true
-          },
-          {
-            "test": "Palette is usable by touch at 844×390",
-            "passed": true
-          },
-          {
-            "test": "No palette JavaScript errors",
-            "passed": true
-          }
-        ]
+      {
+       "test": "FBX copy is served from the server cache with the .fbx extension",
+       "passed": true,
+       "detail": "http://127.0.0.1:8089/wp-content/uploads/w3dpv-model-cache/w3dpv-e8804b72e6a3551391682cdf3608e9e4c9baaafd074927ab35e50e82a2911574.fbx"
       },
-      "pixel": {
-        "alphaMaskPreserved": true,
-        "visibleColorApplied": true,
-        "originalBluePixels": 44,
-        "paintedBluePixels": 53646
+      {
+       "test": "Server FBX copy is identical to the original",
+       "passed": true
+      },
+      {
+       "test": "Cache statistics include FBX copies",
+       "passed": true,
+       "detail": "files=2 fbx=2"
+      },
+      {
+       "test": "Broken attachment is rejected and the result is stored",
+       "passed": true,
+       "detail": "Структура FBX повреждена. Экспортируйте файл заново."
+      },
+      {
+       "test": "HPOS compatibility is declared",
+       "passed": true,
+       "detail": "woo-product-3d-viewer/woo-product-3d-viewer.php"
+      },
+      {
+       "test": "Product block editor declaration",
+       "passed": null,
+       "detail": "the feature no longer exists in WooCommerce 11.2.1"
+      },
+      {
+       "test": "Next request reuses the stored rejection without parsing",
+       "passed": true
+      },
+      {
+       "test": "A changed file is validated again",
+       "passed": true
+      },
+      {
+       "test": "Options removed",
+       "passed": true
+      },
+      {
+       "test": "Validation meta removed",
+       "passed": true
+      },
+      {
+       "test": "Cleanup is unscheduled",
+       "passed": true
+      },
+      {
+       "test": "Product model assignments are kept",
+       "passed": true
+      },
+      {
+       "test": "Media originals are kept",
+       "passed": true
+      },
+      {
+       "test": "Foreign file keeps the folder; only plugin files are removed",
+       "passed": true,
+       "detail": "keep-me.txt"
+      },
+      {
+       "test": "Cache folder is removed",
+       "passed": true
       }
+     ]
     },
-    "baseline_1_0_1": {
-      "plugin": "Woo Product 3D Viewer",
-      "version": "1.0.1",
-      "date": "2026-10-13",
-      "maxBytes": 83886080,
-      "update_tests": {
-        "server": [
-          {
-            "test": "Configured limit is exactly 80 MiB",
-            "passed": true
-          },
-          {
-            "test": "Valid GLB 33 MiB passes size and format checks",
-            "passed": true
-          },
-          {
-            "test": "WordPress media sideload accepts 33 MiB model",
-            "passed": true
-          },
-          {
-            "test": "Stored attachment preserves size: 33 MiB",
-            "passed": true
-          },
-          {
-            "test": "Valid GLB 80 MiB passes size and format checks",
-            "passed": true
-          },
-          {
-            "test": "WordPress media sideload accepts 80 MiB model",
-            "passed": true
-          },
-          {
-            "test": "Stored attachment preserves size: 80 MiB",
-            "passed": true
-          },
-          {
-            "test": "80 MiB plus one byte is rejected with current size message",
-            "passed": true
-          },
-          {
-            "test": "Empty model has a separate error message",
-            "passed": true
-          }
-        ],
-        "browser": {
-          "browser": "153.0.8010.0",
-          "tests": [
-            {
-              "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
-              "passed": true
-            },
-            {
-              "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
-              "passed": true
-            },
-            {
-              "test": "No browser JavaScript errors after large model loading",
-              "passed": true
-            }
-          ]
-        }
+    "wordpress_admin_chromium": {
+     "tests": [
+      {
+       "test": "Product list does not load viewer/admin scripts",
+       "passed": true
       },
-      "baseline_1_0_0": {
-        "plugin": "Woo Product 3D Viewer",
-        "version": "1.0.0",
-        "date": "2026-10-13",
-        "server": {
-          "wordpress": "7.1.3",
-          "woocommerce": "11.2.1",
-          "php": "8.3.30",
-          "tests": [
-            {
-              "test": "Valid GLB accepted",
-              "passed": true
-            },
-            {
-              "test": "Valid OBJ accepted",
-              "passed": true
-            },
-            {
-              "test": "Fake GLB rejected",
-              "passed": true
-            },
-            {
-              "test": "Executable text in OBJ rejected",
-              "passed": true
-            },
-            {
-              "test": "GLB with external resource rejected",
-              "passed": true
-            },
-            {
-              "test": "Product editor can upload models",
-              "passed": true
-            },
-            {
-              "test": "WordPress media sideload and attachment check: glb",
-              "passed": true
-            },
-            {
-              "test": "WordPress media sideload and attachment check: obj",
-              "passed": true
-            },
-            {
-              "test": "Attachment outside uploads rejected",
-              "passed": true
-            },
-            {
-              "test": "Invalid nonce cannot change product",
-              "passed": true
-            },
-            {
-              "test": "Product model saved with valid nonce",
-              "passed": true
-            },
-            {
-              "test": "Speed and yaw bounded",
-              "passed": true
-            },
-            {
-              "test": "Invalid color replaced by safe default",
-              "passed": true
-            },
-            {
-              "test": "Invalid replacement preserves previous model",
-              "passed": true
-            },
-            {
-              "test": "Shortcode outputs escaped button",
-              "passed": true
-            },
-            {
-              "test": "No-model product has no button",
-              "passed": true
-            },
-            {
-              "test": "Private product is not exposed",
-              "passed": true
-            },
-            {
-              "test": "Password-protected product is not exposed",
-              "passed": true
-            },
-            {
-              "test": "Variation inherits parent GLB",
-              "passed": true
-            },
-            {
-              "test": "Variation own OBJ overrides parent",
-              "passed": true
-            },
-            {
-              "test": "Guests cannot enable model uploads",
-              "passed": true
-            },
-            {
-              "test": "Guest upload explicitly rejected",
-              "passed": true
-            },
-            {
-              "test": "Public product remains viewable by guests",
-              "passed": true
-            },
-            {
-              "test": "Shortcode resolves current WooCommerce product",
-              "passed": true
-            }
-          ]
-        },
-        "browser": {
-          "browser": "153.0.8010.0",
-          "renderer": "Chromium / WebGL2 SwiftShader",
-          "tests": [
-            {
-              "test": "3D engine and model stay unloaded before first click",
-              "passed": true
-            },
-            {
-              "test": "GLB opens in a real WebGL2 renderer",
-              "passed": true
-            },
-            {
-              "test": "Fullscreen control enters and exits fullscreen",
-              "passed": true
-            },
-            {
-              "test": "Auto-rotation changes the rendered model",
-              "passed": true
-            },
-            {
-              "test": "Pause stops auto-rotation",
-              "passed": true
-            },
-            {
-              "test": "Zoom buttons change rendered scale",
-              "passed": true
-            },
-            {
-              "test": "Keyboard rotates model and reset restores camera",
-              "passed": true
-            },
-            {
-              "test": "Escape closes, removes canvas and restores button focus",
-              "passed": true
-            },
-            {
-              "test": "Repeated open and close releases the canvas",
-              "passed": true
-            },
-            {
-              "test": "Missing file displays recoverable error",
-              "passed": true
-            },
-            {
-              "test": "Retry loads the model after error",
-              "passed": true
-            },
-            {
-              "test": "WooCommerce variation selection switches to its OBJ",
-              "passed": true
-            },
-            {
-              "test": "OBJ renders and can be zoomed",
-              "passed": true
-            },
-            {
-              "test": "Variation without a model falls back to parent GLB",
-              "passed": true
-            },
-            {
-              "test": "Dialog fits 320×640 with touch controls",
-              "passed": true
-            },
-            {
-              "test": "Dialog fits 390×844 with touch controls",
-              "passed": true
-            },
-            {
-              "test": "Dialog fits 820×1180 with touch controls",
-              "passed": true
-            },
-            {
-              "test": "Dialog fits 844×390 with touch controls",
-              "passed": true
-            },
-            {
-              "test": "Reduced-motion preference disables initial rotation",
-              "passed": true
-            },
-            {
-              "test": "WooCommerce editor shows product 3D settings and stored attachment",
-              "passed": true
-            },
-            {
-              "test": "Admin preview renders selected GLB",
-              "passed": true
-            },
-            {
-              "test": "No frontend JavaScript errors",
-              "passed": true
-            }
-          ]
-        },
-        "php_syntax": [
-          "7.4.33",
-          "8.3.30"
-        ],
-        "malformed_glb": [
-          "POSITION type",
-          "node cycle",
-          "excessive accessor count"
-        ]
+      {
+       "test": "Editor shows the saved FBX file",
+       "passed": true,
+       "detail": "monkey_embedded_texture.fbx"
+      },
+      {
+       "test": "Editor field names the supported formats",
+       "passed": true,
+       "detail": "Файл 3D-модели (GLB, FBX или OBJ)"
+      },
+      {
+       "test": "Admin preview renders the FBX",
+       "passed": true
+      },
+      {
+       "test": "Saving the product stores the newly selected FBX",
+       "passed": true,
+       "detail": "vCube.fbx"
+      },
+      {
+       "test": "Yaw setting is saved",
+       "passed": true
+      },
+      {
+       "test": "Variation editor lists the variation FBX",
+       "passed": true,
+       "detail": "Модель не выбрана | Модель не выбрана | monkey_embedded_texture.fbx | Модель не выбрана"
+      },
+      {
+       "test": "Cache page shows the stored copies",
+       "passed": true
+      },
+      {
+       "test": "No JavaScript errors in the admin",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 uploads through the media screen",
+       "passed": true,
+       "detail": "upload-browser upload-browser-1.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "ASCII FBX uploads through the media screen",
+       "passed": true,
+       "detail": "upload-ascii upload-ascii-1.fbx Edit Copy URL to clipboard"
+      },
+      {
+       "test": "Broken FBX is refused with the plugin message",
+       "passed": true,
+       "detail": "Dismiss “upload-broken.fbx” has failed to upload. Структура FBX повреждена. Экспортируйте файл заново."
       }
+     ]
+    },
+    "storefront_chromium": {
+     "browser": "Chromium (Playwright 1.56.1, build 1194), WebGL2 via SwiftShader",
+     "tests": [
+      {
+       "test": "Binary FBX 7400 (cube): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=36 textures=0"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=23.2% mean=125,59,92 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7400 (cube): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=0"
+      },
+      {
+       "test": "Binary FBX with an external texture path: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.5% mean=234,234,235 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an external texture path: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an external texture path: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=2910 textures=1"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=9.2% mean=157,159,179 dark=0%"
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX with an embedded PNG texture: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=165960 textures=0"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.6% mean=77,149,171 dark=0%"
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Skinned, animated binary FBX 7400: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=2 vertices=147336 textures=0"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): model is visible and not black",
+       "passed": true,
+       "detail": "coverage=3.5% mean=219,124,111 dark=0%"
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "Binary FBX 7700 (64-bit record offsets): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: opens without error",
+       "passed": true,
+       "detail": "phase=ready meshes=1 vertices=91014 textures=0"
+      },
+      {
+       "test": "ASCII FBX 7500: model is visible and not black",
+       "passed": true,
+       "detail": "coverage=10.6% mean=241,242,242 dark=0%"
+      },
+      {
+       "test": "ASCII FBX 7500: no requests outside the site or for external textures",
+       "passed": true
+      },
+      {
+       "test": "ASCII FBX 7500: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Embedded FBX texture is uploaded and used",
+       "passed": true,
+       "detail": "textures=1"
+      },
+      {
+       "test": "Missing external FBX texture is dropped instead of rendering black",
+       "passed": true,
+       "detail": "textures=0"
+      },
+      {
+       "test": "Embedded texture blob URLs are revoked after loading",
+       "passed": true,
+       "detail": "{\"seen\":1,\"alive\":0}"
+      },
+      {
+       "test": "FBX palette: model recolors to the chosen color",
+       "passed": true,
+       "detail": "before=157,159,179 blue=153,196,229"
+      },
+      {
+       "test": "FBX palette: reset restores the original look",
+       "passed": true,
+       "detail": "reset=157,159,179"
+      },
+      {
+       "test": "Escape closes the FBX viewer and removes the canvas",
+       "passed": true
+      },
+      {
+       "test": "GLB chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.7% mean=209,189,165"
+      },
+      {
+       "test": "GLB chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "OBJ chair: opens and renders",
+       "passed": true,
+       "detail": "coverage=11.9% mean=242,130,124"
+      },
+      {
+       "test": "OBJ chair: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): opens and renders",
+       "passed": true,
+       "detail": "coverage=11.8% mean=209,189,165"
+      },
+      {
+       "test": "FBX demo chair (examples/demo-chair.fbx): no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Variation with its own FBX opens that FBX",
+       "passed": true,
+       "detail": "{\"id\":13,\"format\":\"fbx\",\"bytes\":319516,\"mobile\":false}"
+      },
+      {
+       "test": "Variation without a model falls back to the parent GLB",
+       "passed": true,
+       "detail": "{\"id\":17,\"format\":\"glb\",\"bytes\":386064,\"mobile\":false}"
+      },
+      {
+       "test": "Variable product: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "iPhone emulation: textured FBX opens in the constrained mode",
+       "passed": true,
+       "detail": "apple=true constrained=true coverage=15.1%"
+      },
+      {
+       "test": "iPhone emulation: no JavaScript errors",
+       "passed": true
+      },
+      {
+       "test": "Zoom level is kept after a viewport resize",
+       "passed": true,
+       "detail": "home=11.7% zoomed=39.4% resized=39.4%"
+      }
+     ]
     }
+   }
+  },
+  {
+   "version": "1.0.3",
+   "date": "2026-10-13",
+   "results": {
+    "server_cache_and_mobile": {
+     "version": "1.0.3",
+     "wordpress": "7.1.3",
+     "woocommerce": "11.2.1",
+     "tests": [
+      {
+       "test": "Monthly cleanup interval is exactly 30 days",
+       "passed": true
+      },
+      {
+       "test": "Cron scheduling is idempotent and upgrades schedule without reactivation",
+       "passed": true
+      },
+      {
+       "test": "Media cache fingerprint is the actual SHA-256 of the file",
+       "passed": true
+      },
+      {
+       "test": "Server cache copy is atomic and identical to the original",
+       "passed": true
+      },
+      {
+       "test": "Cached payload retains the original versioned URL as fallback",
+       "passed": true
+      },
+      {
+       "test": "Repeated preparation reuses the existing cached URL",
+       "passed": true
+      },
+      {
+       "test": "Apache cache folder defines MIME types and 30-day immutable headers",
+       "passed": true
+      },
+      {
+       "test": "Cleanup removes copies and preserves original media",
+       "passed": true
+      },
+      {
+       "test": "Cleanup leaves unrelated files untouched",
+       "passed": true
+      },
+      {
+       "test": "Cleanup changes generation to invalidate subsequent cache keys",
+       "passed": true
+      },
+      {
+       "test": "A fresh copy is created on demand after cleanup",
+       "passed": true
+      },
+      {
+       "test": "Cleanup respects an active writer lock and leaves its files intact",
+       "passed": true
+      },
+      {
+       "test": "An unowned directory is not adopted or used as model cache",
+       "passed": true
+      },
+      {
+       "test": "Oldest disposable copies are evicted to enforce the 512 MiB site budget",
+       "passed": true
+      },
+      {
+       "test": "Scheduled cleanup uses the same bounded original-preserving path",
+       "passed": true
+      },
+      {
+       "test": "Deactivation unschedules only plugin cleanup",
+       "passed": true
+      },
+      {
+       "test": "Published product supplies distinct main and optional mobile models",
+       "passed": true
+      },
+      {
+       "test": "A wrong product nonce cannot change the mobile model",
+       "passed": true
+      },
+      {
+       "test": "Variation with its own main model does not inherit a different variant mobile model",
+       "passed": true
+      },
+      {
+       "test": "Variation using the parent main model also inherits the parent mobile model",
+       "passed": true
+      },
+      {
+       "test": "Variation-specific mobile model is supported",
+       "passed": true
+      },
+      {
+       "test": "Draft products expose neither main nor mobile model",
+       "passed": true
+      },
+      {
+       "test": "Real 33 MiB validated file is copied into the bounded server cache",
+       "passed": true
+      }
+     ],
+     "mobile_product_id": 35,
+     "mobile_parent_id": 36,
+     "mobile_own_variation_id": 37,
+     "mobile_fallback_variation_id": 38
+    },
+    "chromium_cache_and_mobile": {
+     "version": "1.0.3",
+     "engine": "chromium",
+     "browser": "153.0.8010.0",
+     "deviceScope": "Chromium with mobile viewport and iPhone UA; physical iPhone not tested",
+     "tests": [
+      {
+       "test": "33 MiB file opens and is persisted without retaining a large memory copy",
+       "passed": true
+      },
+      {
+       "test": "Reopening uses browser cache with model network requests blocked",
+       "passed": true
+      },
+      {
+       "test": "Persistent cache survives page reload and works without model network access",
+       "passed": true
+      },
+      {
+       "test": "Expired browser entry is discarded and fetched again after 30 days",
+       "passed": true
+      },
+      {
+       "test": "Corrupt cached data is evicted and replaced by the valid model",
+       "passed": true
+      },
+      {
+       "test": "Stale page URL after server cleanup falls back to original media",
+       "passed": true
+      },
+      {
+       "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
+       "passed": true
+      },
+      {
+       "test": "Storage quota or denied storage never blocks viewing",
+       "passed": true
+      },
+      {
+       "test": "Touch phone automatically selects the optional lighter model",
+       "passed": true
+      },
+      {
+       "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
+       "passed": true
+      },
+      {
+       "test": "Palette stays usable in Apple compatibility mode",
+       "passed": true
+      },
+      {
+       "test": "33 MiB GLB opens in the Apple mobile rendering mode",
+       "passed": true
+      },
+      {
+       "test": "Older Safari dialog fallback has a centered viewport and working close",
+       "passed": true
+      },
+      {
+       "test": "No unhandled JavaScript errors in cache and compatibility flows",
+       "passed": true
+      }
+     ],
+     "timings": [
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 2855
+      },
+      {
+       "bytes": 34603008,
+       "source": "browser",
+       "elapsedMs": 625
+      },
+      {
+       "bytes": 34603008,
+       "source": "browser",
+       "elapsedMs": 5424
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 3319
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 4916
+      },
+      {
+       "bytes": 386064,
+       "source": "network",
+       "elapsedMs": 424
+      },
+      {
+       "bytes": 386064,
+       "source": "server",
+       "elapsedMs": 4480
+      },
+      {
+       "bytes": 1982403,
+       "source": "server",
+       "elapsedMs": 1194
+      },
+      {
+       "bytes": 487228,
+       "source": "server",
+       "elapsedMs": 1719
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 949
+      },
+      {
+       "bytes": 386064,
+       "source": "server",
+       "elapsedMs": 1069
+      }
+     ]
+    },
+    "webkit_cache_and_mobile": {
+     "version": "1.0.3",
+     "engine": "webkit",
+     "browser": "26.5",
+     "deviceScope": "Linux WebKit with mobile viewport and iPhone UA; physical iPhone not tested",
+     "tests": [
+      {
+       "test": "33 MiB file opens and is persisted without retaining a large memory copy",
+       "passed": true
+      },
+      {
+       "test": "Reopening uses browser cache with model network requests blocked",
+       "passed": true
+      },
+      {
+       "test": "Persistent cache survives page reload and works without model network access",
+       "passed": true
+      },
+      {
+       "test": "Expired browser entry is discarded and fetched again after 30 days",
+       "passed": true
+      },
+      {
+       "test": "Corrupt cached data is evicted and replaced by the valid model",
+       "passed": true
+      },
+      {
+       "test": "Stale page URL after server cleanup falls back to original media",
+       "passed": true
+      },
+      {
+       "test": "Download errors show a usable retry and a DOWNLOAD diagnostic code",
+       "passed": true
+      },
+      {
+       "test": "Storage quota or denied storage never blocks viewing",
+       "passed": true
+      },
+      {
+       "test": "Touch phone automatically selects the optional lighter model",
+       "passed": true
+      },
+      {
+       "test": "Apple texture path renders embedded PNG and scales 4096 px textures to 2048 px",
+       "passed": true
+      },
+      {
+       "test": "Palette stays usable in Apple compatibility mode",
+       "passed": true
+      },
+      {
+       "test": "33 MiB GLB opens in the Apple mobile rendering mode",
+       "passed": true
+      },
+      {
+       "test": "Older Safari dialog fallback has a centered viewport and working close",
+       "passed": true
+      },
+      {
+       "test": "No unhandled JavaScript errors in cache and compatibility flows",
+       "passed": true
+      }
+     ],
+     "timings": [
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 2107
+      },
+      {
+       "bytes": 34603008,
+       "source": "browser",
+       "elapsedMs": 988
+      },
+      {
+       "bytes": 34603008,
+       "source": "browser",
+       "elapsedMs": 1563
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 2183
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 1568
+      },
+      {
+       "bytes": 386064,
+       "source": "network",
+       "elapsedMs": 1118
+      },
+      {
+       "bytes": 386064,
+       "source": "server",
+       "elapsedMs": 1212
+      },
+      {
+       "bytes": 1982403,
+       "source": "server",
+       "elapsedMs": 1743
+      },
+      {
+       "bytes": 487228,
+       "source": "server",
+       "elapsedMs": 2722
+      },
+      {
+       "bytes": 34603008,
+       "source": "server",
+       "elapsedMs": 2022
+      },
+      {
+       "bytes": 386064,
+       "source": "server",
+       "elapsedMs": 1077
+      }
+     ]
+    },
+    "webkit_palette_pixels": {
+     "version": "1.0.3",
+     "engine": "WebKit 26.5",
+     "tests": [
+      {
+       "test": "Touch palette changes rendered texture pixels in WebKit",
+       "passed": true
+      },
+      {
+       "test": "Original color reset restores exact rendered texture pixels in WebKit",
+       "passed": true
+      }
+     ]
+    },
+    "palette_regression": {
+     "version": "1.0.2",
+     "browser": "153.0.8010.0",
+     "tests": [
+      {
+       "test": "Palette has separate background/model tabs and ten color presets",
+       "passed": true
+      },
+      {
+       "test": "Background preset updates the visible stage immediately",
+       "passed": true
+      },
+      {
+       "test": "Custom background color and background reset work",
+       "passed": true
+      },
+      {
+       "test": "Model palette repaints a textured GLB",
+       "passed": true
+      },
+      {
+       "test": "Reset restores the exact original GLB colors and textures",
+       "passed": true
+      },
+      {
+       "test": "Custom model color is applied",
+       "passed": true
+      },
+      {
+       "test": "Repeated preset changes restore materials without color drift",
+       "passed": true
+      },
+      {
+       "test": "Palette tab arrows and Escape keep the viewer open",
+       "passed": true
+      },
+      {
+       "test": "Reopening starts with original colors and background",
+       "passed": true
+      },
+      {
+       "test": "OBJ supports palette recoloring",
+       "passed": true
+      },
+      {
+       "test": "OBJ reset restores its configured color",
+       "passed": true
+      },
+      {
+       "test": "Palette is usable by touch at 320×640",
+       "passed": true
+      },
+      {
+       "test": "Palette is usable by touch at 390×844",
+       "passed": true
+      },
+      {
+       "test": "Palette is usable by touch at 820×1180",
+       "passed": true
+      },
+      {
+       "test": "Palette is usable by touch at 844×390",
+       "passed": true
+      },
+      {
+       "test": "No palette JavaScript errors",
+       "passed": true
+      }
+     ]
+    },
+    "material_recolor_regression": {
+     "tests": [
+      {
+       "test": "Invalid color does not alter materials",
+       "passed": true
+      },
+      {
+       "test": "Chosen color applies to single and grouped materials",
+       "passed": true
+      },
+      {
+       "test": "Shared original materials share a single preview copy",
+       "passed": true
+      },
+      {
+       "test": "Original colors and materials remain unchanged",
+       "passed": true
+      },
+      {
+       "test": "Textures, vertex alpha, transparency and physical properties are preserved",
+       "passed": true
+      },
+      {
+       "test": "Repeated color changes reuse the preview copy",
+       "passed": true
+      },
+      {
+       "test": "Restore returns exact original references and material array",
+       "passed": true
+      },
+      {
+       "test": "Disposal restores originals and disposes copies without shared texture disposal",
+       "passed": true
+      }
+     ]
+    },
+    "large_file_regression": {
+     "browser": "153.0.8010.0",
+     "tests": [
+      {
+       "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
+       "passed": true
+      },
+      {
+       "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
+       "passed": true
+      },
+      {
+       "test": "No browser JavaScript errors after large model loading",
+       "passed": true
+      }
+     ]
+    }
+   }
   }
+ ],
+ "baseline": {
+  "plugin": "Woo Product 3D Viewer",
+  "version": "1.0.2",
+  "date": "2026-10-13",
+  "maxBytes": 83886080,
+  "palette_checks": {
+   "unit": {
+    "tests": [
+     {
+      "test": "Invalid color does not alter materials",
+      "passed": true
+     },
+     {
+      "test": "Chosen color applies to single and grouped materials",
+      "passed": true
+     },
+     {
+      "test": "Shared original materials share a single preview copy",
+      "passed": true
+     },
+     {
+      "test": "Original colors and materials remain unchanged",
+      "passed": true
+     },
+     {
+      "test": "Textures, vertex alpha, transparency and physical properties are preserved",
+      "passed": true
+     },
+     {
+      "test": "Repeated color changes reuse the preview copy",
+      "passed": true
+     },
+     {
+      "test": "Restore returns exact original references and material array",
+      "passed": true
+     },
+     {
+      "test": "Disposal restores originals and disposes copies without shared texture disposal",
+      "passed": true
+     }
+    ]
+   },
+   "browser": {
+    "version": "1.0.2",
+    "browser": "153.0.8010.0",
+    "tests": [
+     {
+      "test": "Palette has separate background/model tabs and ten color presets",
+      "passed": true
+     },
+     {
+      "test": "Background preset updates the visible stage immediately",
+      "passed": true
+     },
+     {
+      "test": "Custom background color and background reset work",
+      "passed": true
+     },
+     {
+      "test": "Model palette repaints a textured GLB",
+      "passed": true
+     },
+     {
+      "test": "Reset restores the exact original GLB colors and textures",
+      "passed": true
+     },
+     {
+      "test": "Custom model color is applied",
+      "passed": true
+     },
+     {
+      "test": "Repeated preset changes restore materials without color drift",
+      "passed": true
+     },
+     {
+      "test": "Palette tab arrows and Escape keep the viewer open",
+      "passed": true
+     },
+     {
+      "test": "Reopening starts with original colors and background",
+      "passed": true
+     },
+     {
+      "test": "OBJ supports palette recoloring",
+      "passed": true
+     },
+     {
+      "test": "OBJ reset restores its configured color",
+      "passed": true
+     },
+     {
+      "test": "Palette is usable by touch at 320×640",
+      "passed": true
+     },
+     {
+      "test": "Palette is usable by touch at 390×844",
+      "passed": true
+     },
+     {
+      "test": "Palette is usable by touch at 820×1180",
+      "passed": true
+     },
+     {
+      "test": "Palette is usable by touch at 844×390",
+      "passed": true
+     },
+     {
+      "test": "No palette JavaScript errors",
+      "passed": true
+     }
+    ]
+   },
+   "pixel": {
+    "alphaMaskPreserved": true,
+    "visibleColorApplied": true,
+    "originalBluePixels": 44,
+    "paintedBluePixels": 53646
+   }
+  },
+  "baseline_1_0_1": {
+   "plugin": "Woo Product 3D Viewer",
+   "version": "1.0.1",
+   "date": "2026-10-13",
+   "maxBytes": 83886080,
+   "update_tests": {
+    "server": [
+     {
+      "test": "Configured limit is exactly 80 MiB",
+      "passed": true
+     },
+     {
+      "test": "Valid GLB 33 MiB passes size and format checks",
+      "passed": true
+     },
+     {
+      "test": "WordPress media sideload accepts 33 MiB model",
+      "passed": true
+     },
+     {
+      "test": "Stored attachment preserves size: 33 MiB",
+      "passed": true
+     },
+     {
+      "test": "Valid GLB 80 MiB passes size and format checks",
+      "passed": true
+     },
+     {
+      "test": "WordPress media sideload accepts 80 MiB model",
+      "passed": true
+     },
+     {
+      "test": "Stored attachment preserves size: 80 MiB",
+      "passed": true
+     },
+     {
+      "test": "80 MiB plus one byte is rejected with current size message",
+      "passed": true
+     },
+     {
+      "test": "Empty model has a separate error message",
+      "passed": true
+     }
+    ],
+    "browser": {
+     "browser": "153.0.8010.0",
+     "tests": [
+      {
+       "test": "33 MiB GLB opens in WebGL2 and closes cleanly",
+       "passed": true
+      },
+      {
+       "test": "80 MiB GLB opens in WebGL2 and closes cleanly",
+       "passed": true
+      },
+      {
+       "test": "No browser JavaScript errors after large model loading",
+       "passed": true
+      }
+     ]
+    }
+   },
+   "baseline_1_0_0": {
+    "plugin": "Woo Product 3D Viewer",
+    "version": "1.0.0",
+    "date": "2026-10-13",
+    "server": {
+     "wordpress": "7.1.3",
+     "woocommerce": "11.2.1",
+     "php": "8.3.30",
+     "tests": [
+      {
+       "test": "Valid GLB accepted",
+       "passed": true
+      },
+      {
+       "test": "Valid OBJ accepted",
+       "passed": true
+      },
+      {
+       "test": "Fake GLB rejected",
+       "passed": true
+      },
+      {
+       "test": "Executable text in OBJ rejected",
+       "passed": true
+      },
+      {
+       "test": "GLB with external resource rejected",
+       "passed": true
+      },
+      {
+       "test": "Product editor can upload models",
+       "passed": true
+      },
+      {
+       "test": "WordPress media sideload and attachment check: glb",
+       "passed": true
+      },
+      {
+       "test": "WordPress media sideload and attachment check: obj",
+       "passed": true
+      },
+      {
+       "test": "Attachment outside uploads rejected",
+       "passed": true
+      },
+      {
+       "test": "Invalid nonce cannot change product",
+       "passed": true
+      },
+      {
+       "test": "Product model saved with valid nonce",
+       "passed": true
+      },
+      {
+       "test": "Speed and yaw bounded",
+       "passed": true
+      },
+      {
+       "test": "Invalid color replaced by safe default",
+       "passed": true
+      },
+      {
+       "test": "Invalid replacement preserves previous model",
+       "passed": true
+      },
+      {
+       "test": "Shortcode outputs escaped button",
+       "passed": true
+      },
+      {
+       "test": "No-model product has no button",
+       "passed": true
+      },
+      {
+       "test": "Private product is not exposed",
+       "passed": true
+      },
+      {
+       "test": "Password-protected product is not exposed",
+       "passed": true
+      },
+      {
+       "test": "Variation inherits parent GLB",
+       "passed": true
+      },
+      {
+       "test": "Variation own OBJ overrides parent",
+       "passed": true
+      },
+      {
+       "test": "Guests cannot enable model uploads",
+       "passed": true
+      },
+      {
+       "test": "Guest upload explicitly rejected",
+       "passed": true
+      },
+      {
+       "test": "Public product remains viewable by guests",
+       "passed": true
+      },
+      {
+       "test": "Shortcode resolves current WooCommerce product",
+       "passed": true
+      }
+     ]
+    },
+    "browser": {
+     "browser": "153.0.8010.0",
+     "renderer": "Chromium / WebGL2 SwiftShader",
+     "tests": [
+      {
+       "test": "3D engine and model stay unloaded before first click",
+       "passed": true
+      },
+      {
+       "test": "GLB opens in a real WebGL2 renderer",
+       "passed": true
+      },
+      {
+       "test": "Fullscreen control enters and exits fullscreen",
+       "passed": true
+      },
+      {
+       "test": "Auto-rotation changes the rendered model",
+       "passed": true
+      },
+      {
+       "test": "Pause stops auto-rotation",
+       "passed": true
+      },
+      {
+       "test": "Zoom buttons change rendered scale",
+       "passed": true
+      },
+      {
+       "test": "Keyboard rotates model and reset restores camera",
+       "passed": true
+      },
+      {
+       "test": "Escape closes, removes canvas and restores button focus",
+       "passed": true
+      },
+      {
+       "test": "Repeated open and close releases the canvas",
+       "passed": true
+      },
+      {
+       "test": "Missing file displays recoverable error",
+       "passed": true
+      },
+      {
+       "test": "Retry loads the model after error",
+       "passed": true
+      },
+      {
+       "test": "WooCommerce variation selection switches to its OBJ",
+       "passed": true
+      },
+      {
+       "test": "OBJ renders and can be zoomed",
+       "passed": true
+      },
+      {
+       "test": "Variation without a model falls back to parent GLB",
+       "passed": true
+      },
+      {
+       "test": "Dialog fits 320×640 with touch controls",
+       "passed": true
+      },
+      {
+       "test": "Dialog fits 390×844 with touch controls",
+       "passed": true
+      },
+      {
+       "test": "Dialog fits 820×1180 with touch controls",
+       "passed": true
+      },
+      {
+       "test": "Dialog fits 844×390 with touch controls",
+       "passed": true
+      },
+      {
+       "test": "Reduced-motion preference disables initial rotation",
+       "passed": true
+      },
+      {
+       "test": "WooCommerce editor shows product 3D settings and stored attachment",
+       "passed": true
+      },
+      {
+       "test": "Admin preview renders selected GLB",
+       "passed": true
+      },
+      {
+       "test": "No frontend JavaScript errors",
+       "passed": true
+      }
+     ]
+    },
+    "php_syntax": [
+     "7.4.33",
+     "8.3.30"
+    ],
+    "malformed_glb": [
+     "POSITION type",
+     "node cycle",
+     "excessive accessor count"
+    ]
+   }
+  }
+ }
 }
