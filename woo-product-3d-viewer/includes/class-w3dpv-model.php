@@ -3,20 +3,25 @@ defined( 'ABSPATH' ) || exit;
 
 /** Local, bounded format validation. Does not execute or fetch model resources. */
 final class W3DPV_Model {
-	const MAX_BYTES = 83886080; // 80 MiB; PHP/WordPress may impose a smaller limit.
-	const MAX_VERTICES = 1000000;
-	const MAX_TRIANGLES = 1000000;
-	const MAX_MESHES = 1000;
+	const MAX_BYTES = 125829120; // 120 MiB; PHP/WordPress may impose a smaller limit.
+	/** Vertices as stored in the file: points of the mesh, split again at UV seams, hard edges and material borders. */
+	const MAX_VERTICES = 2000000;
+	const MAX_TRIANGLES = 2000000;
+	const MAX_MESHES = 2000;
+	/** Geometry and embedded images of a GLB. */
+	const GLB_MAX_BUFFER_BYTES = 268435456; // 256 MiB.
 	/**
-	 * FBXLoader builds FBX geometry in plain JavaScript arrays: 1.5M triangles need about 1 GB of memory
-	 * while parsing. This also covers every all-quad mesh with up to 3M polygon indices.
+	 * FBXLoader builds FBX geometry in plain JavaScript arrays: 3M triangles need about 2 GB of memory
+	 * while parsing, which only desktop browsers have; phones need a lighter model in the mobile field.
 	 */
-	const FBX_MAX_TRIANGLES = 1500000;
+	const FBX_MAX_TRIANGLES = 3000000;
 	/** Supported extensions and the MIME types registered for uploads. FBX has no registered MIME type. */
 	const FORMATS = array( 'glb' => 'model/gltf-binary', 'fbx' => 'application/octet-stream', 'obj' => 'model/obj' );
 	const FBX_BINARY_MAGIC = "Kaydara FBX Binary  \0";
-	const FBX_MAX_NODES = 1000000;
-	const FBX_MAX_ARRAY_BYTES = 268435456; // 256 MiB of declared decoded arrays.
+	const FBX_MAX_NODES = 2000000;
+	const FBX_MAX_ARRAY_BYTES = 536870912; // 512 MiB of declared decoded arrays.
+	const REDUCE = ' Уменьшите число полигонов: в Cinema 4D — генератор Polygon Reduction или меньший уровень Subdivision Surface, в Blender — Decimate. Подробнее — в инструкции плагина, раздел «Модель из Cinema 4D».';
+	const MERGE = ' Объедините детали: в Cinema 4D выделите объекты и выполните Connect Objects + Delete, в Blender — Join (Ctrl+J).';
 	private static $cache = array();
 	private static $validated = array();
 
@@ -37,7 +42,7 @@ final class W3DPV_Model {
 			return self::error( 'Файл модели пуст. Выберите непустой GLB, FBX или OBJ.' );
 		}
 		if ( $size > self::MAX_BYTES ) {
-			return self::error( 'Файл модели превышает лимит плагина: ' . ( self::MAX_BYTES / 1048576 ) . ' МиБ.' );
+			return self::error( 'Файл модели (' . self::mib( $size ) . ') превышает лимит плагина: ' . ( self::MAX_BYTES / 1048576 ) . ' МиБ. Уменьшите текстуры и число полигонов.' );
 		}
 		// WordPress checks one upload in several filters; parse each file only once per request.
 		$key = $extension . '|' . $path . '|' . $size . '|' . filemtime( $path );
@@ -110,8 +115,8 @@ final class W3DPV_Model {
 				return self::error( 'Некорректный раздел ' . $key . ' в GLB.' );
 			}
 		}
-		if ( count( (array) ( $json['nodes'] ?? array() ) ) > 10000 || count( (array) ( $json['meshes'] ?? array() ) ) > 1000 || count( (array) ( $json['textures'] ?? array() ) ) > 128 ) {
-			return self::error( 'GLB содержит слишком много узлов, сеток или текстур. Упростите модель для веб-просмотра.' );
+		if ( count( (array) ( $json['nodes'] ?? array() ) ) > 20000 || count( (array) ( $json['meshes'] ?? array() ) ) > self::MAX_MESHES || count( (array) ( $json['textures'] ?? array() ) ) > 256 ) {
+			return self::error( 'GLB содержит слишком много объектов или текстур (лимит: 20 000 узлов, ' . self::number( self::MAX_MESHES ) . ' сеток, 256 текстур).' . self::MERGE );
 		}
 		foreach ( (array) ( $json['accessors'] ?? array() ) as $accessor ) {
 			if ( ! is_array( $accessor ) ) {
@@ -119,7 +124,7 @@ final class W3DPV_Model {
 			}
 			$count = $accessor['count'] ?? null;
 			if ( ! is_int( $count ) || $count < 0 || $count > self::MAX_VERTICES * 3 ) {
-				return self::error( 'GLB превышает лимит сложности геометрии.' );
+				return self::error( 'GLB слишком детализирован: в одном объекте больше ' . self::number( self::MAX_VERTICES * 3 ) . ' вершин.' . self::REDUCE );
 			}
 		}
 		$nodes = $json['nodes'] ?? array();
@@ -173,8 +178,14 @@ final class W3DPV_Model {
 			}
 			$decoded_bytes += $length;
 		}
-		if ( ! $vertices || $vertices > self::MAX_VERTICES || $decoded_bytes > 134217728 ) {
-			return self::error( 'GLB слишком сложный или не содержит геометрии. Лимит: 1 000 000 вершин и 128 МиБ буферов.' );
+		if ( ! $vertices ) {
+			return self::error( 'GLB не содержит геометрии. Экспортируйте объекты модели как сетки.' );
+		}
+		if ( $vertices > self::MAX_VERTICES ) {
+			return self::error( 'GLB слишком детализирован: ' . self::number( $vertices ) . ' вершин (точек сетки после экспорта), лимит — ' . self::number( self::MAX_VERTICES ) . '.' . self::REDUCE );
+		}
+		if ( $decoded_bytes > self::GLB_MAX_BUFFER_BYTES ) {
+			return self::error( 'GLB слишком тяжёлый: геометрия и встроенные текстуры занимают ' . self::mib( $decoded_bytes ) . ', лимит — ' . self::number( self::GLB_MAX_BUFFER_BYTES / 1048576 ) . ' МиБ. Уменьшите текстуры до 2048–4096 пикселей (JPEG для цвета) и число полигонов.' );
 		}
 		return self::glb_scene( $json, $nodes );
 	}
@@ -232,10 +243,10 @@ final class W3DPV_Model {
 			return self::error( 'GLB не содержит полигональных сеток в сцене (только точки, линии или пустые узлы).' );
 		}
 		if ( $meshes > self::MAX_MESHES ) {
-			return self::error( 'GLB содержит ' . self::number( $meshes ) . ' отдельных сеток в сцене, лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
+			return self::error( 'GLB содержит ' . self::number( $meshes ) . ' отдельных сеток в сцене, лимит — ' . self::number( self::MAX_MESHES ) . '.' . self::MERGE );
 		}
 		if ( $rendered > self::MAX_VERTICES * 3 ) {
-			return self::error( 'GLB слишком сложный: сцена содержит ' . self::number( $rendered ) . ' вершин с учётом повторяющихся копий, лимит — ' . self::number( self::MAX_VERTICES * 3 ) . '.' );
+			return self::error( 'GLB слишком детализирован: сцена содержит ' . self::number( $rendered ) . ' вершин с учётом повторяющихся копий (Cloner, экземпляры), лимит — ' . self::number( self::MAX_VERTICES * 3 ) . '.' . self::REDUCE );
 		}
 		return true;
 	}
@@ -281,13 +292,13 @@ final class W3DPV_Model {
 			return self::error( 'FBX не содержит полигональной геометрии. Экспортируйте объекты как сетки (Mesh).' );
 		}
 		if ( $scene['meshes'] > self::MAX_MESHES ) {
-			return self::error( 'FBX содержит ' . self::number( $scene['meshes'] ) . ' отдельных объектов-сеток, лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
+			return self::error( 'FBX содержит ' . self::number( $scene['meshes'] ) . ' отдельных объектов-сеток, лимит — ' . self::number( self::MAX_MESHES ) . '.' . self::MERGE );
 		}
 		if ( $scene['triangles'] > self::FBX_MAX_TRIANGLES || $stats['vertices'] > self::MAX_VERTICES ) {
-			return self::error( 'FBX слишком сложный: ' . self::number( $scene['triangles'] ) . ' треугольников и ' . self::number( $stats['vertices'] ) . ' вершин. Лимит: ' . self::number( self::FBX_MAX_TRIANGLES ) . ' треугольников и ' . self::number( self::MAX_VERTICES ) . ' вершин. Уменьшите число полигонов (Decimate) или загрузите GLB.' );
+			return self::error( 'FBX слишком детализирован: ' . self::number( $scene['triangles'] ) . ' треугольников и ' . self::number( $stats['vertices'] ) . ' вершин (точек сетки). Лимит: ' . self::number( self::FBX_MAX_TRIANGLES ) . ' треугольников и ' . self::number( self::MAX_VERTICES ) . ' вершин.' . self::REDUCE );
 		}
 		if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
-			return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
+			return self::error( 'FBX слишком сложный: после распаковки данные превышают ' . ( self::FBX_MAX_ARRAY_BYTES / 1048576 ) . ' МиБ. Упростите модель или экспортируйте без анимации.' );
 		}
 		return true;
 	}
@@ -375,6 +386,10 @@ final class W3DPV_Model {
 		return number_format( (float) $value, 0, ',', ' ' );
 	}
 
+	private static function mib( $bytes ) {
+		return number_format( $bytes / 1048576, 1, ',', ' ' ) . ' МиБ';
+	}
+
 	private static function fbx_version_error( $version ) {
 		return self::error( 'Версия FBX ' . (int) $version . ' не поддерживается. Экспортируйте FBX 2011 или новее (версия 7.x), двоичный или ASCII.' );
 	}
@@ -431,7 +446,7 @@ final class W3DPV_Model {
 			return $offset + $head_size; // Null record that terminates a list of children.
 		}
 		if ( ++$stats['nodes'] > self::FBX_MAX_NODES || $depth > 64 ) {
-			return self::error( 'FBX содержит слишком много элементов сцены. Упростите модель для веб-просмотра.' );
+			return self::error( 'FBX содержит слишком много элементов сцены (больше ' . self::number( self::FBX_MAX_NODES ) . '). Экспортируйте только нужные объекты, без анимации.' );
 		}
 		$name = $head['name'] ? (string) fread( $handle, $head['name'] ) : '';
 		$properties = $offset + $head_size + $head['name'];
@@ -482,7 +497,7 @@ final class W3DPV_Model {
 				}
 				$stats['array_bytes'] += $decoded;
 				if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
-					return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
+					return self::error( 'FBX слишком сложный: после распаковки данные превышают ' . ( self::FBX_MAX_ARRAY_BYTES / 1048576 ) . ' МиБ. Упростите модель или экспортируйте без анимации.' );
 				}
 				$polygons = null !== $geometry && 'PolygonVertexIndex' === $name;
 				if ( $polygons && 'i' !== $type ) {
@@ -732,7 +747,7 @@ final class W3DPV_Model {
 					$stats['connections'] = array();
 				}
 				if ( $stats['array_bytes'] > self::FBX_MAX_ARRAY_BYTES ) {
-					return self::error( 'FBX слишком сложный: после распаковки данные превышают 256 МиБ. Упростите модель или удалите анимацию.' );
+					return self::error( 'FBX слишком сложный: после распаковки данные превышают ' . ( self::FBX_MAX_ARRAY_BYTES / 1048576 ) . ' МиБ. Упростите модель или экспортируйте без анимации.' );
 				}
 			}
 			// THREE.FBXLoader takes the first "FBXVersion: <number>" in the text.
@@ -814,7 +829,7 @@ final class W3DPV_Model {
 				break;
 			}
 			if ( $vertices > self::MAX_VERTICES || $triangles > self::MAX_TRIANGLES ) {
-				$error = 'OBJ слишком сложный. Лимит: 1 000 000 вершин и 1 000 000 треугольников.';
+				$error = 'OBJ слишком детализирован. Лимит: ' . self::number( self::MAX_VERTICES ) . ' вершин и ' . self::number( self::MAX_TRIANGLES ) . ' треугольников.' . self::REDUCE;
 				break;
 			}
 		}
@@ -827,7 +842,7 @@ final class W3DPV_Model {
 			return self::error( $error ?: 'OBJ должен содержать вершины и полигональные грани.' );
 		}
 		if ( $meshes > self::MAX_MESHES ) {
-			return self::error( 'OBJ содержит ' . self::number( $meshes ) . ' отдельных объектов (o/g), лимит — ' . self::number( self::MAX_MESHES ) . '. Объедините детали в 3D-редакторе.' );
+			return self::error( 'OBJ содержит ' . self::number( $meshes ) . ' отдельных объектов (o/g), лимит — ' . self::number( self::MAX_MESHES ) . '.' . self::MERGE );
 		}
 		return true;
 	}

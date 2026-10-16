@@ -3,7 +3,7 @@ Contributors: custom-development
 Tags: woocommerce, 3d, glb, fbx, obj
 Requires at least: 6.5
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,17 @@ The viewer requires a browser with WebGL2. Model downloads are public.
 An optimization or theme plugin can require site-specific verification.
 
 == Changelog ==
+= 1.4.0 =
+Sharper models on phones and tablets: the canvas follows the screen density (2x, within
+2.4 MP; 5 MP on computers) with antialiasing; before, touch devices rendered at 1x without
+antialiasing. Files over 40 MiB skip MSAA on phones. After a lost graphics context the
+retry uses a light mode (1x, no MSAA). Texture anisotropy 4x on phones, 8x on computers.
+Limits doubled: 2,000,000 vertices, 2000 meshes, 3,000,000 FBX triangles, 512 MiB FBX
+arrays, 256 MiB GLB buffers, 6,000,000 GLB scene vertices, 2,000,000 OBJ triangles.
+Maximum file size raised from 80 to 120 MiB; browser cache 240/120 MiB.
+Upload messages state which limit was exceeded with the actual numbers and what to do
+in Cinema 4D or Blender. New guide for Cinema 4D designers in README-RU.html: vertices
+vs points, reducing polygons, materials, baking, UVW, GLB/FBX export settings.
 = 1.3.0 =
 The viewer palette has two separate switches on the settings page (Палитра и значок
 360°): background change and model recoloring. With recoloring off the model always

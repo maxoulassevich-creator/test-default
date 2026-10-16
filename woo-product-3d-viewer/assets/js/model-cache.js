@@ -2,10 +2,11 @@
   'use strict';
   if (window.W3DPVModelCache || !window.W3DPVConfig) return;
   const config = window.W3DPVConfig;
-  const maxBytes = Number(config.maxBytes) || 83886080;
+  const maxBytes = Number(config.maxBytes) || 125829120;
   const ttl = (Number(config.cacheTTL) || 2592000) * 1000;
   const mobile = matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const diskBudget = (mobile ? 80 : 160) * 1048576;
+  // Room for one model of the maximum size on phones and two on computers.
+  const diskBudget = (mobile ? 120 : 240) * 1048576;
   const memoryBudget = (mobile ? 8 : 16) * 1048576;
   const cacheName = 'w3dpv-models-v1-' + config.cacheNamespace;
   const pending = new Map();

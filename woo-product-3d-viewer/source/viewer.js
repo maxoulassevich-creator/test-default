@@ -193,6 +193,9 @@ function prepareFBX(model, fallbackColor) {
   dropped.forEach(texture => texture.dispose());
 }
 
+// After a lost graphics context, "Попробовать снова" uses 1x pixels and no antialiasing on this page.
+let lightMode = false;
+
 export function mount(host, options, config, callbacks) {
   let renderer, controls, model, resources, environment, scene, camera, pivot;
   let recolorer;
@@ -200,6 +203,10 @@ export function mount(host, options, config, callbacks) {
   let disposed = false, ready = false, homeDistance = 4, errorState = false, shaderFailure = false, phase = 'download';
   const apple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const constrained = !!(apple || matchMedia('(pointer: coarse)').matches || (navigator.deviceMemory && navigator.deviceMemory <= 4));
+  // Phones get the sharpness of their screen (2x) within a pixel budget; MSAA is skipped only for very large files there.
+  const antialias = !lightMode && !(constrained && Number(options.model && options.model.bytes) > 41943040);
+  const pixelBudget = constrained ? 2400000 : 5000000;
+  const pixelRatio = (width, height) => Math.max(1, Math.min(window.devicePixelRatio || 1, lightMode ? 1 : 2, Math.sqrt(pixelBudget / (width * height))));
   let rotating = !!options.auto && !matchMedia('(prefers-reduced-motion: reduce)').matches;
   const abort = new AbortController();
   let timedOut = false;
@@ -251,7 +258,9 @@ export function mount(host, options, config, callbacks) {
     const rect = host.getBoundingClientRect();
     const width = Math.max(1, rect.width), height = Math.max(1, rect.height);
     camera.aspect = width / height; camera.updateProjectionMatrix();
+    renderer.setPixelRatio(pixelRatio(width, height));
     renderer.setSize(width, height, false);
+    if (ready && callbacks.details) callbacks.details({pixelRatio: renderer.getPixelRatio()});
     // Refit after a viewport/orientation change, without changing the chosen angle.
     if (ready) fit(true);
     invalidate();
@@ -301,7 +310,7 @@ export function mount(host, options, config, callbacks) {
 
   function interaction() { if (ready && rotating) setRotation(false); invalidate(); }
   function visibility() { lastFrame = performance.now(); if (document.hidden) { cancelAnimationFrame(frameId); frameId = 0; } else invalidate(); }
-  function contextLost(e) { e.preventDefault(); reportError(new Error('Графический контекст прерван. Закройте другие вкладки и нажмите «Попробовать снова». Для больших моделей поможет облегчённая версия.'), 'CONTEXT_LOST'); }
+  function contextLost(e) { e.preventDefault(); lightMode = true; reportError(new Error('Графический контекст прерван. Закройте другие вкладки и нажмите «Попробовать снова». Для больших моделей поможет облегчённая версия.'), 'CONTEXT_LOST'); }
   function reset() {
     if (!ready) return;
     // Remove residual momentum before resetting the initial camera.
@@ -347,12 +356,13 @@ export function mount(host, options, config, callbacks) {
       await new Promise(resolve => setTimeout(resolve, 0));
       if (disposed || errorState) return;
       const canvas = document.createElement('canvas');
-      const attributes = {alpha: true, antialias: !constrained, powerPreference: constrained ? 'low-power' : 'default'};
+      const attributes = {alpha: true, antialias, powerPreference: constrained ? 'low-power' : 'default'};
       const context = canvas.getContext('webgl2', attributes) || canvas.getContext('webgl2', {alpha: true, antialias: false});
       if (!context) throw new Error('На этом устройстве недоступен WebGL 2. Попробуйте обновить браузер или открыть товар на другом устройстве.');
-      renderer = new WebGLRenderer({canvas, context, alpha: true, antialias: !constrained});
+      renderer = new WebGLRenderer({canvas, context, alpha: true, antialias});
       renderer.debug.onShaderError = () => { shaderFailure = true; };
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, constrained ? 1 : 2));
+      const initial = host.getBoundingClientRect();
+      renderer.setPixelRatio(pixelRatio(Math.max(1, initial.width), Math.max(1, initial.height)));
       renderer.outputColorSpace = SRGBColorSpace; renderer.toneMapping = ACESFilmicToneMapping;
       renderer.toneMappingExposure = 1; renderer.setClearColor(0xffffff, 0);
       canvas.tabIndex = 0; canvas.setAttribute('role', 'img');
@@ -449,7 +459,7 @@ export function mount(host, options, config, callbacks) {
       // The upload check counts the same values, so an accepted file is not rejected here.
       if (callbacks.details) callbacks.details({meshes: meshCount, vertices: vertexCount, triangles: triangleCount});
       const count = value => new Intl.NumberFormat('ru-RU').format(value);
-      const maxMeshes = Number(config.maxMeshes) || 1000, maxVertices = (Number(config.maxVertices) || 1000000) * 3, maxTriangles = Number(config.fbxMaxTriangles) || 1500000;
+      const maxMeshes = Number(config.maxMeshes) || 2000, maxVertices = (Number(config.maxVertices) || 2000000) * 3, maxTriangles = Number(config.fbxMaxTriangles) || 3000000;
       if (!meshCount) throw new Error('В модели нет полигональных сеток: только кривые, точки или пустые объекты. Экспортируйте объекты как сетки (Mesh).');
       if (meshCount > maxMeshes) throw new Error('Модель состоит из ' + count(meshCount) + ' отдельных сеток, лимит — ' + count(maxMeshes) + '. Объедините детали в 3D-редакторе.');
       if (options.model.format === 'fbx' ? triangleCount > maxTriangles : vertexCount > maxVertices) {
@@ -472,7 +482,7 @@ export function mount(host, options, config, callbacks) {
           }
           texture.image = resizedImages.get(image); texture.needsUpdate = true;
         }
-        texture.anisotropy = Math.min(constrained ? 1 : 4, renderer.capabilities.getMaxAnisotropy());
+        texture.anisotropy = Math.min(lightMode ? 1 : constrained ? 4 : 8, renderer.capabilities.getMaxAnisotropy());
       }
       for (const image of resizedImages.keys()) if (typeof image.close === 'function') image.close();
       model.updateMatrixWorld(true);
@@ -489,7 +499,7 @@ export function mount(host, options, config, callbacks) {
       renderer.render(scene, camera);
       if (context.isContextLost() || errorState || shaderFailure) { ready = false; throw new Error('Не удалось подготовить графику. Попробуйте облегчённую модель.'); }
       clearTimeout(timeout);
-      if (callbacks.details) callbacks.details({apple, constrained, pixelRatio: renderer.getPixelRatio(), textureLimit, meshes: meshCount, vertices: vertexCount, textures: textures.size, resizedTextures: resizedImages.size});
+      if (callbacks.details) callbacks.details({apple, constrained, pixelRatio: renderer.getPixelRatio(), antialias: context.getContextAttributes().antialias, lightMode, textureLimit, meshes: meshCount, vertices: vertexCount, textures: textures.size, resizedTextures: resizedImages.size});
       callbacks.ready(); lastFrame = performance.now(); invalidate();
     } catch (error) {
       clearTimeout(timeout);
