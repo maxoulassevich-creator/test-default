@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сцена Фаска Сталь</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: a dark viewing booth. One full-width stage with the live scene, a slim control rail under it, three facts below. */
+  :root {
+    --bg: #111416;          /* graphite, slight blue-green bias like the cladding */
+    --panel: #1a1f22;
+    --line: #2b3236;
+    --fg: #e8eae7;
+    --muted: #8e979b;
+    --signal: #ff7a1a;      /* hi-vis vest / forklift orange */
+    --bollard: #f2c31b;     /* safety-yellow of the gate bollards, focus only */
+    --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+    --ui: "Onest", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --step--1: 0.8125rem;
+    --step-0: 0.9375rem;
+    --step-1: 1.125rem;
+    color-scheme: dark;
+  }
+  html, body { background: var(--bg); color: var(--fg); }
+  body { font: 400 var(--step-0)/1.55 var(--ui); }
+  .wrap {
+    max-width: 1280px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 20px 40px;
+    display: grid; gap: 16px;
+  }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+  h1 { margin: 0; font: 600 var(--step-1)/1.2 var(--display); letter-spacing: 0.04em; text-transform: uppercase; text-wrap: balance; }
+  .chip {
+    font: 500 var(--step--1)/1 var(--mono); color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 10px; white-space: nowrap;
+  }
+  .chip b { color: var(--signal); font-weight: 500; }
+
+  .stage {
+    position: relative; margin: 0; width: 100%; max-width: 100%;
+    aspect-ratio: 1672 / 941; background: var(--panel); overflow: hidden; border-radius: 3px;
+  }
+  .stage canvas, .stage .fallback, .stage .fallback img, .stage .fallback video { position: absolute; display: block; }
+  .stage canvas { inset: 0; width: 100%; height: 100%; }
+  .stage .fallback { inset: 0; }
+  .stage .fallback img { inset: 0; width: 100%; height: 100%; }
+  .stage .fallback video { -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .loading { position: absolute; left: 12px; bottom: 12px; font: 500 var(--step--1)/1 var(--mono); color: var(--fg);
+    background: color-mix(in srgb, var(--bg) 70%, transparent); padding: 6px 8px; border-radius: 3px; }
+
+  .rail { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  button {
+    font: 500 var(--step--1)/1 var(--ui); color: var(--fg); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 3px; padding: 9px 12px; cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  button:focus-visible { outline: 2px solid var(--bollard); outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: var(--signal); color: var(--signal); }
+  #play { min-width: 7.5em; }
+  .time { display: flex; align-items: center; gap: 10px; flex: 1 1 220px; min-width: 0; }
+  .time output { font: 400 var(--step--1)/1 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+  .track { position: relative; flex: 1; height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .track .active { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--signal) 35%, var(--line)); }
+  .track .head { position: absolute; top: -3px; width: 2px; height: 10px; background: var(--fg); }
+
+  .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px 24px; margin: 8px 0 0; }
+  .facts div { min-width: 0; border-top: 1px solid var(--line); padding-top: 10px; }
+  .facts dt { font: 500 var(--step--1)/1.3 var(--mono); color: var(--signal); letter-spacing: 0.06em; text-transform: uppercase; }
+  .facts dd { margin: 6px 0 0; color: var(--fg); max-width: 60ch; }
+  .facts dd span { color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Фаска Сталь</h1>
+    <span class="chip">пилот · слой <b>погрузчик</b></span>
+  </header>
+
+  <figure class="stage" id="stage" aria-label="Территория склада: погрузчик выезжает из проезда между зданиями и заезжает в ворота склада">
+    <span class="loading" id="loading">загрузка сцены…</span>
+  </figure>
+
+  <div class="rail">
+    <button id="play" type="button">Пауза</button>
+    <div class="time">
+      <output id="clock">00,0 с</output>
+      <div class="track" aria-hidden="true"><div class="active" id="activeSpan"></div><div class="head" id="head"></div></div>
+      <output id="cycle">цикл — с</output>
+    </div>
+    <button id="zone" type="button" aria-pressed="false">Подсветить зону</button>
+    <button id="orig" type="button" aria-pressed="false">Исходное фото</button>
+  </div>
+
+  <dl class="facts">
+    <div><dt>Основа</dt><dd>Исходная фотография, с которой убран припаркованный погрузчик. Всё вне зоны движения взято из оригинала, нейросеть эти пиксели не трогает.</dd></div>
+    <div><dt>Слой погрузчика</dt><dd>Отдельный ролик Kling 3.0 Pro, <span id="layerInfo">944×470 px</span>. Накладывается через мягкую маску, цвет подогнан под фото.</dd></div>
+    <div><dt>Стык цикла</dt><dd>Ролик начинается и заканчивается, когда погрузчика не видно, поэтому повтор незаметен. Между рейсами пауза <span id="gapInfo">1,5 с</span>.</dd></div>
+  </dl>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(() => {
+  // Scene description: base photo + zone layers. Coordinates are pixels of the 1672×941 photo.
+  const SCENE = {
+    size: [1672, 941],
+    plate: "scene/plate.jpg",
+    original: "scene/original.jpg",
+    layers: [{
+      id: "forklift",
+      video: ["scene/forklift.mp4", "scene/forklift.webm"],
+      mask: "scene/forklift-mask.png",
+      bbox: [332, 240, 1276, 710],
+      active: [1.4, 11.3],   // seconds of the clip in which the forklift is visible
+      gap: 1.5               // pause between trips, seconds
+    }]
+  };
+  const layer = SCENE.layers[0];
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fmt = s => s.toFixed(1).replace(".", ",").padStart(4, "0");
+  const $ = id => document.getElementById(id);
+  const stage = $("stage");
+
+  const video = document.createElement("video");
+  video.muted = true; video.defaultMuted = true; video.playsInline = true; video.preload = "auto";
+  video.setAttribute("muted", ""); video.setAttribute("playsinline", "");
+  for (const src of layer.video) {
+    const s = document.createElement("source");
+    s.src = src; s.type = src.endsWith(".webm") ? 'video/webm; codecs="vp9"' : 'video/mp4';
+    video.appendChild(s);
+  }
+
+  // ---- timeline: clip, then a short gap, forever ----
+  let playing = !reduceMotion, gapTimer = 0, gapStart = 0, gapHeld = 0, inGap = false;
+  function startClip() {
+    inGap = false; video.currentTime = 0;
+    if (playing) video.play().catch(() => {});
+  }
+  video.addEventListener("ended", () => {
+    inGap = true; gapStart = performance.now(); gapHeld = 0;
+    clearTimeout(gapTimer);
+    if (playing) gapTimer = setTimeout(startClip, layer.gap * 1000);
+  });
+  const gapElapsed = () => playing ? (performance.now() - gapStart) / 1000 : gapHeld;
+  function setPlaying(on) {
+    if (on === playing && on) return;
+    if (!on) {
+      if (inGap) gapHeld = (performance.now() - gapStart) / 1000;
+      video.pause(); clearTimeout(gapTimer);
+    } else if (inGap) {
+      gapStart = performance.now() - gapHeld * 1000;
+      gapTimer = setTimeout(startClip, Math.max(0, (layer.gap - gapHeld) * 1000));
+    } else {
+      video.play().catch(() => {});
+    }
+    playing = on;
+    $("play").textContent = on ? "Пауза" : "Смотреть";
+  }
+  $("play").addEventListener("click", () => setPlaying(!playing));
+
+  function cycleLength() { return (video.duration || 12) + layer.gap; }
+  function cycleTime() {
+    const d = video.duration || 12;
+    return inGap ? d + Math.min(layer.gap, gapElapsed()) : video.currentTime;
+  }
+  function updateClock() {
+    const L = cycleLength(), t = cycleTime();
+    $("clock").textContent = fmt(t) + " с";
+    $("cycle").textContent = "цикл " + fmt(L) + " с";
+    $("head").style.left = (100 * t / L) + "%";
+    const a = $("activeSpan"); a.style.left = (100 * layer.active[0] / L) + "%"; a.style.width = (100 * (layer.active[1] - layer.active[0]) / L) + "%";
+  }
+
+  // ---- toggles (animated in the shader) ----
+  const want = { zone: 0, orig: 0 }, cur = { zone: 0, orig: 0 };
+  for (const k of ["zone", "orig"]) {
+    $(k).addEventListener("click", e => {
+      const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
+      e.currentTarget.setAttribute("aria-pressed", String(on)); want[k] = on ? 1 : 0;
+      if (!gl) fallbackToggle(k, on);
+    });
+  }
+
+  // ---- WebGL compositor ----
+  let gl = null;
+  try {
+    const canvas = document.createElement("canvas");
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: "low-power" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    stage.prepend(canvas);
+    gl = renderer;
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const scene = new THREE.Scene();
+    const loader = new THREE.TextureLoader();
+    const tex = url => { const t = loader.load(url, () => maybeReady()); t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; return t; };
+    let pending = 3;
+    function maybeReady() { if (--pending <= 0) $("loading").hidden = true; }
+    const vtex = new THREE.VideoTexture(video); vtex.minFilter = THREE.LinearFilter; vtex.generateMipmaps = false;
+    const [W, H] = SCENE.size, b = layer.bbox;
+    const uniforms = {
+      uPlate: { value: tex(SCENE.plate) }, uOrig: { value: tex(SCENE.original) },
+      uMask: { value: tex(layer.mask) }, uVideo: { value: vtex },
+      uBox: { value: new THREE.Vector4(b[0] / W, b[1] / H, b[2] / W, b[3] / H) },
+      uVideoOn: { value: 0 }, uZone: { value: 0 }, uOrigOn: { value: 0 }
+    };
+    const material = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
+      fragmentShader: `
+        precision highp float;
+        uniform sampler2D uPlate, uOrig, uMask, uVideo;
+        uniform vec4 uBox; uniform float uVideoOn, uZone, uOrigOn;
+        varying vec2 vUv;
+        void main(){
+          vec2 p = vec2(vUv.x, 1.0 - vUv.y);                 // photo coords, origin top-left
+          vec2 l = (p - uBox.xy) / (uBox.zw - uBox.xy);       // layer coords
+          float inside = step(0.0, l.x) * step(l.x, 1.0) * step(0.0, l.y) * step(l.y, 1.0);
+          vec2 luv = clamp(vec2(l.x, 1.0 - l.y), 0.0, 1.0);
+          float m = texture2D(uMask, luv).a * inside;
+          vec3 col = mix(texture2D(uPlate, vUv).rgb, texture2D(uVideo, luv).rgb, m * uVideoOn);
+          col = mix(col, col * 0.55 + vec3(1.0, 0.48, 0.1) * 0.45, uZone * m * 0.85);
+          col = mix(col, texture2D(uOrig, vUv).rgb, uOrigOn);
+          gl_FragColor = vec4(col, 1.0);
+        }`
+    });
+    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+    function resize() { const r = stage.getBoundingClientRect(); renderer.setSize(r.width, r.height, false); }
+    new ResizeObserver(resize).observe(stage); resize();
+    // keep the source video in the DOM (iOS Safari will not decode a detached element), but invisible
+    Object.assign(video.style, { position: "absolute", width: "2px", height: "2px", opacity: "0", pointerEvents: "none" });
+    stage.append(video);
+    video.addEventListener("loadeddata", () => { uniforms.uVideoOn.value = 1; });
+    renderer.setAnimationLoop(() => {
+      for (const k of ["zone", "orig"]) cur[k] += (want[k] - cur[k]) * 0.18;
+      uniforms.uZone.value = cur.zone; uniforms.uOrigOn.value = cur.orig;
+      renderer.render(scene, camera); updateClock();
+    });
+  } catch (err) {
+    gl = null; buildFallback();
+  }
+
+  // ---- no-WebGL fallback: the same composite with CSS masking ----
+  let fb = null;
+  function buildFallback() {
+    const [W, H] = SCENE.size, b = layer.bbox;
+    fb = document.createElement("div"); fb.className = "fallback";
+    const img = new Image(); img.src = SCENE.plate; img.alt = "";
+    img.onload = () => { $("loading").hidden = true; };
+    Object.assign(video.style, {
+      left: 100 * b[0] / W + "%", top: 100 * b[1] / H + "%",
+      width: 100 * (b[2] - b[0]) / W + "%", height: 100 * (b[3] - b[1]) / H + "%",
+      webkitMaskImage: `url(${layer.mask})`, maskImage: `url(${layer.mask})`
+    });
+    fb.append(img, video); stage.prepend(fb);
+    (function tick() { updateClock(); requestAnimationFrame(tick); })();
+  }
+  function fallbackToggle(k, on) {
+    if (k === "orig" && fb) { fb.querySelector("img").src = on ? SCENE.original : SCENE.plate; video.style.visibility = on ? "hidden" : "visible"; }
+    if (k === "zone" && fb) video.style.outline = on ? "2px solid #ff7a1a" : "";
+  }
+
+  $("gapInfo").textContent = String(layer.gap).replace(".", ",") + " с";
+  video.load();
+  video.addEventListener("loadedmetadata", () => {
+    $("layerInfo").textContent = `${layer.bbox[2] - layer.bbox[0]}×${layer.bbox[3] - layer.bbox[1]} px`;
+    updateClock();
+    // start just before the forklift shows up; with reduced motion, hold a frame where it is mid-route
+    video.currentTime = playing ? Math.max(0, layer.active[0] - 0.6) : 6.5;
+    if (playing) video.play().catch(() => {});
+  }, { once: true });
+  if (!playing) $("play").textContent = "Смотреть";
+})();
+</script>
+</body>
+</html>
