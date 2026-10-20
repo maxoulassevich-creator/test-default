@@ -365,30 +365,38 @@ body.is-locked{ overflow:hidden; }
     linear-gradient(var(--sepia),var(--sepia)) 0 18px/58% 1px no-repeat; }
 
 /* миниатюры */
-.wk-thumb{ position:relative; width:100%; overflow:hidden; container-type:inline-size; background:var(--bg-2); }
+.wk-thumb{ position:relative; width:100%; overflow:hidden; container-type:size; background:var(--bg-2); }
 .wk-thumb--art .wk-thumb__mat{ position:absolute; inset:0; display:grid; place-items:center; padding:9%; }
 .wk-thumb--art .pa-svg{ width:100%; height:100%; filter:drop-shadow(0 5px 9px rgba(30,23,20,.22)); }
 .wk-thumb--text{ background:var(--bg); border:1px solid var(--line); }
-.wk-paper{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4cqi;
-  padding:11cqi 10cqi; text-align:center; color:var(--text); }
-.wk-paper::before{ content:''; position:absolute; inset:4.5cqi; border:1px solid var(--line); pointer-events:none; }
-.wk-paper__kind{ font:500 max(9px,4.3cqi)/1.2 var(--f-body); letter-spacing:.18em; text-transform:uppercase; color:var(--date); }
-.wk-paper__glyph{ width:24cqi; color:var(--sepia); }
-.wk-paper__glyph .gl{ width:100%; height:auto; }
-.wk-paper__title{ max-width:100%; font:500 clamp(14px,11.5cqi,42px)/1.06 var(--f-head); color:var(--head); text-wrap:balance; overflow-wrap:break-word; }
-.wk-paper__line{ max-width:100%; font:italic 400 clamp(11px,5.6cqi,20px)/1.35 var(--f-head); color:var(--quote); text-wrap:balance; }
-.wk-paper__orn{ width:46cqi; color:var(--sepia); }
-.wk-paper__orn .wk-orn{ width:100%; height:auto; }
-.wk-paper__year{ font:400 max(9px,4cqi)/1 var(--f-body); letter-spacing:.12em; color:var(--date); }
-.wk-thumb--script .wk-paper__title{ font:700 clamp(11px,8.4cqi,28px)/1.2 var(--f-script); text-transform:uppercase; letter-spacing:.04em; }
-.wk-thumb--script .wk-paper__line{ font-family:var(--f-script); font-style:normal; font-size:clamp(9px,4.2cqi,14px); }
-@container (max-width:160px){
-  .wk-paper{ gap:6cqi; }
-  .wk-paper__kind, .wk-paper__line, .wk-paper__year, .wk-paper__orn{ display:none; }
-  .wk-paper__title{ font-size:13cqi; }
-  .wk-paper__glyph{ width:36cqi; }
+/* «Бумажная» композиция: всё в cqmin, чтобы помещалось при любых пропорциях; лишнее прячется по мере уменьшения.
+   Селекторы с префиксом .wk-thumb .wk-paper — чтобы общие правила контейнеров (a span{…}) не ломали миниатюру. */
+.wk-thumb .wk-paper{ position:absolute; inset:0; overflow:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3.6cqmin;
+  margin:0; padding:10cqmin 9cqmin; text-align:center; color:var(--text); }
+.wk-thumb .wk-paper::before{ content:''; position:absolute; inset:4.5cqmin; border:1px solid var(--line); pointer-events:none; }
+.wk-thumb .wk-paper > *{ display:block; flex:none; max-width:100%; margin:0; }
+.wk-thumb .wk-paper .wk-paper__kind{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font:500 clamp(9px,4.4cqmin,15px)/1.2 var(--f-body); letter-spacing:.14em; text-transform:uppercase; color:var(--date); }
+.wk-thumb .wk-paper .wk-paper__glyph{ width:24cqmin; color:var(--sepia); }
+.wk-thumb .wk-paper .gl, .wk-thumb .wk-paper .wk-orn{ display:block; width:100%; height:auto; }
+.wk-thumb .wk-paper .wk-paper__title{ font:500 clamp(13px,11cqmin,42px)/1.06 var(--f-head); color:var(--head); text-wrap:balance; overflow-wrap:break-word; }
+.wk-thumb .wk-paper .wk-paper__line{ font:italic 400 clamp(11px,5.6cqmin,20px)/1.35 var(--f-head); color:var(--quote); text-wrap:balance;
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
+.wk-thumb .wk-paper .wk-paper__orn{ width:44cqmin; color:var(--sepia); }
+.wk-thumb .wk-paper .wk-paper__year{ font:400 clamp(9px,4cqmin,14px)/1 var(--f-body); letter-spacing:.12em; color:var(--date); }
+.wk-thumb--script .wk-paper .wk-paper__title{ font:700 clamp(11px,8.4cqmin,28px)/1.2 var(--f-script); text-transform:uppercase; letter-spacing:.04em; }
+.wk-thumb--script .wk-paper .wk-paper__line{ font-family:var(--f-script); font-style:normal; font-size:clamp(9px,4.2cqmin,14px); }
+@container (max-width:240px) or (max-height:260px){ .wk-thumb .wk-paper .wk-paper__line{ display:none; } }
+@container (max-width:200px) or (max-height:210px){
+  .wk-thumb .wk-paper{ gap:5cqmin; }
+  .wk-thumb .wk-paper .wk-paper__orn, .wk-thumb .wk-paper .wk-paper__year{ display:none; }
+  .wk-thumb .wk-paper .wk-paper__kind{ letter-spacing:.08em; font-size:clamp(8px,6cqmin,12px); }
+  .wk-thumb .wk-paper .wk-paper__title{ font-size:clamp(12px,12.5cqmin,30px); }
 }
-@container (max-width:110px){ .wk-paper__title{ display:none; } .wk-paper__glyph{ width:54cqi; } }
+@container (max-width:150px) or (max-height:150px){
+  .wk-thumb .wk-paper .wk-paper__kind{ display:none; }
+  .wk-thumb .wk-paper .wk-paper__glyph{ width:34cqmin; }
+}
+@container (max-width:110px) or (max-height:100px){ .wk-thumb .wk-paper .wk-paper__title{ display:none; } .wk-thumb .wk-paper .wk-paper__glyph{ width:52cqmin; } }
 
 /* сведения */
 .wk-facts{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr)); gap:14px 28px; margin:0; padding:18px 0; border-block:1px solid var(--line); }
@@ -676,8 +684,8 @@ body.is-locked{ overflow:hidden; }
 .sc-desk{ margin:0 calc(var(--gutter) * -1); padding:clamp(28px,5vw,64px) clamp(10px,4vw,48px); background:var(--bg-2); }
 .sc-desk__head{ max-width:816px; margin:0 auto 24px; }
 .sc-desk__head .wk-h2{ margin-bottom:6px; }
-.sc-sheets{ display:grid; justify-items:center; gap:28px; }
-.sc-sheet{ position:relative; width:100%; max-width:816px; aspect-ratio:210/297; padding:clamp(40px,9%,80px) clamp(22px,9%,72px) clamp(36px,8%,72px) clamp(26px,12%,104px);
+.sc-sheets{ display:grid; grid-template-columns:minmax(0,816px); justify-content:center; gap:28px; }
+.sc-sheet{ position:relative; width:100%; min-width:0; max-width:816px; aspect-ratio:210/297; padding:clamp(40px,9%,80px) clamp(22px,9%,72px) clamp(36px,8%,72px) clamp(26px,12%,104px);
   background:var(--bg); color:var(--text); font:400 16px/1.3 var(--f-script);
   box-shadow:0 1px 2px rgba(30,23,20,.08), 0 22px 44px -26px rgba(30,23,20,.38); }
 .sc-sheet p{ margin:0 0 1.3em; }
@@ -699,7 +707,7 @@ body.is-locked{ overflow:hidden; }
 .sc-tp__t{ margin-bottom:2em !important; font-weight:700; font-size:1.3em; letter-spacing:.1em; text-decoration:underline; text-underline-offset:.35em; text-decoration-thickness:1px; color:var(--head); }
 .sc-tp__foot{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px; font-size:.88em; color:var(--sub); }
 @media (max-width:640px){
-  .sc-sheet{ padding:34px 16px 30px 22px; font-size:14px; }
+  .sc-sheet{ aspect-ratio:auto; min-height:120vw; padding:34px 16px 30px 22px; font-size:14px; }
   .sc-sn{ display:none; }
   .sc-cue{ margin-left:24% !important; }
   .sc-paren{ margin-left:14% !important; max-width:74%; }
@@ -1009,8 +1017,8 @@ body.is-locked{ overflow:hidden; }
 .hub__body .btn{ margin-top:20px; }
 .hub__works{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
 .hub__works a{ display:block; text-decoration:none; color:var(--text); }
-.hub__works a span{ display:block; margin-top:8px; font:500 17px/1.25 var(--f-head); color:var(--head); overflow-wrap:anywhere; }
-.hub__works a:hover span{ color:var(--sub); }
+.hub__works a > span{ display:block; margin-top:8px; font:500 17px/1.25 var(--f-head); color:var(--head); overflow-wrap:anywhere; }
+.hub__works a:hover > span{ color:var(--sub); }
 .hub__works .wthumb{ transition:transform .7s var(--ease); }
 .hub__works a:hover .wthumb{ transform:translateY(-4px); }
 
@@ -2865,7 +2873,7 @@ const Search = (() => {
     story: 'Записывали в декабре, в пустом зале музыкальной школы. Мария пела, стоя у окна, и в одном дубле слышно, как за стеклом проезжает трамвай. Этот дубль мы и оставили: море в песне всё равно далеко, а трамвай — рядом.',
     lyrics: null,
     melody: {
-      bpm: 68, beats: 4, key: 'ми минор', arp: 'waves', seed: 37,
+      bpm: 72, beats: 4, key: 'ми минор', arp: 'waves', seed: 37,
       chords: 'Em C G D | Em C Am B7 | Em C G D | C Am B7 Em',
       tune: `B4/1.5 G4/.5 E4/1 G4/1 | A4/1 G4/1 E4/2 | D4/1 G4/1 B4/1 D5/1 | C5/1.5 B4/.5 A4/2 |
              B4/1.5 G4/.5 E4/1 B4/1 | C5/1 B4/1 G4/2 | A4/1 C5/1 E5/1 D5/1 | D#5/2 B4/2 |
@@ -3314,7 +3322,7 @@ const Search = (() => {
         halo += `<rect x="${n1(x0 - 18)}" y="${n1(y - 18)}" width="${n1(w0 + 36)}" height="${n1(h + 36)}" fill="${mix(c, base, 0.5)}" opacity=".6"/>`;
         blocks += `<rect x="${n1(x0)}" y="${n1(y)}" width="${n1(w0)}" height="${n1(h)}" fill="${c}"/>`;
         // светящаяся середина и чуть более тёмный край — как у лессировок
-        glow += `<ellipse cx="${n1(x0 + w0 / 2)}" cy="${n1(y + h / 2)}" rx="${n1(w0 * 0.42)}" ry="${n1(h * 0.34)}" fill="${light(c, 0.16)}" opacity=".45"/>`;
+        glow += `<rect x="${n1(x0 + w0 * 0.12)}" y="${n1(y + h * 0.18)}" width="${n1(w0 * 0.76)}" height="${n1(h * 0.64)}" fill="${light(c, 0.12)}" opacity=".28"/>`;
         glow += `<rect x="${n1(x0 + w0 * 0.02)}" y="${n1(y + h * 0.04)}" width="${n1(w0 * 0.96)}" height="${n1(h * 0.92)}" fill="none" stroke="${dark(c, 0.14)}" stroke-width="${n1(Math.min(h, w0) * 0.07)}" opacity=".35"/>`;
         for (let j = 0, k = Math.max(3, Math.round(h / 34)); j < k; j++) {
           const yy = y + g.f(0.06, 0.94) * h, xx = x0 + g.f(-0.02, 0.3) * w0;
@@ -3631,6 +3639,8 @@ const Search = (() => {
         flt('b', `<feTurbulence type="fractalNoise" baseFrequency="${fx.bf}" numOctaves="3" seed="${s + 2}" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ${fx.bk} 0 0 0 ${fx.bc}" result="m"/><feDisplacementMap in="SourceGraphic" in2="n" scale="${n1(fx.rs * 0.8)}" xChannelSelector="R" yChannelSelector="G" result="d"/><feComposite in="d" in2="m" operator="in"/>`) +
         flt('g', `<feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="${s + 3}" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/>`, 'x="0" y="0" width="100%" height="100%"') +
         flt('p', `<feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="${s + 4}" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>`) +
+        flt('e', `<feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="${s + 5}" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/><feGaussianBlur in="d" stdDeviation="3.5"/>`, 'x="-5%" y="-5%" width="110%" height="110%"') +
+        `<path id="${id}-lf" d="M0 0C4 -3.4 10 -3.2 14 0C10 3.2 4 3.4 0 0Z"/>` +
         `<radialGradient id="${id}-v" cx="50%" cy="46%" r="72%"><stop offset=".62" stop-color="#140E0A" stop-opacity="0"/><stop offset="1" stop-color="#140E0A" stop-opacity=".2"/></radialGradient>` +
         `<g id="${id}-fl">${[0, 1, 2, 3, 4].map((k) => `<ellipse cx="0" cy="-4.2" rx="2.7" ry="4.2" transform="rotate(${k * 72})"/>`).join('')}<circle r="1.3" fill="#EAD9A0"/></g>`;
     }
@@ -3641,20 +3651,24 @@ const Search = (() => {
     const onPaper = (w) => /бумаг|картон/i.test((w && w.material) || '');
     function sketchView(id, W, H, sk, P, w) {
       const paper = '#F2ECE0', lead = '#3A3632';
-      const names = [...new Set(P.map(pigment))].slice(0, 4);
+      const names = [...new Set(P.map(pigment))].slice(0, 3);
       let s = `<rect width="${W}" height="${H}" fill="${paper}"/>`;
       s += `<path d="M${n1(W * 0.04)} ${n1(H * 0.04)}h${n1(W * 0.92)}v${n1(H * 0.92)}h${n1(-W * 0.92)}Z" fill="none" stroke="${lead}" stroke-width="1.2" opacity=".35"/>`;
       s += `<g transform="translate(${n1(W * 0.06)} ${n1(H * 0.06)}) scale(.88)" fill="none" stroke="${lead}" stroke-linecap="round" stroke-linejoin="round" filter="url(#${id}-p)">`;
       s += `<g stroke-width="2.4" opacity=".72">${sk.join('')}</g><g stroke-width="1.2" opacity=".3" transform="translate(3 -2)">${sk.join('')}</g></g>`;
       const fs = Math.max(W, H) * 0.032;
       s += `<text x="${n1(W * 0.06)}" y="${n1(H * 0.955)}" font-size="${n1(fs)}" fill="${lead}" opacity=".75" style="font-family:var(--f-hand)">${esc(names.join(' · '))}</text>`;
-      if (w) s += `<text x="${n1(W * 0.94)}" y="${n1(H * 0.955)}" text-anchor="end" font-size="${n1(fs)}" fill="${lead}" opacity=".75" style="font-family:var(--f-hand)">${esc('эскиз, ' + w.year)}</text>`;
+      if (w) s += `<text x="${n1(W * 0.93)}" y="${n1(H * 0.04 + fs * 1.4)}" text-anchor="end" font-size="${n1(fs)}" fill="${lead}" opacity=".75" style="font-family:var(--f-hand)">${esc('эскиз, ' + w.year)}</text>`;
       return s + `<rect width="${W}" height="${H}" filter="url(#${id}-g)" opacity=".18" style="mix-blend-mode:multiply"/>`;
     }
     function backView(id, W, H, w, g) {
       const fs = Math.max(W, H) * 0.04, hand = 'style="font-family:var(--f-hand)"';
       const lines = [AUTHOR, '«' + (w ? w.title : '') + '»', w ? `${w.material}, ${String(w.technique).toLowerCase()}. ${String(w.size).replace(/\s*см$/, '')}` : '', w ? String(w.year) : ''];
-      const text = (x, y, a) => lines.filter(Boolean).map((l, i) => `<text x="${n1(x)}" y="${n1(y + i * fs * 1.35)}" font-size="${n1(i === 1 ? fs * 1.15 : fs)}" text-anchor="${a}" fill="#3B3D52" opacity=".82" ${hand}>${esc(l)}</text>`).join('');
+      // каждая строка надписи ужимается до ширины свободного поля холста
+      const text = (x, y, a, avail = W * 0.8) => lines.filter(Boolean).map((l, i) => {
+        const size = Math.min(i === 1 ? fs * 1.15 : fs, avail / (l.length * 0.5));
+        return `<text x="${n1(x)}" y="${n1(y + i * fs * 1.35)}" font-size="${n1(size)}" text-anchor="${a}" fill="#3B3D52" opacity=".82" ${hand}>${esc(l)}</text>`;
+      }).join('');
       if (onPaper(w)) {
         let s = `<rect width="${W}" height="${H}" fill="#ECE3D1"/>`;
         for (let i = 0; i < 5; i++) s += `<ellipse cx="${n1(g.f(0.2, 0.8) * W)}" cy="${n1(g.f(0.2, 0.8) * H)}" rx="${n1(W * 0.25)}" ry="${n1(H * 0.2)}" fill="#D8CBB0" opacity=".25" filter="url(#${id}-s)"/>`;
@@ -3668,9 +3682,10 @@ const Search = (() => {
       let weave = '';
       for (let y = 6; y < H; y += 9) weave += `M0 ${y}H${W}`;
       s += `<path d="${weave}" stroke="#9C8A68" stroke-width="1" opacity=".18"/>`;
-      s += text(W * 0.5, H * 0.4, 'middle');
+      const cross = W >= 900 || H >= 900, vertical = W >= H;
+      s += cross ? (vertical ? text(W * 0.27, H * 0.36, 'middle', W * 0.36) : text(W * 0.5, H * 0.2, 'middle', W * 0.72)) : text(W * 0.5, H * 0.4, 'middle', W * 0.72);
       let bars = `<rect x="0" y="0" width="${W}" height="${n1(b)}"/><rect x="0" y="${n1(H - b)}" width="${W}" height="${n1(b)}"/><rect x="0" y="0" width="${n1(b)}" height="${H}"/><rect x="${n1(W - b)}" y="0" width="${n1(b)}" height="${H}"/>`;
-      if (W >= 900 || H >= 900) bars += W >= H ? `<rect x="${n1(W / 2 - b / 2)}" y="0" width="${n1(b)}" height="${H}"/>` : `<rect x="0" y="${n1(H / 2 - b / 2)}" width="${W}" height="${n1(b)}"/>`;
+      if (cross) bars += vertical ? `<rect x="${n1(W / 2 - b / 2)}" y="0" width="${n1(b)}" height="${H}"/>` : `<rect x="0" y="${n1(H / 2 - b / 2)}" width="${W}" height="${n1(b)}"/>`;
       s += `<g fill="${wood}">${bars}</g>`;
       let grain = '';
       for (let i = 0; i < 4; i++) {
@@ -3703,7 +3718,7 @@ const Search = (() => {
       const g = G(seed);
       const P = spec.palette && spec.palette.length ? spec.palette : ['#EDE3CF', '#2E4E7A', '#C8963E', '#8C4A2F', '#2A2622'];
       const styleName = STYLES[spec.style] ? spec.style : 'field';
-      const F = { id, r: `url(#${id}-r)`, s: `url(#${id}-s)`, b: `url(#${id}-b)` };
+      const F = { id, r: `url(#${id}-r)`, s: `url(#${id}-s)`, b: `url(#${id}-b)`, e: `url(#${id}-e)` };
       const sk = [];
       const body = STYLES[styleName](g, W, H, P, F, spec, sk);
       const view = opts.view || 'main';
@@ -3773,15 +3788,15 @@ const Search = (() => {
       }
       return buf;
     }
-    // Голос мелодии: мягкий треугольник + синус, медленная атака, лёгкое вибрато.
+    // Каждый голос — минимум узлов; фильтры и панорама общие для группы (так рендер быстрее).
+    // Все времена ограничены снизу нулём: отрицательное время в Web Audio — ошибка.
     function voice(ctx, out, t0, f, dur, vel) {
-      const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), g2 = ctx.createGain();
-      const lp = ctx.createBiquadFilter(), amp = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
-      o1.type = 'triangle'; o1.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f; o2.detune.value = 5; g2.gain.value = 0.6;
-      lp.type = 'lowpass'; lp.frequency.value = 2100; lp.Q.value = 0.3;
+      t0 = Math.max(0, t0);
+      const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(), amp = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o1.type = 'triangle'; o1.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f; o2.detune.value = 5;
       lfo.frequency.value = 5; lg.gain.setValueAtTime(0, t0); lg.gain.linearRampToValueAtTime(f * 0.0045, t0 + Math.min(0.45, dur));
       lfo.connect(lg); lg.connect(o1.frequency); lg.connect(o2.frequency);
-      o1.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(amp); amp.connect(out);
+      o1.connect(amp); o2.connect(amp); amp.connect(out);
       const a = 0.11, end = t0 + dur, rel = 0.55;
       amp.gain.setValueAtTime(0, t0);
       amp.gain.linearRampToValueAtTime(vel, t0 + a);
@@ -3790,38 +3805,46 @@ const Search = (() => {
       [o1, o2, lfo].forEach((o) => { o.start(t0); o.stop(end + rel + 0.05); });
     }
     // Щипок: арпеджио «гитары/арфы».
-    function pluck(ctx, out, t0, f, vel, len, pan) {
-      const o = ctx.createOscillator(), o2 = ctx.createOscillator(), g2 = ctx.createGain(), lp = ctx.createBiquadFilter(), amp = ctx.createGain();
-      o.type = 'triangle'; o.frequency.value = f; o2.type = 'sine'; o2.frequency.value = f * 2.002; g2.gain.value = 0.22;
-      lp.type = 'lowpass'; lp.frequency.setValueAtTime(3000, t0); lp.frequency.exponentialRampToValueAtTime(600, t0 + len);
+    function pluck(ctx, out, t0, f, vel, len) {
+      t0 = Math.max(0, t0);
+      const o = ctx.createOscillator(), amp = ctx.createGain();
+      o.type = 'triangle'; o.frequency.value = f;
       amp.gain.setValueAtTime(0, t0); amp.gain.linearRampToValueAtTime(vel, t0 + 0.006); amp.gain.exponentialRampToValueAtTime(0.0004, t0 + len);
-      o.connect(lp); o2.connect(g2); g2.connect(lp); lp.connect(amp);
-      if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; amp.connect(p); p.connect(out); } else amp.connect(out);
-      o.start(t0); o2.start(t0); o.stop(t0 + len + 0.05); o2.stop(t0 + len + 0.05);
+      o.connect(amp); amp.connect(out);
+      o.start(t0); o.stop(t0 + len + 0.03);
     }
     function pad(ctx, out, t0, freqs, dur, vel) {
-      const lp = ctx.createBiquadFilter(), amp = ctx.createGain();
-      lp.type = 'lowpass'; lp.frequency.value = 850;
+      t0 = Math.max(0, t0);
+      const amp = ctx.createGain();
       amp.gain.setValueAtTime(0, t0); amp.gain.linearRampToValueAtTime(vel, t0 + Math.min(1.2, dur * 0.4));
       amp.gain.setValueAtTime(vel, t0 + dur * 0.85); amp.gain.linearRampToValueAtTime(0.0001, t0 + dur + 0.9);
-      lp.connect(amp); amp.connect(out);
-      freqs.forEach((f) => [-5, 5].forEach((c) => {
-        const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f; o.detune.value = c;
-        o.connect(lp); o.start(t0); o.stop(t0 + dur + 1);
-      }));
+      amp.connect(out);
+      freqs.forEach((f, i) => {
+        const o = ctx.createOscillator(); o.type = 'triangle'; o.frequency.value = f; o.detune.value = i % 2 ? 5 : -5;
+        o.connect(amp); o.start(t0); o.stop(t0 + dur + 1);
+      });
     }
     function bass(ctx, out, t0, f, dur, vel) {
-      const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), amp = ctx.createGain();
-      o.type = 'sine'; o.frequency.value = f; lp.type = 'lowpass'; lp.frequency.value = 420;
+      t0 = Math.max(0, t0);
+      const o = ctx.createOscillator(), amp = ctx.createGain();
+      o.type = 'sine'; o.frequency.value = f;
       amp.gain.setValueAtTime(0, t0); amp.gain.linearRampToValueAtTime(vel, t0 + 0.04);
       amp.gain.exponentialRampToValueAtTime(vel * 0.35, t0 + dur); amp.gain.exponentialRampToValueAtTime(0.0004, t0 + dur + 0.35);
-      o.connect(lp); lp.connect(amp); amp.connect(out); o.start(t0); o.stop(t0 + dur + 0.4);
+      o.connect(amp); amp.connect(out); o.start(t0); o.stop(t0 + dur + 0.4);
+    }
+    /** Группа: gain → [панорама] → фильтр нижних частот → выход. */
+    function group(ctx, out, cutoff, pan) {
+      const gIn = ctx.createGain(), lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = cutoff; lp.Q.value = 0.3;
+      if (pan && ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; gIn.connect(p); p.connect(lp); } else gIn.connect(lp);
+      lp.connect(out);
+      return gIn;
     }
 
     function render(w) {
       const m = w.melody, plan = songPlan(m);
       const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-      const sr = 32000, ctx = new OAC(2, Math.ceil(plan.total * sr), sr);
+      const sr = 22050, ctx = new OAC(2, Math.ceil(plan.total * sr), sr);
       const r = rng(m.seed || 7);
       const comp = ctx.createDynamicsCompressor();
       comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 3; comp.attack.value = 0.02; comp.release.value = 0.35;
@@ -3830,8 +3853,9 @@ const Search = (() => {
       master.gain.setValueAtTime(0.9, plan.total - 4.5); master.gain.linearRampToValueAtTime(0, plan.total - 0.2);
       comp.connect(master); master.connect(ctx.destination);
       const bus = ctx.createGain(); bus.gain.value = 0.9; bus.connect(comp);
-      const verb = ctx.createConvolver(); verb.buffer = impulse(ctx, 3, 2.6, r);
+      const verb = ctx.createConvolver(); verb.buffer = impulse(ctx, 2.6, 2.6, r);
       const wet = ctx.createGain(); wet.gain.value = 0.38; bus.connect(verb); verb.connect(wet); wet.connect(comp);
+      const G = { voice: group(ctx, bus, 2100), padB: group(ctx, bus, 850), bassB: group(ctx, bus, 420), left: group(ctx, bus, 2600, -0.35), right: group(ctx, bus, 2600, 0.35) };
 
       const tune = parseTune(m.tune), chords = parseChords(m.chords), { beats, spb, bar, intro, reps } = plan;
       const hum = () => (r() - 0.5) * 0.018;
@@ -3840,11 +3864,12 @@ const Search = (() => {
       for (let rep = 0; rep < reps; rep++) {
         for (const n of tune) {
           const mi = n.n === 'r' ? null : midi(n.n);
-          if (mi) voice(ctx, bus, Math.max(0, t + hum()), freq(mi), n.d * spb * 0.95, 0.15 * (0.9 + r() * 0.2) * (rep ? 1.04 : 1));
+          if (mi) voice(ctx, G.voice, t + hum(), freq(mi), n.d * spb * 0.95, 0.15 * (0.9 + r() * 0.2) * (rep ? 1.04 : 1));
           t += n.d * spb;
         }
       }
       // аккомпанемент
+      const side = (k) => (k % 2 ? G.right : G.left);
       const allBars = intro + chords.length * reps + 1;
       for (let b = 0; b < allBars; b++) {
         const last = b === allBars - 1;
@@ -3852,17 +3877,17 @@ const Search = (() => {
         const ch = chord(chords[ci]), t0 = b * bar;
         const rm = fit(ch.root, 45), third = ch.iv[1], fifth = ch.iv[2];
         const tones = ch.iv.slice(0, 3).map((i) => fit((ch.root + i) % 12, 55)).sort((x, y) => x - y);
-        bass(ctx, bus, t0, freq(fit(ch.root, 40)), bar * 0.95, last ? 0.13 : 0.11);
-        pad(ctx, bus, t0, tones.map(freq), last ? bar * 1.5 : bar, last ? 0.028 : 0.02);
-        if (last) { [0, fifth, 12, 12 + third, 24].forEach((iv, k) => pluck(ctx, bus, t0 + k * 0.14, freq(rm + iv), 0.05, 3, (k - 2) * 0.2)); continue; }
+        bass(ctx, G.bassB, t0, freq(fit(ch.root, 40)), bar * 0.95, last ? 0.13 : 0.11);
+        pad(ctx, G.padB, t0, tones.map(freq), last ? bar * 1.5 : bar, last ? 0.03 : 0.022);
+        if (last) { [0, fifth, 12, 12 + third, 24].forEach((iv, k) => pluck(ctx, side(k), t0 + k * 0.14, freq(rm + iv), 0.05, 3)); continue; }
         if (m.arp === 'waltz') {
-          for (const k of [1, 2]) tones.forEach((tn, j) => pluck(ctx, bus, t0 + k * spb + j * 0.014 + hum(), freq(tn), k === 1 ? 0.04 : 0.032, 0.7, (j - 1) * 0.35));
+          for (const k of [1, 2]) tones.forEach((tn, j) => pluck(ctx, side(j), t0 + k * spb + j * 0.014 + hum(), freq(tn), k === 1 ? 0.04 : 0.032, 0.7));
         } else if (m.arp === 'waves') {
           const seq = [0, fifth, 12 + third, 19];
-          for (let k = 0; k < beats; k++) pluck(ctx, bus, t0 + k * spb + hum(), freq(rm + seq[k % 4]), 0.05, 2.4, (k - 1.5) * 0.3);
+          for (let k = 0; k < beats; k++) pluck(ctx, side(k), t0 + k * spb + hum(), freq(rm + seq[k % 4]), 0.05, 2.2);
         } else {
           const seq = [0, fifth, 12, 12 + third, 12 + fifth, 12 + third, 12, fifth];
-          for (let k = 0; k < beats * 2; k++) pluck(ctx, bus, t0 + (k * spb) / 2 + hum(), freq(rm + seq[k % 8]), k % 2 ? 0.032 : 0.046, 1.15, ((k % 4) - 1.5) * 0.22);
+          for (let k = 0; k < beats * 2; k++) pluck(ctx, side(k), t0 + (k * spb) / 2 + hum(), freq(rm + seq[k % 8]), k % 2 ? 0.032 : 0.046, 1.1);
         }
       }
       const done = ctx.startRendering();
