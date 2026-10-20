@@ -399,7 +399,7 @@ body.is-locked{ overflow:hidden; }
 @container (max-width:110px) or (max-height:100px){ .wk-thumb .wk-paper .wk-paper__title{ display:none; } .wk-thumb .wk-paper .wk-paper__glyph{ width:52cqmin; } }
 
 /* сведения */
-.wk-facts{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr)); gap:14px 28px; margin:0; padding:18px 0; border-block:1px solid var(--line); }
+.wk-facts{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr)); gap:14px 28px; margin:0; padding:18px 0; border-block:1px solid var(--line); }
 .wk-facts > div{ min-width:0; }
 .wk-facts dt{ font:500 12px/1.3 var(--f-body); letter-spacing:.16em; text-transform:uppercase; color:var(--date); margin:0 0 4px; }
 .wk-facts dd{ margin:0; font-size:17px; line-height:1.4; color:var(--text); }
@@ -478,7 +478,7 @@ body.is-locked{ overflow:hidden; }
 .pr-cover{ margin:0; max-width:320px; }
 .pr-cover__a{ display:block; }
 .pr-cover figcaption{ margin-top:10px; font-size:15px; color:var(--date); }
-.pr-col{ margin-top:clamp(16px,3vw,32px); }
+.wk-page .wrap .read.pr-col{ margin:clamp(16px,3vw,32px) 0 0; }
 .pr-toc{ margin:clamp(24px,4vw,48px) 0 clamp(40px,6vw,64px); }
 .pr-toc__list{ list-style:none; margin:0; padding:0; border-top:1px solid var(--line); }
 .pr-toc__list a{ display:grid; grid-template-columns:2.8em minmax(0,1fr) auto; gap:12px; align-items:baseline; padding:16px 6px; border-bottom:1px solid var(--line); color:var(--text); text-decoration:none; transition:background-color .4s; }
@@ -707,7 +707,8 @@ body.is-locked{ overflow:hidden; }
 .sc-tp__t{ margin-bottom:2em !important; font-weight:700; font-size:1.3em; letter-spacing:.1em; text-decoration:underline; text-underline-offset:.35em; text-decoration-thickness:1px; color:var(--head); }
 .sc-tp__foot{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 16px; font-size:.88em; color:var(--sub); }
 @media (max-width:640px){
-  .sc-sheet{ aspect-ratio:auto; min-height:120vw; padding:34px 16px 30px 22px; font-size:14px; }
+  .sc-sheet{ aspect-ratio:auto; min-height:120vw; padding:46px 16px 30px 22px; font-size:14px; }
+  .sc-pno{ top:16px; right:16px; }
   .sc-sn{ display:none; }
   .sc-cue{ margin-left:24% !important; }
   .sc-paren{ margin-left:14% !important; max-width:74%; }
@@ -722,7 +723,7 @@ body.is-locked{ overflow:hidden; }
 .pa-count{ margin:0 0 clamp(24px,4vw,40px); }
 .pa-grid{ list-style:none; margin:0; padding:0; columns:1; column-gap:clamp(24px,3vw,44px); }
 @media (min-width:600px){ .pa-grid{ columns:2; } }
-@media (min-width:1024px){ .pa-grid{ columns:3; } }
+@media (min-width:1024px){ .pa-grid{ columns:3; } .pa-grid--series{ columns:2; max-width:1080px; } }
 .pa-card{ break-inside:avoid; margin:0 0 clamp(28px,4vw,48px); }
 .pa-card[hidden]{ display:none; }
 .pa-card a{ display:block; color:var(--text); text-decoration:none; }
@@ -767,7 +768,7 @@ body.is-locked{ overflow:hidden; }
 .pa-studio{ padding:24px 26px; background:var(--bg-2); }
 .pa-studio .pa-sign{ margin-top:12px; text-align:right; font-size:26px; line-height:1.2; color:var(--hand); }
 .pa-extras{ margin-top:clamp(40px,6vw,72px); }
-.pa-extras ul{ list-style:none; margin:0; padding:0; display:grid; gap:18px; grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr)); }
+.pa-extras ul{ list-style:none; margin:0; padding:0; display:grid; gap:18px; grid-template-columns:repeat(auto-fill,minmax(min(100%,140px),1fr)); }
 .pa-extra{ display:grid; gap:10px; width:100%; padding:0; border:0; background:transparent; color:var(--text); text-align:left; cursor:zoom-in; }
 .pa-extra__im{ display:grid; place-items:center; aspect-ratio:1; padding:12%; background:var(--bg-2); transition:background-color .4s; }
 .pa-extra__im .pa-svg{ width:100%; height:100%; filter:drop-shadow(0 5px 8px rgba(30,23,20,.25)); }
@@ -782,7 +783,7 @@ body.is-locked{ overflow:hidden; }
 .pa-row .pa-card{ margin:0; }
 
 /* ---------------- лайтбокс ---------------- */
-.lb{ position:fixed; inset:0; z-index:75; display:grid; grid-template-rows:minmax(0,1fr) auto auto; background:rgba(33,26,23,.97); color:var(--bg-2); opacity:0; transition:opacity .35s var(--ease); }
+.lb{ position:fixed; inset:0; z-index:75; display:grid; grid-template-rows:minmax(0,1fr) auto auto; background:var(--footer); color:var(--bg-2); opacity:0; transition:opacity .35s var(--ease); }
 .lb.is-open{ opacity:1; }
 .lb__stage{ position:relative; display:grid; place-items:center; min-height:0; margin:clamp(12px,3vw,32px); overflow:hidden; touch-action:none; }
 .lb__canvas{ position:relative; transform-origin:center; transition:transform .25s var(--ease); cursor:zoom-in; box-shadow:0 24px 70px -24px rgba(0,0,0,.7); }
@@ -2232,7 +2233,7 @@ const Search = (() => {
     versions: {
       en: {
         title: 'Night Train',
-        note: 'Author’s English version, 2024 — not a translation but the same poem written again.',
+        note: 'Написана автором по-английски в 2024 году — не перевод, а то же стихотворение, написанное заново.',
         text: `
           The train runs the steppe like a thread pulled through linen,
           a spoon in the glass holder rings in the tea.
@@ -4136,7 +4137,7 @@ const Search = (() => {
     }
     if (v.lang !== 'ru') {
       const ver = w.versions[v.lang];
-      return `<p class="wk-vown">${icon('feather')}<span><b>${esc(t('Авторская версия'))}</b>${ver.note ? ' · ' + esc(ver.note) : ''}</span></p>`;
+      return `<p class="wk-vown">${icon('feather')}<span><b>${esc(t('Авторская версия'))}</b>${ver.note ? ' · ' + esc(t(ver.note)) : ''}</span></p>`;
     }
     return '';
   }
@@ -4214,7 +4215,8 @@ const Search = (() => {
   function proseCover(w) {
     const c = w.cover && byId(w.cover);
     if (!c) return '';
-    return `<figure class="pr-cover"><a href="${url(c)}" class="pr-cover__a">${thumb(c, { ratio: '4/5' })}</a>
+    const d = Art.dims(c.size); // паспарту в пропорции картины
+    return `<figure class="pr-cover"><a href="${url(c)}" class="pr-cover__a">${thumb(c, { ratio: `${d.W + 220}/${d.H + 220}` })}</a>
       <figcaption>${esc(t('Обложка — картина'))} <a href="${url(c)}">«${esc(c.title)}»</a>, ${c.year}</figcaption></figure>`;
   }
   function proseWork(w, q) {
@@ -4536,7 +4538,9 @@ const Search = (() => {
     let used = 0;
     scriptBlocks(text).forEach((b) => {
       const c = scCost(b);
-      if (used + c > 46 && pages[pages.length - 1].length) { pages.push([]); used = 0; }
+      // заголовок сцены не остаётся последней строкой листа
+      const need = b.k === 'scene' ? c + 5 : c;
+      if (used + need > 46 && pages[pages.length - 1].length) { pages.push([]); used = 0; }
       pages[pages.length - 1].push(b); used += c;
     });
     const title = `<div class="sc-sheet sc-sheet--title">
@@ -4593,7 +4597,9 @@ const Search = (() => {
   const specLine = (w) => `${w.material}, ${String(w.technique).toLowerCase()}`;
   function viewsOf(w) {
     const d = Art.dims(w.size), ratio = d.W / d.H;
-    const label = (v) => t(v === 'detail' ? 'Фрагмент' : v === 'back' ? (onPaperW(w) ? 'Оборот листа' : 'Оборот холста') : v === 'sketch' ? 'Эскиз, карандаш' : 'Картина целиком');
+    // «Фрагмент» картины — это деталь (Detail), а не отрывок текста, поэтому свой словарь
+    const DETAIL = { ru: 'Фрагмент', en: 'Detail', fr: 'Détail' };
+    const label = (v) => (v === 'detail' ? DETAIL[App.lang] || DETAIL.ru : t(v === 'back' ? (onPaperW(w) ? 'Оборот листа' : 'Оборот холста') : v === 'sketch' ? 'Эскиз, карандаш' : 'Картина целиком'));
     return [{ view: 'main', label: label('main'), ratio }].concat((w.extra || []).map((x) => {
       const o = typeof x === 'string' ? { view: x } : x;
       return { view: o.view, detail: o, label: label(o.view), ratio: o.view === 'detail' ? 1 : ratio };
@@ -4679,7 +4685,7 @@ const Search = (() => {
     const otherSeries = DATA.series.filter((x) => x !== s).map((x) => `<a class="tag" href="#/painting/series/${x.id}">${esc(x.title)}</a>`).join('');
     return `<div class="page wk-page pa-gallery"><div class="wrap">${crumbs('painting', [{ label: `${t('Серия')} «${s.title}»` }])}
       <header class="page-head wk-head"><p class="kicker">${esc(t('Серия'))} · ${esc(s.years)} · ${esc(pl(list.length, 'работа'))}</p><h1 class="title">${esc(s.title)}</h1><p class="lead">${esc(s.text)}</p></header>
-      <ul class="pa-grid">${list.map((w) => paCard(w)).join('')}</ul>
+      <ul class="pa-grid pa-grid--series">${list.map((w) => paCard(w)).join('')}</ul>
       <div class="pa-series-foot"><p class="wk-meta">${esc(t('Другие серии'))}:</p>${otherSeries}<a class="btn btn--sm" href="#/painting">${esc(t('Вся живопись'))}${icon('arrow-right')}</a></div>
       <div class="wk-foot">${App.share(`${t('Серия')} «${s.title}»`)}</div>
     </div></div>`;
@@ -4719,7 +4725,7 @@ const Search = (() => {
             <button type="button" class="lb__b" data-lb-act="out" aria-label="${esc(t('Уменьшить'))}">${icon('minus')}</button>
             <span class="lb__zoom" aria-live="polite">100%</span>
             <button type="button" class="lb__b" data-lb-act="in" aria-label="${esc(t('Увеличить'))}">${icon('plus')}</button>
-            <button type="button" class="lb__b lb__fit" data-lb-act="fit" aria-label="${esc(t('Вписать в экран'))}">1:1</button>
+            <button type="button" class="lb__b lb__fit" data-lb-act="fit" aria-label="${esc(t('Вписать в экран'))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/></svg></button>
             <span class="lb__sep" aria-hidden="true"></span>
             <button type="button" class="lb__b" data-lb-act="close" aria-label="${esc(t('Закрыть'))}">${icon('close')}</button>
           </div>
@@ -4916,6 +4922,7 @@ const Search = (() => {
     'Языковые версии произведения': L('Language versions of this work', 'Versions linguistiques de l’œuvre'), 'Версии': L('Versions', 'Versions'),
     'оригинал': L('original', 'original'), 'авторская версия': L('author’s version', 'version de l’autrice'), 'нет авторской версии': L('no author’s version', 'pas de version de l’autrice'),
     'Авторская версия': L('Author’s version', 'Version de l’autrice'),
+    'Написана автором по-английски в 2024 году — не перевод, а то же стихотворение, написанное заново.': L('Written by the author in English in 2024 — not a translation but the same poem written again.', 'Écrite par l’autrice en anglais en 2024 — non pas une traduction, mais le même poème réécrit.'),
     'Авторской версии на английском языке нет — показан оригинал на русском.': L('There is no author’s English version — the Russian original is shown.', 'Il n’existe pas de version anglaise de l’autrice — l’original russe est affiché.'),
     'Авторской версии на французском языке нет — показан оригинал на русском.': L('There is no author’s French version — the Russian original is shown.', 'Il n’existe pas de version française de l’autrice — l’original russe est affiché.'),
     'Показать автоматический перевод': L('Show automatic translation', 'Afficher la traduction automatique'),
