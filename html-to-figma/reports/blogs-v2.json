@@ -3,8 +3,8 @@
   "source": "lidia-lozovaya-v2.html",
   "profile": "lozovaya-v2: owner, ru, light, day; 1440 px; демо-панель исключена",
   "seconds": {
-    "discover": 77.269,
-    "capture": 159.585,
+    "discover": 75.914,
+    "capture": 147.088,
     "quick": false
   },
   "discovery": {
@@ -44,8 +44,8 @@
     "skipped": 0,
     "texts": 2785,
     "nodes": 9233,
-    "warnings": 0,
-    "set": "mvij9r96mcrmv"
+    "warnings": 1,
+    "set": "mviktyvvhwzty"
   },
   "verify": {
     "ok": true,

@@ -10,11 +10,11 @@
     "irNodes": 351,
     "transformMismatches": 0,
     "prepShift": 0,
-    "ms_load": 5361,
-    "ms_settleHover": 3016,
-    "ms_capture": 1484,
-    "ms_shot": 1095,
-    "ms_finalize": 182
+    "ms_load": 5349,
+    "ms_settleHover": 3018,
+    "ms_capture": 1515,
+    "ms_shot": 1045,
+    "ms_finalize": 221
   },
   "verify": {
     "ok": true,
