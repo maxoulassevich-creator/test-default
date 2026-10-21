@@ -52,7 +52,7 @@ interface JobStatus {
 }
 
 const S = {
-  proc: new Processor('http://127.0.0.1:47821', null),
+  proc: new Processor('http://localhost:47821', null),
   connected: false,
   file: null as File | null,
   jobId: null as string | null,
@@ -106,20 +106,12 @@ const captureKey = () => JSON.stringify(settings());
 // ---------- подключение ----------
 async function checkConnection() {
   setConn('unknown', 'Проверяю обработчик…');
-  S.proc.base = ($('procUrl') as HTMLInputElement).value.trim() || 'http://127.0.0.1:47821';
+  // Figma пропускает только адреса из manifest.json (там «localhost»: IP-адрес manifest не принимает)
+  const entered = ($('procUrl') as HTMLInputElement).value.trim() || 'http://localhost:47821';
+  S.proc.base = entered.replace('//127.0.0.1:', '//localhost:');
+  if (S.proc.base !== entered) ($('procUrl') as HTMLInputElement).value = S.proc.base;
   try {
-    let h: Awaited<ReturnType<Processor['health']>>;
-    try { h = await S.proc.health(true); }
-    catch (e) {
-      // политика сети Figma может пропускать только «localhost» (так в документации manifest) —
-      // тот же обработчик пробуем по второму имени из manifest.json
-      const alt = /\/\/127\.0\.0\.1:/.test(S.proc.base) ? S.proc.base.replace('//127.0.0.1:', '//localhost:') : '';
-      if (!(e instanceof ApiError && e.kind === 'offline') || !alt) throw e;
-      const prev = S.proc.base;
-      S.proc.base = alt;
-      try { h = await S.proc.health(true); ($('procUrl') as HTMLInputElement).value = alt; await storageSet('processorUrl', alt); }
-      catch { S.proc.base = prev; throw e; }
-    }
+    const h = await S.proc.health(true);
     if (h.protocol !== 1) throw new ApiError(`Версия обработчика ${h.version} несовместима (протокол ${h.protocol}).`, 'Установите плагин и обработчик из одного архива.', 409, 'protocol');
     if (!h.paired) {
       setConn('warn', 'Обработчик найден — нужен код подключения');
@@ -141,7 +133,7 @@ async function checkConnection() {
     setConn('bad', err.kind === 'offline' ? 'Обработчик не запущен' : err.message);
     $('connHelp').textContent = err.kind === 'offline' ? 'Плагину нужен локальный обработчик — он открывает HTML в браузере и измеряет страницу.' : err.message;
     $('connSteps').innerHTML = err.kind === 'offline'
-      ? '<li>Откройте папку обработчика и запустите <b>start-windows.cmd</b> (окно должно остаться открытым).</li><li>Нажмите «Проверить снова».</li><li>Если обработчик запущен, но связи нет — подготовьте пакет на странице http://127.0.0.1:47821 в браузере и откройте его кнопкой ниже.</li>'
+      ? '<li>Откройте папку обработчика и запустите <b>start-windows.cmd</b> (окно должно остаться открытым).</li><li>Нажмите «Проверить снова».</li><li>Если обработчик запущен, но связи нет — подготовьте пакет на странице http://localhost:47821 в браузере и откройте его кнопкой ниже.</li>'
       : `<li>${esc(err.action ?? '')}</li>`;
     show($('pairBox'), err.kind === 'auth');
     show($('connPanel'), true);
@@ -166,8 +158,23 @@ function updateButtons() {
   show($('buildPanel'), !!S.pkg || !!S.status && S.status.state !== 'analyzing' && S.status.routes.length > 0);
 }
 
+async function openPackage(f: File) {
+  show($('errorBox'), false);
+  try {
+    S.pkg = await packageSource(f);
+    S.file = null;
+    S.status = null;
+    $('fileName').textContent = `Пакет: ${f.name} · страниц ${S.pkg.doc.routes.length}`;
+    show($('buildPanel'), true);
+    updateButtons();
+    toCode({ type: 'notify', text: 'Пакет импорта открыт. Нажмите «Создать макеты».' });
+  } catch (err) { showError($('errorBox'), err); }
+}
+
 // ---------- файл и анализ ----------
 function setFile(f: File | null) {
+  // пакет импорта (.h2f.zip, подготовлен на странице обработчика) открывается сразу
+  if (f && /\.h2f\.zip$/i.test(f.name)) { void openPackage(f); return; }
   S.file = f;
   S.pkg = null;
   $('fileName').textContent = f ? `${f.name} · ${(f.size / 1024 / 1024).toFixed(2)} МБ` : '';
@@ -551,18 +558,7 @@ function bind() {
   $('reportBtn').onclick = () => void downloadReport();
   $('pkgBtn').onclick = async () => { try { if (!S.jobId) return; await download(await S.proc.blob(`/api/jobs/${S.jobId}/package`), (S.status?.sourceName ?? 'project').replace(/\.(zip|html?)$/i, '') + '.h2f.zip'); } catch (e) { showError($('buildError'), e); } };
   $('saveProfile').onclick = async () => { if (!S.file) return; S.profiles[S.file.name] = settings(); await storageSet('profiles', S.profiles); toCode({ type: 'notify', text: 'Настройки проекта сохранены' }); };
-  $('pkgInput').onchange = async (e) => {
-    const f = (e.target as HTMLInputElement).files?.[0];
-    if (!f) return;
-    try {
-      S.pkg = await packageSource(f);
-      S.status = null;
-      $('fileName').textContent = `Пакет: ${f.name} · страниц ${S.pkg.doc.routes.length}`;
-      show($('buildPanel'), true);
-      updateButtons();
-      toCode({ type: 'notify', text: 'Пакет импорта открыт. Нажмите «Создать макеты».' });
-    } catch (err) { showError($('errorBox'), err); }
-  };
+  $('pkgInput').onchange = (e) => { const f = (e.target as HTMLInputElement).files?.[0]; if (f) void openPackage(f); };
   listeners.push((m) => {
     if (m.type === 'sets') S.sets = m.sets;
     if (m.type === 'status') toCode({ type: 'notify', text: m.text });

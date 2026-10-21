@@ -7,9 +7,9 @@
   "editorType": ["figma"],
   "documentAccess": "dynamic-page",
   "networkAccess": {
-    "allowedDomains": ["http://127.0.0.1:47821", "http://localhost:47821"],
-    "reasoning": "Плагин обращается только к локальному обработчику на этом компьютере (127.0.0.1:47821), который открывает загруженный HTML в браузере и передаёт измерения. Внешние серверы не используются.",
-    "devAllowedDomains": ["http://127.0.0.1:47821", "http://localhost:47821"]
+    "allowedDomains": ["http://localhost:47821"],
+    "reasoning": "Плагин обращается только к локальному обработчику на этом компьютере (localhost:47821), который открывает загруженный HTML в браузере и передаёт измерения. Внешние серверы не используются.",
+    "devAllowedDomains": ["http://localhost:47821"]
   },
   "relaunchButtons": [{ "command": "open", "name": "Открыть импортёр HTML → Figma" }]
 }

@@ -1,5 +1,5 @@
 /*
- * Локальный HTTP API обработчика (только 127.0.0.1).
+ * Локальный HTTP API обработчика (только loopback: 127.0.0.1 и ::1).
  * Защита: проверка Host (от DNS rebinding), токен Bearer для всех операций кроме
  * /api/health и /api/pair, ограничение попыток ввода кода, лимит размера загрузки.
  * CORS разрешён для любого origin (UI плагина Figma имеет origin "null"), но без
@@ -48,7 +48,7 @@ const attempts: number[] = [];
 
 export function createServer(d: ServerDeps): http.Server {
   const { cfg, jobs } = d;
-  const allowedHosts = new Set([`127.0.0.1:${cfg.port}`, `localhost:${cfg.port}`]);
+  const allowedHosts = new Set([`127.0.0.1:${cfg.port}`, `localhost:${cfg.port}`, `[::1]:${cfg.port}`]);
   return http.createServer(async (req, res) => {
     const cors = {
       'access-control-allow-origin': '*',

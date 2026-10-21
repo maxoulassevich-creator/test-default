@@ -1,8 +1,9 @@
 /*
  * Запуск локального обработчика: `node processor.cjs` (или start-windows.cmd).
- * Слушает только 127.0.0.1. В окне показывается код подключения для плагина.
+ * Слушает только loopback: 127.0.0.1 и ::1 (localhost). В окне показывается код подключения.
  */
 import fs from 'node:fs';
+import http from 'node:http';
 import path from 'node:path';
 import { GENERATOR_VERSION, PROTOCOL_VERSION } from '../../shared/schema';
 import { browserStatus, closeBrowser } from './browser';
@@ -35,8 +36,16 @@ export async function startProcessor(opts: { port?: number; dataDir?: string; qu
     server.close();
     throw e;
   }
-  const stop = async () => { server.close(); site.stop(); for (const j of jobs.jobs.values()) await j.cancel(); await closeBrowser(); };
-  return { cfg, site, jobs, server, stop };
+  // «localhost» в Windows сначала разрешается в IPv6 ::1 — слушаем и его (тоже только loopback).
+  // Без IPv6 в системе это просто пропускается.
+  const server6 = http.createServer();
+  for (const l of server.listeners('request')) server6.on('request', l as (...a: unknown[]) => void);
+  const v6 = await new Promise<boolean>((resolve) => {
+    server6.once('error', () => resolve(false));
+    server6.listen(cfg.port, '::1', () => resolve(true));
+  });
+  const stop = async () => { server.close(); if (v6) server6.close(); site.stop(); for (const j of jobs.jobs.values()) await j.cancel(); await closeBrowser(); };
+  return { cfg, site, jobs, server, ipv6: v6, stop };
 }
 
 export async function main() {
@@ -53,7 +62,7 @@ export async function main() {
     process.exit(1);
   }
   const { cfg, stop } = started;
-  console.log(` Адрес:            http://127.0.0.1:${cfg.port}`);
+  console.log(` Адрес:            http://localhost:${cfg.port}   (то же: http://127.0.0.1:${cfg.port})`);
   console.log(` Код подключения:  ${cfg.pairingCode}   (вводится в плагине один раз)`);
   console.log(` Папка данных:     ${cfg.dataDir}`);
   console.log(' Проверяю браузер…');

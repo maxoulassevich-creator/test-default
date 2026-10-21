@@ -162,3 +162,28 @@ test('интерфейс: отмена во время создания удал
     assert.ok(!own.removed && mock.page.children.includes(own), 'чужой слой на месте');
   } finally { await page.close(); }
 });
+
+test('интерфейс без связи с обработчиком: готовый пакет .h2f.zip в поле «Исходник» → макеты', async () => {
+  // пакет готовят на странице обработчика (тот же API /package), плагин его только открывает
+  const zip = zipWithFonts(path.join(FIX, 'ui-flow'));
+  const up = await t.json('/api/jobs', { method: 'POST', body: new Uint8Array(zip), headers: { 'x-file-name': 'masterskaya.zip' } });
+  const st = await t.waitJob(up.id, ['analyzing']);
+  const keys = (st.routes as Array<{ key: string; status: string }>).filter((r) => r.status === 'ok').map((r) => r.key);
+  await t.json(`/api/jobs/${up.id}/capture`, { method: 'POST', body: JSON.stringify({ routes: keys }), headers: { 'content-type': 'application/json' } });
+  await t.waitJob(up.id, ['capturing']);
+  const pkg = Buffer.from(await (await t.api(`/api/jobs/${up.id}/package`)).arrayBuffer());
+  // обработчик «недоступен» для плагина: адрес ведёт на закрытый порт
+  const mock = createFigmaMock({ fonts: FIXTURE_FONTS, clientStorage: { processorUrl: 'http://localhost:9' }, render: renderHtml });
+  mock.run(fs.readFileSync(path.join(ROOT, 'plugin', 'dist', 'code.js'), 'utf8'));
+  const { page, ui } = await openPlugin(mock);
+  try {
+    await until(async () => /не запущен/.test(await text(ui, '#connText')), 15000, 'статус «Обработчик не запущен»');
+    await ui.setInputFiles('#fileInput', { name: 'masterskaya.h2f.zip', mimeType: 'application/zip', buffer: pkg });
+    await until(async () => /Пакет: masterskaya\.h2f\.zip · страниц 2/.test(await text(ui, '#fileName')), 15000, 'пакет открыт');
+    assert.equal(await ui.locator('#createBtn').isDisabled(), false, 'кнопка «Создать макеты» доступна без обработчика');
+    await ui.click('#createBtn');
+    await until(async () => (await ui.locator('#summary').isVisible()) || (await ui.locator('#buildError').isVisible()), 120000, 'результат');
+    assert.match(await text(ui, '#summary'), /Создано макетов: 2/, await text(ui, '#buildError').catch(() => ''));
+    assert.equal(mock.roots().length, 2);
+  } finally { await page.close(); }
+});

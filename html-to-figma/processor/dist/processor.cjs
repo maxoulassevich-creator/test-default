@@ -326,6 +326,7 @@ var init_assets = __esm({
 
 // processor/src/main.ts
 var import_node_fs9 = __toESM(require("node:fs"), 1);
+var import_node_http3 = __toESM(require("node:http"), 1);
 var import_node_path9 = __toESM(require("node:path"), 1);
 
 // shared/schema.ts
@@ -2413,7 +2414,7 @@ async function json(req, limit = 2 * 1024 * 1024) {
 var attempts = [];
 function createServer(d) {
   const { cfg, jobs } = d;
-  const allowedHosts = /* @__PURE__ */ new Set([`127.0.0.1:${cfg.port}`, `localhost:${cfg.port}`]);
+  const allowedHosts = /* @__PURE__ */ new Set([`127.0.0.1:${cfg.port}`, `localhost:${cfg.port}`, `[::1]:${cfg.port}`]);
   return import_node_http.default.createServer(async (req, res) => {
     const cors = {
       "access-control-allow-origin": "*",
@@ -2793,13 +2794,20 @@ async function startProcessor(opts = {}) {
     server.close();
     throw e;
   }
+  const server6 = import_node_http3.default.createServer();
+  for (const l of server.listeners("request")) server6.on("request", l);
+  const v6 = await new Promise((resolve) => {
+    server6.once("error", () => resolve(false));
+    server6.listen(cfg.port, "::1", () => resolve(true));
+  });
   const stop = async () => {
     server.close();
+    if (v6) server6.close();
     site.stop();
     for (const j of jobs.jobs.values()) await j.cancel();
     await closeBrowser();
   };
-  return { cfg, site, jobs, server, stop };
+  return { cfg, site, jobs, server, ipv6: v6, stop };
 }
 async function main() {
   const line = "─".repeat(64);
@@ -2815,7 +2823,7 @@ async function main() {
     process.exit(1);
   }
   const { cfg, stop } = started;
-  console.log(` Адрес:            http://127.0.0.1:${cfg.port}`);
+  console.log(` Адрес:            http://localhost:${cfg.port}   (то же: http://127.0.0.1:${cfg.port})`);
   console.log(` Код подключения:  ${cfg.pairingCode}   (вводится в плагине один раз)`);
   console.log(` Папка данных:     ${cfg.dataDir}`);
   console.log(" Проверяю браузер…");

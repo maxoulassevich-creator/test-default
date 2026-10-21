@@ -59,6 +59,7 @@ for (const script of targets) {
       assert.equal((await raw(port, '/web.js', { host: `127.0.0.1:${port}` })).status, 200);
       const h = JSON.parse((await raw(port, '/api/health', { host: `127.0.0.1:${port}` })).body);
       assert.equal(h.paired, false);
+      assert.equal((await raw(port, '/api/health', { host: `localhost:${port}` })).status, 200, 'Host «localhost» (адрес плагина в manifest) принимается');
       assert.equal((await raw(port, '/api/health', { host: `evil.example:${port}` })).status, 403, 'чужой Host отклоняется');
       assert.equal((await raw(port, '/api/jobs', { host: `127.0.0.1:${port}`, 'x-h2f-protocol': String(h.protocol) }, 'POST', 'x')).status, 401, 'без токена нельзя');
       const bad = await raw(port, '/api/pair', { host: `127.0.0.1:${port}`, 'content-type': 'application/json' }, 'POST', JSON.stringify({ code: 'AAAAA-AAAAA' }));
