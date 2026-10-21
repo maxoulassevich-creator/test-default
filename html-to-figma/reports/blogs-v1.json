@@ -3,8 +3,8 @@
   "source": "blog-v1.html",
   "profile": "lozovaya-v1: owner, ru; 1440 px; демо-панель исключена",
   "seconds": {
-    "discover": 53.744,
-    "capture": 74.94,
+    "discover": 50.103,
+    "capture": 71.567,
     "quick": false
   },
   "discovery": {
@@ -20,14 +20,14 @@
     "texts": 3053,
     "nodes": 8353,
     "warnings": 0,
-    "set": "mvieoomdpu6x0"
+    "set": "mvifm45alzg8c"
   },
   "verify": {
-    "ok": false,
+    "ok": true,
     "frames": 32,
     "checked": 8353,
     "positionIssues": 0,
-    "textIssues": 200,
+    "textIssues": 0,
     "overlaps": 0
   },
   "routes": [
@@ -35,7 +35,7 @@
       "route": "#/",
       "label": "Главная",
       "height": 3510,
-      "hover": ".dir | I 3 произведения Проза Повести",
+      "hover": ".dir | Проза",
       "irNodes": 302
     },
     {
@@ -49,7 +49,7 @@
       "route": "#/art",
       "label": "Моё искусство",
       "height": 3067,
-      "hover": ".hub__works a | ЭССЕ Одна линия Одна линия",
+      "hover": ".hub__works a | Одна линия",
       "irNodes": 331
     },
     {
@@ -63,7 +63,7 @@
       "route": "#/prose/do-vostrebovaniya",
       "label": "Произведение · Оглавление",
       "height": 2728,
-      "hover": ".wk-rel__list a | СТИХОТВОРЕНИЕ Письмо СТИХОТВОР",
+      "hover": ".wk-rel__list a | Письмо",
       "irNodes": 296
     },
     {
@@ -126,7 +126,7 @@
       "route": "#/scripts/shest-sorok",
       "label": "Сценарий · Логлайн",
       "height": 8629,
-      "hover": ".wk-rel__list a | ПОВЕСТЬ До востребования ПРОЗА",
+      "hover": ".wk-rel__list a | До востребования",
       "irNodes": 379
     },
     {
@@ -147,14 +147,14 @@
       "route": "#/painting/iyul-levyj-bereg",
       "label": "Картина · Июль. Левый берег",
       "height": 3336,
-      "hover": "button | ",
+      "hover": "button | button",
       "irNodes": 258
     },
     {
       "route": "#/media",
       "label": "Фото и видео",
       "height": 2359,
-      "hover": ".acard | 6 Выставка «Степь и вода» Выст",
+      "hover": ".acard | Выставка «Степь и вода»",
       "irNodes": 253
     },
     {
@@ -168,7 +168,7 @@
       "route": "#/listen",
       "label": "Смотреть и слушать",
       "height": 2280,
-      "hover": ".vcard | 6:40 Чтение у реки Чтения · 8 ",
+      "hover": ".vcard | Чтение у реки",
       "irNodes": 268
     },
     {
@@ -182,14 +182,14 @@
       "route": "#/search?q=степь",
       "label": "Поиск: «степь»",
       "height": 4114,
-      "hover": ".res a | Проза 2025 Волгоград Одна лини",
+      "hover": ".res a | Одна линия",
       "irNodes": 526
     },
     {
       "route": "#/search?q=вогла",
       "label": "Поиск с опечаткой",
       "height": 4414,
-      "hover": ".res a | Проза 2022 Средняя Ахтуба До в",
+      "hover": ".res a | До востребования",
       "irNodes": 537
     },
     {
@@ -245,14 +245,14 @@
       "route": "#/albums",
       "label": "Альбомы гостей",
       "height": 2454,
-      "hover": ".acard | 3 Работа · 2024 2024 · Офис ГО",
+      "hover": ".acard | Работа · 2024",
       "irNodes": 204
     },
     {
       "route": "#/vault",
       "label": "Личный архив",
       "height": 2129,
-      "hover": ".sepia-media | ",
+      "hover": ".sepia-media | svg",
       "irNodes": 252
     }
   ]

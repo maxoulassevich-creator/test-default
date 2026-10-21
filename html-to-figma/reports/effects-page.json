@@ -11,34 +11,18 @@
     "irNodes": 58,
     "transformMismatches": 0,
     "prepShift": 0,
-    "ms_load": 351,
-    "ms_settleHover": 854,
-    "ms_capture": 229,
-    "ms_shot": 288,
-    "ms_finalize": 421
+    "ms_load": 356,
+    "ms_settleHover": 836,
+    "ms_capture": 123,
+    "ms_shot": 167,
+    "ms_finalize": 215
   },
   "verify": {
     "frames": 1,
     "texts": 20,
     "checkedNodes": 58,
     "positionIssues": [],
-    "textIssues": [
-      {
-        "route": "index.html",
-        "node": "Масштаб 1.5 — текст и радиусы масштабируются вме",
-        "problem": "шире исходного на 16.4 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "Когда-то давно, в маленьком доме у реки, жила ху",
-        "problem": "шире исходного на 32.8 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "Когда-то давно, в маленьком доме у реки, жила ху",
-        "problem": "шире исходного на 33.3 px (метрики шрифта в Figma)"
-      }
-    ],
+    "textIssues": [],
     "newOverlaps": [],
     "frameOverlaps": [],
     "ok": true,
@@ -54,8 +38,8 @@
       1549
     ],
     "sizeMatch": true,
-    "meanAbs": 1.083,
-    "changedRatio": 0.00816,
+    "meanAbs": 0.174,
+    "changedRatio": 0.00158,
     "scope": "Исходник в Chromium ↔ PNG, экспортированный из нативных нод Figma (exportAsync)"
   },
   "diagnostics": [
