@@ -70,3 +70,19 @@ export function storageHints(keys: string[], sources: string[]): StorageHint[] {
   }
   return out.sort((a, b) => Number(b.read) - Number(a.read) || a.key.localeCompare(b.key)).slice(0, 30);
 }
+
+/**
+ * Цель наведения из профиля проекта. Ключ — полный ключ маршрута, его часть после имени
+ * HTML-файла («#/albums», «?q=…») или имя файла страницы; значение — CSS-селектор или "none".
+ */
+export function hoverPreferFor(map: Record<string, string> | undefined, key: string): string | null {
+  if (!map) return null;
+  if (map[key] !== undefined) return map[key];
+  const hash = key.indexOf('#');
+  if (hash >= 0 && map[key.slice(hash)] !== undefined) return map[key.slice(hash)];
+  const file = key.split(/[?#]/)[0];
+  if (hash < 0 && map[file] !== undefined) return map[file];
+  // вход приложения без hash — то же, что «#/»
+  if (hash < 0 && !key.includes('?') && map['#/'] !== undefined) return map['#/'];
+  return null;
+}

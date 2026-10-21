@@ -1,6 +1,7 @@
 /* Общие помощники тестов: запуск обработчика, сборка ZIP фикстур, клиент API. */
 import fs from 'node:fs';
 import os from 'node:os';
+import http from 'node:http';
 import path from 'node:path';
 import { startProcessor } from '../../processor/src/main';
 import { createZip } from '../../processor/src/zip';
@@ -71,3 +72,22 @@ export function zipWithFonts(dir: string): Buffer {
 }
 
 export const TEST_PROFILE = { injectCss: ['fonts.css'], blockExternal: true };
+
+/** Простой статический сервер для сравнения с исходным HTML без процессора. */
+export function serveDir(dirs: string[]): Promise<{ origin: string; close: () => void }> {
+  return new Promise((res) => {
+    const s = http.createServer((q, r) => {
+      const p = decodeURIComponent(new URL(q.url!, 'http://x').pathname);
+      for (const d of dirs) {
+        const f = path.join(d, p);
+        if (f.startsWith(d) && fs.existsSync(f) && fs.statSync(f).isFile()) {
+          r.writeHead(200, { 'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.css') ? 'text/css' : 'application/octet-stream' });
+          fs.createReadStream(f).pipe(r);
+          return;
+        }
+      }
+      r.writeHead(404); r.end();
+    });
+    s.listen(0, '127.0.0.1', () => res({ origin: `http://127.0.0.1:${(s.address() as { port: number }).port}/`, close: () => s.close() }));
+  });
+}

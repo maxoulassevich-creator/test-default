@@ -1,0 +1,259 @@
+{
+  "scope": "Chromium (захват) + модель Figma API (сборка, проверка). Настоящая Figma не запускалась.",
+  "source": "blog-v1.html",
+  "profile": "lozovaya-v1: owner, ru; 1440 px; демо-панель исключена",
+  "seconds": {
+    "discover": 53.744,
+    "capture": 74.94,
+    "quick": false
+  },
+  "discovery": {
+    "index": 32,
+    "extraFound": 46,
+    "limited": 170
+  },
+  "build": {
+    "created": 32,
+    "replaced": 0,
+    "kept": 0,
+    "skipped": 0,
+    "texts": 3053,
+    "nodes": 8353,
+    "warnings": 0,
+    "set": "mvieoomdpu6x0"
+  },
+  "verify": {
+    "ok": false,
+    "frames": 32,
+    "checked": 8353,
+    "positionIssues": 0,
+    "textIssues": 200,
+    "overlaps": 0
+  },
+  "routes": [
+    {
+      "route": "#/",
+      "label": "Главная",
+      "height": 3510,
+      "hover": ".dir | I 3 произведения Проза Повести",
+      "irNodes": 302
+    },
+    {
+      "route": "#/about",
+      "label": "Об авторе",
+      "height": 2991,
+      "hover": null,
+      "irNodes": 323
+    },
+    {
+      "route": "#/art",
+      "label": "Моё искусство",
+      "height": 3067,
+      "hover": ".hub__works a | ЭССЕ Одна линия Одна линия",
+      "irNodes": 331
+    },
+    {
+      "route": "#/prose",
+      "label": "Проза",
+      "height": 2182,
+      "hover": null,
+      "irNodes": 205
+    },
+    {
+      "route": "#/prose/do-vostrebovaniya",
+      "label": "Произведение · Оглавление",
+      "height": 2728,
+      "hover": ".wk-rel__list a | СТИХОТВОРЕНИЕ Письмо СТИХОТВОР",
+      "irNodes": 296
+    },
+    {
+      "route": "#/prose/do-vostrebovaniya/1",
+      "label": "Глава · Шесть сорок",
+      "height": 2542,
+      "hover": null,
+      "irNodes": 233
+    },
+    {
+      "route": "#/poetry",
+      "label": "Поэзия",
+      "height": 3181,
+      "hover": ".po-entry a | После сезона Закрыты киоски. И",
+      "irNodes": 233
+    },
+    {
+      "route": "#/poetry/poezd-vdol-stepi",
+      "label": "Стихотворение · «Поезд вдоль степи»",
+      "height": 2656,
+      "hover": null,
+      "irNodes": 260
+    },
+    {
+      "route": "#/music",
+      "label": "Поэзия в музыке",
+      "height": 2129,
+      "hover": null,
+      "irNodes": 206
+    },
+    {
+      "route": "#/music/pereprava-pesnya",
+      "label": "Песня · Переправа",
+      "height": 2062,
+      "hover": null,
+      "irNodes": 267
+    },
+    {
+      "route": "#/plays",
+      "label": "Пьесы",
+      "height": 1394,
+      "hover": null,
+      "irNodes": 163
+    },
+    {
+      "route": "#/plays/zal-ozhidaniya",
+      "label": "Пьеса · О пьесе",
+      "height": 5722,
+      "hover": null,
+      "irNodes": 420
+    },
+    {
+      "route": "#/scripts",
+      "label": "Сценарии",
+      "height": 1395,
+      "hover": null,
+      "irNodes": 167
+    },
+    {
+      "route": "#/scripts/shest-sorok",
+      "label": "Сценарий · Логлайн",
+      "height": 8629,
+      "hover": ".wk-rel__list a | ПОВЕСТЬ До востребования ПРОЗА",
+      "irNodes": 379
+    },
+    {
+      "route": "#/painting",
+      "label": "Живопись",
+      "height": 3885,
+      "hover": ".pa-card a | Письмо до востребования 2026 ·",
+      "irNodes": 248
+    },
+    {
+      "route": "#/painting/series/step",
+      "label": "Серия · Степь и река",
+      "height": 2454,
+      "hover": ".pa-card a | Июль. Левый берег 2019 · Холст",
+      "irNodes": 191
+    },
+    {
+      "route": "#/painting/iyul-levyj-bereg",
+      "label": "Картина · Июль. Левый берег",
+      "height": 3336,
+      "hover": "button | ",
+      "irNodes": 258
+    },
+    {
+      "route": "#/media",
+      "label": "Фото и видео",
+      "height": 2359,
+      "hover": ".acard | 6 Выставка «Степь и вода» Выст",
+      "irNodes": 253
+    },
+    {
+      "route": "#/media/vystavka-step-i-voda",
+      "label": "Альбом · Выставка «Степь и вода»",
+      "height": 2148,
+      "hover": "button | Первый зал: степная серия",
+      "irNodes": 191
+    },
+    {
+      "route": "#/listen",
+      "label": "Смотреть и слушать",
+      "height": 2280,
+      "hover": ".vcard | 6:40 Чтение у реки Чтения · 8 ",
+      "irNodes": 268
+    },
+    {
+      "route": "#/archive",
+      "label": "Избранное и архив",
+      "height": 3562,
+      "hover": ".res a | Картина 2026 Волгоград Письмо ",
+      "irNodes": 376
+    },
+    {
+      "route": "#/search?q=степь",
+      "label": "Поиск: «степь»",
+      "height": 4114,
+      "hover": ".res a | Проза 2025 Волгоград Одна лини",
+      "irNodes": 526
+    },
+    {
+      "route": "#/search?q=вогла",
+      "label": "Поиск с опечаткой",
+      "height": 4414,
+      "hover": ".res a | Проза 2022 Средняя Ахтуба До в",
+      "irNodes": 537
+    },
+    {
+      "route": "#/guests",
+      "label": "Для гостей",
+      "height": 2023,
+      "hover": null,
+      "irNodes": 205
+    },
+    {
+      "route": "#/contacts",
+      "label": "Контакты",
+      "height": 2103,
+      "hover": null,
+      "irNodes": 219
+    },
+    {
+      "route": "#/login",
+      "label": "Вход по приглашению",
+      "height": 1481,
+      "hover": null,
+      "irNodes": 156
+    },
+    {
+      "route": "#/login?invite=1",
+      "label": "Активация приглашения",
+      "height": 1435,
+      "hover": null,
+      "irNodes": 151
+    },
+    {
+      "route": "#/login?mode=restore",
+      "label": "Восстановление пароля",
+      "height": 1334,
+      "hover": null,
+      "irNodes": 145
+    },
+    {
+      "route": "#/net-takoy-stranicy",
+      "label": "Страница 404",
+      "height": 1149,
+      "hover": null,
+      "irNodes": 142
+    },
+    {
+      "route": "#/blog",
+      "label": "Рабочий блог",
+      "height": 2462,
+      "hover": null,
+      "irNodes": 246
+    },
+    {
+      "route": "#/albums",
+      "label": "Альбомы гостей",
+      "height": 2454,
+      "hover": ".acard | 3 Работа · 2024 2024 · Офис ГО",
+      "irNodes": 204
+    },
+    {
+      "route": "#/vault",
+      "label": "Личный архив",
+      "height": 2129,
+      "hover": ".sepia-media | ",
+      "irNodes": 252
+    }
+  ]
+}

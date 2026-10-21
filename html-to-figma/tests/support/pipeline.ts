@@ -27,7 +27,7 @@ export const FIXTURE_FONTS: Array<{ family: string; style: string }> = [
 ];
 
 export async function analyzeZip(t: TP, zip: Buffer, name: string, options: Record<string, unknown> = {}) {
-  const up = await t.json('/api/jobs?options=' + encodeURIComponent(JSON.stringify(options)), { method: 'POST', body: zip, headers: { 'x-file-name': encodeURIComponent(name) } });
+  const up = await t.json('/api/jobs?options=' + encodeURIComponent(JSON.stringify(options)), { method: 'POST', body: new Uint8Array(zip), headers: { 'x-file-name': encodeURIComponent(name) } });
   const s = await t.waitJob(up.id, ['analyzing']);
   return { id: up.id as string, status: s };
 }
@@ -48,9 +48,20 @@ export async function testBrowser(): Promise<Browser> {
 }
 export async function closeTestBrowser() { await browser?.close(); browser = null; }
 
+let fontsCssCache = '';
+/**
+ * Тот же fonts.css, но файлы шрифтов встроены data-URL: страница из setContent (about:blank)
+ * не может загружать file://, и без этого измерения шли бы запасным шрифтом.
+ */
 export function fontsCss(): string {
-  return fs.readFileSync(path.join(BLOGS, 'fonts.css'), 'utf8').replace(/url\("Fonts\//g, `url("file://${path.join(BLOGS, 'Fonts')}/`);
+  if (!fontsCssCache) {
+    fontsCssCache = fs.readFileSync(path.join(BLOGS, 'fonts.css'), 'utf8').replace(/url\("Fonts\/([^"]+)"\)/g, (_m, f: string) => `url("data:font/ttf;base64,${fs.readFileSync(path.join(BLOGS, 'Fonts', f)).toString('base64')}")`);
+  }
+  return fontsCssCache;
 }
+
+/** Принудительная загрузка всех @font-face страницы (document.fonts.ready не загружает неиспользованные). */
+const loadAllFonts = () => Promise.all(Array.from(document.fonts).map((f) => f.load().catch(() => null))).then((l) => l.filter((f) => f && f.status === 'loaded').length);
 
 const lineKey = (items: Array<{ ch: string; size: number; font: string; ls: number }>) => items.map((i) => `${i.ch}\u0001${+i.size.toFixed(4)}\u0001${i.font}\u0001${+i.ls.toFixed(4)}`).join('\u0002');
 
@@ -76,6 +87,8 @@ export async function measureLines(snaps: RouteSnapshot[], figmaFont: (reqKey: s
   const b = await testBrowser();
   const page = await b.newPage();
   await page.setContent(`<html><head><style>${fontsCss()}</style></head><body></body></html>`);
+  const loaded = await page.evaluate(loadAllFonts);
+  if (loaded < 10) throw new Error('шрифты для измерения не загрузились: ' + loaded);
   const entries = [...lines.entries()].map(([k, items]) => ({ k, items: items.map((i) => ({ ...i, ...fontOf(i.font) })) }));
   const res = await page.evaluate(async (entries) => {
     await document.fonts.ready;
@@ -221,6 +234,7 @@ export async function renderHtml(html: string, width: number, height: number): P
   const b = await testBrowser();
   const page = await b.newPage({ viewport: { width: Math.ceil(width), height: Math.min(16000, Math.ceil(height)) } });
   await page.setContent(html.replace('<!--FONTS-->', `<style>${fontsCss()}</style>`), { waitUntil: 'load' });
+  await page.evaluate(loadAllFonts);
   await page.evaluate(() => document.fonts.ready);
   const png = await page.screenshot({ fullPage: true, clip: { x: 0, y: 0, width: Math.ceil(width), height: Math.ceil(height) } });
   await page.close();

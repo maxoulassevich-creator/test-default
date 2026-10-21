@@ -661,7 +661,9 @@
     const results = reqs.map((r) => {
       const sub = substitutions[r.key];
       const m = matchFigmaFont(sub ? { ...r, family: sub, fileFamily: void 0 } : r, lite, variable);
-      return { key: r.key, family: r.family, weight: r.weight, italic: r.italic, found: m.font ? { family: m.font.family, style: m.font.style, wght: m.variation } : null, note: sub ? `замена пользователем: ${sub}` + (m.note ? "; " + m.note : "") : m.note };
+      const synth = r.synthetic?.length ? `в браузере — искусственное ${r.synthetic.map((x) => x === "bold" ? "утолщение" : "наклон").join(" и ")} (нет такого начертания); в Figma — без него` : "";
+      const note = [sub ? `замена пользователем: ${sub}` : "", m.note ?? "", synth].filter(Boolean).join("; ") || void 0;
+      return { key: r.key, family: r.family, weight: r.weight, italic: r.italic, found: m.font ? { family: m.font.family, style: m.font.style, wght: m.variation } : null, note };
     });
     return { results, families: fams.sort() };
   }

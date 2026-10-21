@@ -18,8 +18,9 @@ export async function startProcessor(opts: { port?: number; dataDir?: string; qu
   const here = typeof __dirname !== 'undefined' ? __dirname : process.cwd();
   const profileDirs = opts.profilesDirs ?? [path.join(here, '..', 'profiles'), path.join(here, 'profiles'), path.join(cfg.dataDir, 'profiles')];
   const jobs = new JobManager(cfg, site, profileDirs);
-  const webDir = opts.webDir ?? [path.join(here, '..', 'web'), path.join(here, 'web')].find((d) => fs.existsSync(path.join(d, 'index.html'))) ?? here;
-  const server = createServer({ cfg, jobs, webDir: fs.existsSync(path.join(webDir, 'web.js')) ? webDir : here });
+  // страница резервного режима: index.html + web.js в одной папке (сборка кладёт их рядом с processor.cjs)
+  const webDir = opts.webDir ?? [here, path.join(here, 'web'), path.join(here, '..', 'dist')].find((d) => fs.existsSync(path.join(d, 'index.html')) && fs.existsSync(path.join(d, 'web.js'))) ?? here;
+  const server = createServer({ cfg, jobs, webDir });
   await new Promise<void>((resolve, reject) => {
     server.once('error', (e: NodeJS.ErrnoException) => {
       if (e.code === 'EADDRINUSE') reject(Object.assign(new Error(`Порт ${cfg.port} уже занят — возможно, обработчик уже запущен в другом окне.`), { code: 'EADDRINUSE' }));

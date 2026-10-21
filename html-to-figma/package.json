@@ -11,9 +11,11 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "typecheck": "tsc -p tsconfig.dom.json && tsc -p tsconfig.node.json && tsc -p tsconfig.plugin.json",
-    "test": "node scripts/build.mjs --tests && node --test --test-concurrency=1 build/tests/unit/",
-    "test:integration": "node scripts/build.mjs --tests && node --test --test-concurrency=1 build/tests/integration/",
-    "start": "node processor/dist/processor.cjs"
+    "test": "node scripts/build.mjs --tests && node --test --test-concurrency=1 build/tests/unit/*.test.cjs",
+    "test:integration": "node scripts/build.mjs --tests && node --test --test-concurrency=1 --test-timeout=900000 build/tests/integration/*.test.cjs",
+    "start": "node processor/dist/processor.cjs",
+    "package": "node scripts/package.mjs",
+    "test:all": "npm run typecheck && npm test && node --test --test-concurrency=1 --test-timeout=2700000 build/tests/integration/*.test.cjs"
   },
   "dependencies": {
     "playwright-core": "1.56.1"

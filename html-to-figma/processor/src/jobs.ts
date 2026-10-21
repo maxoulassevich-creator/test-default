@@ -15,7 +15,7 @@ import { AssetStore } from './assets';
 import { call, capturePage, getBrowser, inject, newContext, waitAfterNavigation } from './browser';
 import type { Config } from './config';
 import { finalizeRoute } from './finalize';
-import { loadAdapters, matchAdapter, storageHints, type Adapter, type StorageHint } from './profiles';
+import { hoverPreferFor, loadAdapters, matchAdapter, storageHints, type Adapter, type StorageHint } from './profiles';
 import { Renderer } from './render';
 import type { SiteServer } from './site';
 import { extractZip, ZipError } from './zip';
@@ -282,6 +282,7 @@ export class Job {
     let probeFp: string | null = null;
     let codeAdded = false;
     let selectorMode = false;
+    const indexKeys = new Set<string>();
     let processed = 0;
     const active = new Set<Promise<void>>();
     const okCount = () => [...routes.values()].filter((r) => r.status === 'ok').length;
@@ -311,6 +312,10 @@ export class Job {
         // «· пьеса» из вложенного пункта меню + заголовок страницы → «Пьеса · Зал ожидания»
         const kind = info.label.replace(/^[·•–—-]\s*/, '');
         info.label = (kind.charAt(0).toUpperCase() + kind.slice(1)) + ' · ' + r.fp.heading;
+      } else if (r.fp.heading && info.label !== r.fp.heading) {
+        // текст ссылки-карточки целиком или короткая метка («EN», «2») — по заголовку страницы
+        if (info.label.length > 40) info.label = r.fp.heading;
+        else if (info.label.length <= 3 || /^\d+$/.test(info.label)) info.label = r.fp.heading + ' · ' + info.label;
       }
       const finalKey = routeKey(r.finalUrl, base);
       if (finalKey !== it.key) {
@@ -331,9 +336,12 @@ export class Job {
       const fromSelector = !!r.selected && r.selected.length > 0;
       if (r.selected && !r.selected.length) this.diag({ level: 'warn', code: 'route-selector', message: `Указатель страниц профиля «${this.routeSelector}» не найден — используется обычный обход` });
       if (fromSelector) selectorMode = true;
-      const list = fromSelector ? r.selected! : selectorMode || it.depth >= maxDepth ? [] : r.links;
+      // указатель профиля задаёт страницы «по умолчанию», но обход не ограничивается им:
+      // ссылки самих страниц продолжают проверяться до пределов глубины/числа/времени
+      const list = [...(fromSelector ? r.selected! : []), ...(it.depth >= maxDepth ? [] : r.links)];
       for (const l of list) {
         const c = classifyHref(l.href, r.finalUrl, base, ids, { download: (l as { download?: boolean }).download });
+        if (fromSelector && r.selected!.includes(l) && c.key) indexKeys.add(c.key);
         if (c.kind === 'hash-route' || c.kind === 'page') push({ key: c.key!, url: c.url!, depth: it.depth + 1, source: 'link' }, l.text);
         else if (c.kind === 'hash-candidate') push({ key: c.key!, url: c.url!, depth: it.depth + 1, source: 'link', parentFp: r.fp.fp }, l.text);
         else if (c.kind === 'anchor' && !routes.has(c.key!) && !seen.has(c.key!)) { seen.add(c.key!); routes.set(c.key!, { key: c.key!, url: c.key!, label: l.text, title: '', group: routeGroup(it.key), depth: it.depth + 1, source: 'link', status: 'anchor', reason: c.reason }); }
@@ -369,8 +377,14 @@ export class Job {
       first = false;
     }
     // порядок: как обнаружены; дубликаты и якоря после основных
-    const order = (r: RouteInfo) => (r.status === 'ok' ? 0 : r.status === 'duplicate' ? 1 : r.status === 'anchor' ? 2 : 3);
     const discovered = [...routes.values()];
+    if (selectorMode) {
+      for (const r of discovered) {
+        r.suggested = r.source === 'entry' || r.source === 'manual' || indexKeys.has(r.key);
+        if (!r.suggested && r.status === 'ok') r.reason = r.reason ?? 'найдена обходом вне указателя страниц профиля';
+      }
+    }
+    const order = (r: RouteInfo) => (r.status === 'ok' ? (r.suggested === false ? 1 : 0) : r.status === 'duplicate' ? 2 : r.status === 'anchor' ? 3 : 4);
     const idx = new Map(discovered.map((r, i) => [r.key, i]));
     this.routes = discovered.sort((a, b) => order(a) - order(b) || idx.get(a.key)! - idx.get(b.key)!);
     for (const r of this.routes) r.depth = r.depth ?? routeDepth(r.key);
@@ -445,12 +459,13 @@ export class Job {
       let hover: HoverInfo = { active: false, reason: 'Наведение отключено в настройках', candidates: [] };
       if (this.profile.hover && hoverChoice !== 'none') {
         const cands = await call<Array<{ index: number; selector: string; label: string; score: number; box: [number, number, number, number] }>>(page, apiKey, 'hoverCandidates', this.profile.exclude);
-        const prefer = this.profile.hoverPrefer?.[key];
+        const prefer = hoverPreferFor(this.profile.hoverPrefer, key);
         let pick: number | null = typeof hoverChoice === 'number' ? hoverChoice : cands.length && cands[0].score >= 0.5 ? 0 : null;
         let selector: string | null = null;
-        if (hoverChoice === 'auto' && prefer) selector = prefer;
+        if (hoverChoice === 'auto' && prefer) { if (prefer === 'none') pick = null; else selector = prefer; }
         if (pick !== null && !cands[pick]) pick = null;
-        if (pick === null && !selector) hover = { active: false, reason: cands.length ? 'Подходящая карточка не выбрана (эффект слабый)' : 'На странице нет элементов с эффектом наведения', candidates: cands };
+        if (hoverChoice === 'auto' && prefer === 'none') hover = { active: false, reason: 'Профиль проекта: страница без позы наведения', candidates: cands };
+        else if (pick === null && !selector) hover = { active: false, reason: cands.length ? 'Подходящая карточка не выбрана (эффект слабый)' : 'На странице нет элементов с эффектом наведения', candidates: cands };
         else {
           const pin = await call<{ hit: string; point: [number, number]; label: string } | null>(page, apiKey, 'pin', pick, selector);
           if (pin) {

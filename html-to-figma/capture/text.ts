@@ -140,7 +140,19 @@ function covers(fam: string, weight: number, italic: boolean, ch: string): boole
 }
 
 const fontUseCache = new Map<string, FontUse>();
-export const genericMarks = new Map<Element, { generic: string; chars: Set<string> }>();
+/**
+ * Элементы, где текст отрисован не веб-шрифтом: универсальное семейство (serif, …) или
+ * системный шрифт по имени. Обработчик уточняет через CDP, какой шрифт и какое начертание
+ * браузер реально использовал (имя может быть псевдонимом: «Times New Roman» → Liberation Serif).
+ */
+export const genericMarks = new Map<Element, { generic?: string; system: Set<string>; chars: Set<string> }>();
+function markEl(el: Element, ch: string, generic: string | undefined, systemKey: string | undefined) {
+  const m = genericMarks.get(el) ?? { system: new Set<string>(), chars: new Set<string>() };
+  if (generic) m.generic = generic;
+  if (systemKey) m.system.add(systemKey);
+  if (!/^\s$/.test(ch)) m.chars.add(ch);
+  genericMarks.set(el, m);
+}
 
 /** Все использованные на странице сочетания шрифтов (для списка требований). */
 export function allFontUses(): FontUse[] { return [...fontUseCache.values()]; }
@@ -173,13 +185,12 @@ export function resolveFont(st: TextStyleInfo, ch: string): FontUse {
     const key = `${chosen}|${weight}|${italic ? 'i' : 'n'}`;
     let fu = fontUseCache.get(key);
     if (!fu) { fu = { key, family: chosen, weight, italic, source, variable, synthetic: synthetic.length ? synthetic : undefined }; fontUseCache.set(key, fu); }
+    if (source === 'system') markEl(st.el, ch, undefined, key);
     return fu;
   }
   // универсальное семейство: имя системного шрифта уточнит обработчик через CDP
   const key = `@${generic}|${st.weight}|${st.italic ? 'i' : 'n'}`;
-  const mark = genericMarks.get(st.el) ?? { generic: generic!, chars: new Set<string>() };
-  if (!isSpace) mark.chars.add(ch);
-  genericMarks.set(st.el, mark);
+  markEl(st.el, ch, generic, undefined);
   let fu = fontUseCache.get(key);
   if (!fu) { fu = { key, family: '', generic, weight: st.weight, italic: st.italic, source: 'generic' }; fontUseCache.set(key, fu); }
   return fu;

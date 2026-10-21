@@ -6,32 +6,12 @@
  */
 import { after, before, test } from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import http from 'node:http';
 import path from 'node:path';
 import { DEFAULT_PROFILE, type FrameIR, type NodeIR } from '../../shared/schema';
 import { rewriteHoverSelector } from '../../capture/hover';
 import { call, getBrowser, inject, newContext } from '../../processor/src/browser';
-import { BLOGS, FIX, startTestProcessor, TEST_PROFILE, zipWithFonts } from '../support/env';
+import { BLOGS, FIX, serveDir, startTestProcessor, TEST_PROFILE, zipWithFonts } from '../support/env';
 import { analyzeZip, buildInMock, capture, closeTestBrowser, newMock, processorSource, verifyInMock, writeReport, type TP } from '../support/pipeline';
-
-export function serveDir(dirs: string[]): Promise<{ origin: string; close: () => void }> {
-  return new Promise((res) => {
-    const s = http.createServer((q, r) => {
-      const p = decodeURIComponent(new URL(q.url!, 'http://x').pathname);
-      for (const d of dirs) {
-        const f = path.join(d, p);
-        if (f.startsWith(d) && fs.existsSync(f) && fs.statSync(f).isFile()) {
-          r.writeHead(200, { 'content-type': f.endsWith('.html') ? 'text/html; charset=utf-8' : f.endsWith('.css') ? 'text/css' : 'application/octet-stream' });
-          fs.createReadStream(f).pipe(r);
-          return;
-        }
-      }
-      r.writeHead(404); r.end();
-    });
-    s.listen(0, '127.0.0.1', () => res({ origin: `http://127.0.0.1:${(s.address() as { port: number }).port}/`, close: () => s.close() }));
-  });
-}
 
 let t: TP;
 before(async () => { t = await startTestProcessor(); });

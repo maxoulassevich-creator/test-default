@@ -377,3 +377,23 @@ export const CSS_BLEND: Record<string, string> = {
   difference: 'DIFFERENCE', exclusion: 'EXCLUSION', hue: 'HUE', saturation: 'SATURATION', color: 'COLOR', luminosity: 'LUMINOSITY',
   'plus-lighter': 'LINEAR_DODGE', 'plus-darker': 'LINEAR_BURN',
 };
+
+/** clip-path: inset(t r b l [round r]) в px/% (вычисленное значение). */
+export function parseInset(v: string, w: number, h: number): { empty: boolean; zero: boolean; round: number } | null {
+  const m = /^inset\(([^)]*)\)$/.exec(v.trim());
+  if (!m || /calc|var|\//.test(m[1])) return null;
+  const [box, round] = m[1].split(/\s+round\s+/);
+  const parts = box.trim().split(/\s+/);
+  if (!parts.length || parts.length > 4) return null;
+  const val = (t: string, ref: number) => (t.endsWith('%') ? (parseFloat(t) / 100) * ref : t === '0' ? 0 : t.endsWith('px') ? parseFloat(t) : NaN);
+  const [t, r = t, b = t, l = r] = parts;
+  const top = val(t, h), right = val(r, w), bottom = val(b, h), left = val(l, w);
+  if (![top, right, bottom, left].every(Number.isFinite)) return null;
+  let rr = 0;
+  if (round) {
+    const rs = round.trim().split(/\s+/);
+    if (rs.length !== 1 || !rs[0].endsWith('px')) return null;
+    rr = parseFloat(rs[0]);
+  }
+  return { empty: w - left - right <= 0.01 || h - top - bottom <= 0.01, zero: Math.max(Math.abs(top), Math.abs(right), Math.abs(bottom), Math.abs(left)) < 0.01, round: rr };
+}

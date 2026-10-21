@@ -52,7 +52,7 @@ test('простая страница: анализ, захват, редакт�
   assert.ok(v.ok, 'проверка геометрии: ' + JSON.stringify({ pos: v.positionIssues.slice(0, 5), text: v.textIssues.slice(0, 5), ov: v.newOverlaps.slice(0, 5) }));
   // экспорт сцены модели → сравнение с исходником средствами обработчика
   const png = await (root as unknown as { exportAsync(): Promise<Uint8Array> }).exportAsync();
-  const cmp = await t.json(`/api/jobs/${id}/verify/${c.routes.find((x: { key: string }) => x.key === ok[0].key).fileId}`, { method: 'POST', body: png, headers: { 'content-type': 'image/png' } });
+  const cmp = await t.json(`/api/jobs/${id}/verify/${c.routes.find((x: { key: string }) => x.key === ok[0].key).fileId}`, { method: 'POST', body: new Uint8Array(png), headers: { 'content-type': 'image/png' } });
   if (process.env.H2F_DUMP) { fs.writeFileSync(path.join(process.env.H2F_DUMP, 'simple-figma.png'), png); fs.copyFileSync(path.join(t.dataDir, 'jobs', id, 'shots', c.routes.find((x: { key: string }) => x.key === ok[0].key).fileId + '.png'), path.join(process.env.H2F_DUMP, 'simple-src.png')); }
   writeReport('simple-page.json', { scope: 'Chromium + модель Figma API (не настоящая Figma)', snapshot: snap.stats, verify: v, compare: cmp, mockStats: mock.stats });
   assert.ok(cmp.sizeMatch, 'размер экспорта совпадает');

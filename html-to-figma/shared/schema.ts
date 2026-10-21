@@ -186,6 +186,9 @@ export interface HoverCandidate {
   label: string;
   score: number;
   box: [number, number, number, number];
+  /** число изменившихся пар «элемент × свойство» и сами свойства */
+  changes?: number;
+  props?: string[];
 }
 
 export interface HoverInfo {
@@ -237,6 +240,8 @@ export interface RouteInfo {
   height?: number;
   captured?: boolean;
   hoverCandidates?: number;
+  /** false — найдена обходом вне указателя страниц профиля: показывается, но не отмечается по умолчанию */
+  suggested?: boolean;
 }
 
 export interface CaptureProfile {

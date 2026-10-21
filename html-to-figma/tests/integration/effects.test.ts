@@ -105,6 +105,17 @@ test('SVG: глобальный градиент как вектор, аквар
   assert.equal(asset.mime, 'image/png', 'прозрачность сохранена (PNG)');
 });
 
+test('clip-path inset(): пустая область — скрытый редактируемый слой, inset(0 round) — обрезка без растра', () => {
+  const hidden = find((n) => (n.src ?? '').includes('div.reveal-hidden'))[0];
+  assert.ok(hidden && hidden.visible === false, 'скрыт: ' + JSON.stringify(hidden && { kind: hidden.kind, visible: hidden.visible }));
+  assert.ok(texts().some((x) => x.text.includes('Скрыт анимацией')), 'текст внутри сохранён редактируемым');
+  const round = find((n) => (n.src ?? '').includes('div.reveal-round'))[0] as FrameIR;
+  assert.equal(round.kind, 'frame');
+  assert.ok(round.clip, 'обрезка по рамке');
+  assert.deepEqual(round.radius, [14, 14, 14, 14]);
+  assert.ok(!round.tags?.includes('raster'), 'не растеризован');
+});
+
 test('текст: псевдоэлементы, буквица, маленькие подписи, uppercase, градиентный текст', () => {
   const ts = texts();
   const has = (s: string) => ts.find((x) => x.text.includes(s));
@@ -128,7 +139,7 @@ test('модель Figma: сборка без ошибок API, геометри
   assert.ok(v.ok, JSON.stringify({ p: v.positionIssues.slice(0, 5), o: v.newOverlaps.slice(0, 5), t: v.textIssues.slice(0, 3) }));
   const png = await (mock.roots()[0] as unknown as { exportAsync(): Promise<Uint8Array> }).exportAsync();
   const st = await t.json(`/api/jobs/${id}`);
-  const cmp = await t.json(`/api/jobs/${id}/verify/${st.routes.find((x: { key: string }) => x.key === 'index.html').fileId}`, { method: 'POST', body: png, headers: { 'content-type': 'image/png' } });
+  const cmp = await t.json(`/api/jobs/${id}/verify/${st.routes.find((x: { key: string }) => x.key === 'index.html').fileId}`, { method: 'POST', body: new Uint8Array(png), headers: { 'content-type': 'image/png' } });
   if (process.env.H2F_DUMP) { const fs = await import('node:fs'); fs.writeFileSync(path.join(process.env.H2F_DUMP, 'effects-figma.png'), png); fs.copyFileSync(path.join(t.dataDir, 'jobs', id, 'shots', st.routes.find((x: { key: string }) => x.key === 'index.html').fileId + '.png'), path.join(process.env.H2F_DUMP, 'effects-src.png')); }
   writeReport('effects-page.json', { scope: 'Chromium + модель Figma API (не настоящая Figma)', stats: snap.stats, verify: v, compare: cmp, diagnostics: snap.diagnostics.map((d) => d.code + ': ' + d.message) });
   assert.ok(cmp.meanAbs < 6, 'средняя разница ' + cmp.meanAbs);

@@ -37,6 +37,7 @@ fs.copyFileSync(r('plugin/manifest.json'), r('plugin/dist/manifest.json'));
 
 // 5. веб-страница обработчика (резервный режим) использует тот же UI-бандл в режиме браузера
 await build({ ...common, entryPoints: [r('processor/web/web.ts')], outfile: r('processor/dist/web.js'), platform: 'browser', target: 'chrome100', format: 'iife', minify: !args.has('--dev') });
+fs.copyFileSync(r('processor/web/index.html'), r('processor/dist/index.html'));
 
 // 6. тесты
 if (args.has('--tests')) {

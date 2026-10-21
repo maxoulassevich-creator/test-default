@@ -131,7 +131,10 @@ async function checkFonts(reqs: Parameters<typeof matchFigmaFont>[0][], substitu
   const results: FontCheckResult[] = reqs.map((r) => {
     const sub = substitutions[r.key];
     const m = matchFigmaFont(sub ? { ...r, family: sub, fileFamily: undefined } : r, lite, variable);
-    return { key: r.key, family: r.family, weight: r.weight, italic: r.italic, found: m.font ? { family: m.font.family, style: m.font.style, wght: m.variation } : null, note: sub ? `замена пользователем: ${sub}` + (m.note ? '; ' + m.note : '') : m.note };
+    // браузер утолщал/наклонял глифы искусственно (нет такого начертания) — в Figma этого нет
+    const synth = (r as { synthetic?: string[] }).synthetic?.length ? `в браузере — искусственное ${(r as { synthetic?: string[] }).synthetic!.map((x) => (x === 'bold' ? 'утолщение' : 'наклон')).join(' и ')} (нет такого начертания); в Figma — без него` : '';
+    const note = [sub ? `замена пользователем: ${sub}` : '', m.note ?? '', synth].filter(Boolean).join('; ') || undefined;
+    return { key: r.key, family: r.family, weight: r.weight, italic: r.italic, found: m.font ? { family: m.font.family, style: m.font.style, wght: m.variation } : null, note };
   });
   return { results, families: fams.sort() };
 }

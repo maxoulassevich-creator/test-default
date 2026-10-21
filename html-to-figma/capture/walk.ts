@@ -12,7 +12,7 @@
  * и проверка: AABB(cum · box) должен совпасть с getBoundingClientRect фазы A.
  */
 import { parseColor } from '../shared/color';
-import { CSS_BLEND, isIdentityColorFilter, normalizeRadii, parseFilter, parseGradient, parseRadius, parseShadows, shadowsToEffects } from '../shared/css';
+import { CSS_BLEND, isIdentityColorFilter, normalizeRadii, parseFilter, parseGradient, parseInset, parseRadius, parseShadows, shadowsToEffects } from '../shared/css';
 import { aabb, composeCssTransform, IDENTITY, invert, multiply, translate } from '../shared/matrix';
 import type { BlendModeIR, Diagnostic, EffectIR, FrameIR, ImageIR, Mat, NodeIR, PaintIR, RGBA, ShapeIR, StrokeIR, SvgIR, TextIR } from '../shared/schema';
 import { HOVER_ATTR } from './hover';
@@ -666,7 +666,7 @@ function radii(s: StyleSnap, w: number, h: number, src: string): { r?: [number, 
   return { r: n.radii, ellipse: n.ellipse };
 }
 
-interface Visual { fills: PaintIR[]; under: ShapeIR[]; stroke?: StrokeIR; extra: ShapeIR[]; radius?: [number, number, number, number]; effects: EffectIR[]; ellipse: boolean; opacity?: number; blend?: BlendModeIR; rasterReasons: string[]; colorFilter?: string; textFills?: PaintIR[] }
+interface Visual { fills: PaintIR[]; under: ShapeIR[]; stroke?: StrokeIR; extra: ShapeIR[]; radius?: [number, number, number, number]; effects: EffectIR[]; ellipse: boolean; opacity?: number; blend?: BlendModeIR; rasterReasons: string[]; colorFilter?: string; textFills?: PaintIR[]; clipBox?: boolean; clipEmpty?: boolean }
 
 function visuals(rec: Rec, w: number, h: number): Visual {
   const s = rec.s;
@@ -715,8 +715,17 @@ function visuals(rec: Rec, w: number, h: number): Visual {
   if (bdf.color.length || bdf.other.length) diag('info', 'backdrop', 'backdrop-filter кроме blur() не переносится', src);
   if (s['clip-path'] && s['clip-path'] !== 'none') {
     const circle = /^circle\(50%( at 50% 50%)?\)$/.exec(s['clip-path']);
+    const inset = parseInset(s['clip-path'], w, h);
     if (circle && Math.abs(w - h) < 0.5) v.radius = [w / 2, w / 2, w / 2, w / 2];
-    else v.rasterReasons.push('clip-path: ' + s['clip-path'].slice(0, 60));
+    else if (inset?.empty) {
+      // inset() без площади (типичное начальное состояние анимации появления): в браузере
+      // элемент не виден — слой сохраняется скрытым и остаётся редактируемым
+      v.clipEmpty = true;
+      diag('info', 'clip-hidden', 'Элемент полностью скрыт clip-path: ' + s['clip-path'].slice(0, 60) + ' — перенесён скрытым слоем', src);
+    } else if (inset?.zero) {
+      v.clipBox = true;
+      if (inset.round && !v.radius) v.radius = [inset.round, inset.round, inset.round, inset.round];
+    } else v.rasterReasons.push('clip-path: ' + s['clip-path'].slice(0, 60));
   }
   const mask = s['mask-image'] !== 'none' && s['mask-image'] ? s['mask-image'] : s['-webkit-mask-image'] !== 'none' ? s['-webkit-mask-image'] : '';
   if (mask) v.rasterReasons.push('mask-image');
@@ -879,6 +888,7 @@ function buildIR(rec: Rec): NodeIR | null {
     id: nid(), src, m: rec.m, w, h, opacity: vis.opacity, blend: vis.blend,
     scroll: rec.fixed ? 'fixed' as const : rec.sticky ? 'sticky' as const : undefined,
     tags: rec.hoverCard ? ['hover-card'] : undefined,
+    visible: vis.clipEmpty ? false : undefined,
   };
   const name = rec.pseudo ? `::${rec.pseudo}` : nodeName(rec);
   const unsupported = [...vis.rasterReasons, ...(rec.tfUnsupported?.includes('perspective') ? ['перспектива'] : [])];
@@ -944,7 +954,7 @@ function buildIR(rec: Rec): NodeIR | null {
   items.sort((a, b) => a.key[0] - b.key[0] || a.key[1] - b.key[1] || a.key[2] - b.key[2]);
   for (const it of items) children.push(...it.make());
 
-  const clip = clipsContent(rec.s) || rec.replaced === 'INPUT' || rec.replaced === 'TEXTAREA' || rec.replaced === 'SELECT';
+  const clip = clipsContent(rec.s) || !!vis.clipBox || rec.replaced === 'INPUT' || rec.replaced === 'TEXTAREA' || rec.replaced === 'SELECT';
   if (clip && rec.el instanceof HTMLElement && (rec.el.scrollHeight > rec.el.clientHeight + 2 || rec.el.scrollWidth > rec.el.clientWidth + 2) && /auto|scroll/.test(rec.s['overflow-y'] + rec.s['overflow-x'])) {
     diag('info', 'inner-scroll', 'Внутренняя прокрутка перенесена как обрезанный контейнер в начальной позиции', src);
   }
@@ -1163,7 +1173,7 @@ export interface RawCapture {
   fixedCount: number;
   assets: Record<string, AssetRef>;
   fonts: Record<string, { family: string; generic?: string; weight: number; italic: boolean; source: string; variable?: boolean; synthetic?: string[]; chars: number; sample: string }>;
-  genericMarks: Array<{ mark: string; generic: string; chars: string }>;
+  genericMarks: Array<{ mark: string; generic?: string; system?: string[]; chars: string }>;
   diagnostics: Diagnostic[];
   stats: Record<string, number>;
   geometry: { maxShift: number; mismatches: Array<{ src: string; dx: number; dy: number; dw: number; dh: number }> };
@@ -1231,7 +1241,7 @@ export function finish(): RawCapture {
   for (const [el, m] of genericMarks) {
     const mark = 'g' + mi++;
     el.setAttribute('data-h2f-f', mark);
-    marks.push({ mark, generic: m.generic, chars: [...m.chars].join('') });
+    marks.push({ mark, generic: m.generic, system: m.system.size ? [...m.system] : undefined, chars: [...m.chars].join('') });
   }
   const assets: Record<string, AssetRef> = {};
   for (const [k, v] of S.assets) assets[k] = v;

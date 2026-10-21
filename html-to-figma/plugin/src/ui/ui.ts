@@ -108,7 +108,18 @@ async function checkConnection() {
   setConn('unknown', 'Проверяю обработчик…');
   S.proc.base = ($('procUrl') as HTMLInputElement).value.trim() || 'http://127.0.0.1:47821';
   try {
-    const h = await S.proc.health(true);
+    let h: Awaited<ReturnType<Processor['health']>>;
+    try { h = await S.proc.health(true); }
+    catch (e) {
+      // политика сети Figma может пропускать только «localhost» (так в документации manifest) —
+      // тот же обработчик пробуем по второму имени из manifest.json
+      const alt = /\/\/127\.0\.0\.1:/.test(S.proc.base) ? S.proc.base.replace('//127.0.0.1:', '//localhost:') : '';
+      if (!(e instanceof ApiError && e.kind === 'offline') || !alt) throw e;
+      const prev = S.proc.base;
+      S.proc.base = alt;
+      try { h = await S.proc.health(true); ($('procUrl') as HTMLInputElement).value = alt; await storageSet('processorUrl', alt); }
+      catch { S.proc.base = prev; throw e; }
+    }
     if (h.protocol !== 1) throw new ApiError(`Версия обработчика ${h.version} несовместима (протокол ${h.protocol}).`, 'Установите плагин и обработчик из одного архива.', 409, 'protocol');
     if (!h.paired) {
       setConn('warn', 'Обработчик найден — нужен код подключения');
@@ -141,6 +152,7 @@ async function checkConnection() {
 async function pair() {
   try {
     const t = await S.proc.pair((($('pairCode') as HTMLInputElement).value || '').trim());
+    show($('errorBox'), false);
     await storageSet('token', t);
     await storageSet('processorUrl', S.proc.base);
     toCode({ type: 'notify', text: 'Обработчик подключён' });
@@ -187,7 +199,7 @@ async function analyze(reuse = false) {
     S.capturedWith = '';
     await poll(['analyzing']);
     if (S.status?.state === 'ready') {
-      for (const r of S.status.routes) if (r.status === 'ok') S.selected.add(r.key);
+      for (const r of S.status.routes) if (r.status === 'ok' && r.suggested !== false) S.selected.add(r.key);
       renderAll();
     }
   } catch (e) { showError($('errorBox'), e); }
@@ -224,7 +236,7 @@ function applySaved(p: Record<string, unknown>) {
 // ---------- отрисовка ----------
 function statusTag(r: RouteInfo) {
   const map: Record<string, [string, string]> = { ok: ['', ''], duplicate: ['дубликат', 'warn'], anchor: ['якорь', ''], excluded: ['исключено', ''], error: ['ошибка', 'bad'], limit: ['лимит', 'warn'] };
-  const [t, k] = map[r.status] ?? [r.status, ''];
+  const [t, k] = r.status === 'ok' && r.suggested === false ? ['вне указателя', ''] : map[r.status] ?? [r.status, ''];
   return t ? `<span class="tag tag--${k}">${t}</span>` : '';
 }
 
@@ -232,7 +244,8 @@ function renderPages() {
   const s = S.status!;
   const all = ($('showAll') as HTMLInputElement).checked;
   const ok = s.routes.filter((r) => r.status === 'ok');
-  $('pagesCount').textContent = `найдено ${ok.length}${s.routes.length > ok.length ? `, ещё ${s.routes.length - ok.length} исключено/дубликаты` : ''} · выбрано ${S.selected.size}`;
+  const extra = ok.filter((r) => r.suggested === false).length;
+  $('pagesCount').textContent = `найдено ${ok.length}${extra ? ` (из них ${extra} вне указателя профиля)` : ''}${s.routes.length > ok.length ? `, ещё ${s.routes.length - ok.length} исключено/дубликаты` : ''} · выбрано ${S.selected.size}`;
   const ul = $('pages');
   ul.innerHTML = '';
   for (const r of s.routes) {

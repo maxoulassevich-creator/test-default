@@ -9,59 +9,18 @@
     "irNodes": 19,
     "transformMismatches": 0,
     "prepShift": 0,
-    "ms_load": 355,
-    "ms_settleHover": 755,
-    "ms_capture": 163,
-    "ms_shot": 142,
-    "ms_finalize": 14
+    "ms_load": 350,
+    "ms_settleHover": 736,
+    "ms_capture": 101,
+    "ms_shot": 90,
+    "ms_finalize": 7
   },
   "verify": {
     "frames": 1,
     "texts": 10,
     "checkedNodes": 19,
     "positionIssues": [],
-    "textIssues": [
-      {
-        "route": "index.html",
-        "node": "Мастерская",
-        "problem": "шире исходного на 21.3 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "О насРаботыКонтакты",
-        "problem": "шире исходного на 7.4 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "О насРаботыКонтакты",
-        "problem": "шире исходного на 6.8 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "О насРаботыКонтакты",
-        "problem": "шире исходного на 6.9 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "Добрый день, читатель",
-        "problem": "шире исходного на 103.3 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "Это простая страница для проверки переноса: текс",
-        "problem": "шире исходного на 195.9 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "Читать дальше",
-        "problem": "шире исходного на 19.7 px (метрики шрифта в Figma)"
-      },
-      {
-        "route": "index.html",
-        "node": "© 2026 Мастерская",
-        "problem": "шире исходного на 21.6 px (метрики шрифта в Figma)"
-      }
-    ],
+    "textIssues": [],
     "newOverlaps": [],
     "frameOverlaps": [],
     "ok": true,
@@ -77,8 +36,8 @@
       1000
     ],
     "sizeMatch": true,
-    "meanAbs": 1.647,
-    "changedRatio": 0.01187,
+    "meanAbs": 0.361,
+    "changedRatio": 0.00334,
     "scope": "Исходник в Chromium ↔ PNG, экспортированный из нативных нод Figma (exportAsync)"
   },
   "mockStats": {

@@ -149,23 +149,40 @@ function findHover(sel: string): number {
 }
 
 const DIFF_PROPS = ['transform', 'translate', 'rotate', 'scale', 'opacity', 'width', 'height', 'background-color', 'background-image', 'box-shadow', 'filter', 'color', 'visibility', 'border-top-color', 'outline-color', 'text-decoration-line', 'text-decoration-color', 'max-height', 'clip-path', 'display', 'left', 'top'];
+/** Изменения «позы» (геометрия, тень, раскрытие, фильтр изображения) весомее смены цвета. */
+const POSE_PROPS = new Set(['transform', 'translate', 'rotate', 'scale', 'opacity', 'width', 'height', 'box-shadow', 'filter', 'visibility', 'max-height', 'clip-path', 'display', 'left', 'top']);
 
-function snapSubtree(root: Element): string[] {
-  const out: string[] = [];
+function snapSubtree(root: Element): string[][] {
+  const out: string[][] = [];
   const els = [root, ...Array.from(root.querySelectorAll('*'))];
   for (const e of els) {
     for (const pseudo of ['', '::before', '::after']) {
       const cs = getComputedStyle(e, pseudo || null);
-      if (pseudo && cs.content === 'none') { out.push(''); continue; }
-      out.push(DIFF_PROPS.map((p) => cs.getPropertyValue(p)).join('|'));
+      if (pseudo && cs.content === 'none') { out.push([]); continue; }
+      out.push(DIFF_PROPS.map((p) => cs.getPropertyValue(p)));
     }
   }
   return out;
 }
 
-export interface HoverCandidateRaw { index: number; el: Element; selector: string; label: string; score: number; box: [number, number, number, number]; changes: number }
+/** Число изменившихся (элемент × свойство) и набор изменившихся свойств. */
+function diffSnaps(a: string[][], b: string[][]): { pose: number; minor: number; props: string[] } {
+  let pose = 0, minor = 0;
+  const props = new Set<string>();
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    if (a[i].length !== b[i].length) { pose++; props.add('content'); continue; }
+    for (let j = 0; j < a[i].length; j++) {
+      if (a[i][j] === b[i][j]) continue;
+      props.add(DIFF_PROPS[j]);
+      if (POSE_PROPS.has(DIFF_PROPS[j])) pose++; else minor++;
+    }
+  }
+  return { pose, minor, props: [...props] };
+}
 
-function labelOf(el: Element): string {
+export interface HoverCandidateRaw { index: number; el: Element; selector: string; label: string; score: number; box: [number, number, number, number]; changes: number; props: string[] }
+
+export function labelOf(el: Element): string {
   const h = el.querySelector('h1,h2,h3,h4,h5,h6,[class*="title"]');
   const t = (h?.textContent || (el as HTMLElement).innerText || el.textContent || '').replace(/\s+/g, ' ').trim();
   return t.slice(0, 80) || el.tagName.toLowerCase();
@@ -208,38 +225,85 @@ export function findHoverCandidates(isExcluded: (e: Element) => boolean, limit =
       if (r.width < 80 || r.height < 40 || r.width > vw * 0.95) continue;
       const cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || parseFloat(cs.opacity) === 0 || (el as HTMLButtonElement).disabled) continue;
-      const key = sel + '§' + pid(el.parentElement);
+      const key = sel + '§' + pid(listContainer(el, sel));
       const g = groups.get(key) ?? { sel, els: [] };
       if (!g.els.includes(el)) g.els.push(el);
       groups.set(key, g);
     }
   }
   const out: HoverCandidateRaw[] = [];
-  for (const g of groups.values()) {
-    const el = g.els[0];
-    // проверка эффекта: закрепляем на элементе и его предках
-    const before = snapSubtree(el);
-    const rb = el.getBoundingClientRect();
-    markChain(el);
-    const after = snapSubtree(el);
-    const ra = el.getBoundingClientRect();
-    clearHoverMarks();
-    let changes = 0;
-    for (let i = 0; i < before.length; i++) if (before[i] !== after[i]) changes++;
-    if (Math.abs(rb.width - ra.width) > 0.5 || Math.abs(rb.height - ra.height) > 0.5) changes += 2;
-    if (!changes) continue;
-    const r = el.getBoundingClientRect();
-    const area = (r.width * r.height) / (innerWidth * innerHeight);
-    const chrome = inChrome(el);
-    const repeated = g.els.length >= 2;
-    const hasMedia = !!el.querySelector('svg, img, picture, canvas, [style*="background"]');
-    const top = r.top + scrollY;
-    let score = Math.log2(1 + changes) * (repeated ? 2 : 1) * (hasMedia ? 1.4 : 1) * (chrome ? 0.15 : 1) * Math.min(1.5, 0.4 + area * 6) / (1 + top / 4000);
-    if (r.width < 140 || r.height < 70) score *= 0.5;
-    out.push({ index: 0, el, selector: g.sel, label: labelOf(el), score, box: [r.left + scrollX, top, r.width, r.height], changes });
+  const alts: HoverCandidateRaw[] = [];
+  // на время оценки переходы выключены: иначе getComputedStyle сразу после закрепления
+  // возвращает начальное значение transition и эффект наведения «не виден»
+  const freeze = document.createElement('style');
+  freeze.textContent = '*,*::before,*::after{transition:none!important}';
+  document.documentElement.appendChild(freeze);
+  try {
+    for (const g of groups.values()) {
+      const el = g.els[0];
+      // проверка эффекта: закрепляем на элементе и его предках
+      const before = snapSubtree(el);
+      const rb = el.getBoundingClientRect();
+      markChain(el);
+      const after = snapSubtree(el);
+      const ra = el.getBoundingClientRect();
+      clearHoverMarks();
+      const d = diffSnaps(before, after);
+      const resized = Math.abs(rb.width - ra.width) > 0.5 || Math.abs(rb.height - ra.height) > 0.5;
+      if (resized) d.pose += 2;
+      const changes = d.pose + d.minor;
+      if (!changes) continue;
+      const r = el.getBoundingClientRect();
+      const area = (r.width * r.height) / (innerWidth * innerHeight);
+      const chrome = inChrome(el);
+      const repeated = g.els.length >= 2;
+      const hasMedia = !!el.querySelector('svg, img, picture, canvas, [style*="background"]') || /^(IMG|SVG|PICTURE|CANVAS)$/i.test(el.tagName);
+      const top = r.top + scrollY;
+      // вес — по разнообразию изменившихся свойств, а не по числу элементов (унаследованный
+      // цвет в большой SVG-иллюстрации не должен перевешивать); смена только цвета или
+      // подчёркивания — обычная реакция ссылки/кнопки, а не поза карточки
+      const poseProps = d.props.filter((x) => POSE_PROPS.has(x)).length + (resized ? 1 : 0);
+      const weight = poseProps * 2 + Math.log2(1 + d.pose) + (d.props.length - poseProps) * 0.5;
+      let score = Math.log2(1 + weight) * (repeated ? 2 : 1) * (hasMedia ? 1.4 : 1) * (chrome ? 0.15 : 1) * Math.min(1.5, 0.4 + area * 6) / (1 + top / 4000);
+      if (!d.pose) score *= 0.35;
+      if (r.width < 140 || r.height < 70) score *= 0.5;
+      out.push({ index: 0, el, selector: g.sel, label: labelOf(el), score, box: [r.left + scrollX, top, r.width, r.height], changes, props: d.props });
+      // соседние карточки той же группы — альтернативы для ручного выбора (эффект тот же)
+      for (const [i, alt] of g.els.slice(1, 4).entries()) {
+        const ar = alt.getBoundingClientRect();
+        alts.push({ index: 0, el: alt, selector: g.sel, label: labelOf(alt), score: score * 0.5 * 0.9 ** i, box: [ar.left + scrollX, ar.top + scrollY, ar.width, ar.height], changes, props: d.props });
+      }
+    }
+  } finally {
+    freeze.remove();
+    void document.documentElement.offsetHeight;
   }
-  out.sort((a, b) => b.score - a.score);
-  return out.slice(0, limit).map((c, i) => ({ ...c, index: i }));
+  // вложенные цели: картинка внутри ссылки/кнопки-карточки наводится вместе с ней —
+  // остаётся внешний интерактивный элемент с лучшей из оценок
+  for (const c of out) {
+    const host = out.find((o) => o !== c && o.score >= 0 && o.el.contains(c.el) && isInteractive(o.el));
+    if (host) { host.score = Math.max(host.score, c.score); c.score = -1; }
+  }
+  const kept = out.filter((c) => c.score >= 0);
+  kept.sort((a, b) => b.score - a.score);
+  const top = new Set(kept.slice(0, 3).map((c) => c.selector + '§' + pid(listContainer(c.el, c.selector))));
+  kept.push(...alts.filter((a) => top.has(a.selector + '§' + pid(listContainer(a.el, a.selector))) && !kept.some((k) => k.el === a.el || k.el.contains(a.el))));
+  return kept.slice(0, limit).map((c, i) => ({ ...c, index: i }));
+}
+
+/**
+ * Контейнер списка карточек: ближайший предок, содержащий ещё хотя бы один элемент того же
+ * селектора (карточки, обёрнутые каждая в свой li/div, попадают в одну группу).
+ */
+function listContainer(el: Element, sel: string): Element | null {
+  let c = el.parentElement;
+  for (let i = 0; i < 4 && c && c.parentElement; i++) {
+    let n = 0;
+    try { n = c.querySelectorAll(sel).length; } catch { return el.parentElement; }
+    if (n > 1) return c;
+    c = c.parentElement;
+  }
+  return c ?? el.parentElement;
 }
 
 function markChain(target: Element) {
@@ -313,5 +377,5 @@ export async function pinHover(card: Element, describe: (e: Element) => string):
 
 /** Снимок вычисленных стилей поддерева (для сравнения с настоящим наведением в тестах). */
 export function hoverStyleSnapshot(root: Element): string[] {
-  return snapSubtree(root);
+  return snapSubtree(root).map((v) => v.join('|'));
 }

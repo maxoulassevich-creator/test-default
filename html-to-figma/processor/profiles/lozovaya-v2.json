@@ -1,14 +1,60 @@
 {
   "id": "lozovaya-v2",
   "label": "Блог Лидии Лозовой, вариант 2 «Акварельный час» — вид владельца",
-  "match": { "allOf": ["'ll2-role'", "dm-list"] },
+  "match": {
+    "allOf": [
+      "'ll2-role'",
+      "dm-list"
+    ]
+  },
   "profile": {
-    "storage": { "ll2-role": "owner", "ll2-lang": "ru", "ll2-theme": "light", "ll2-tod": "day" },
-    "exclude": ["#demo"],
+    "storage": {
+      "ll2-role": "owner",
+      "ll2-lang": "ru",
+      "ll2-theme": "light",
+      "ll2-tod": "day"
+    },
+    "exclude": [
+      "#demo"
+    ],
     "colorScheme": "light",
     "locale": "ru-RU",
-    "viewportWidth": 1440
+    "viewportWidth": 1440,
+    "hoverPrefer": {
+      "#/": ".path",
+      "#/about": ".dirs2 a",
+      "#/art": ".bento__i--prose",
+      "#/prose": ".book",
+      "#/prose/do-vostrebovaniya": ".toc__a",
+      "#/prose/do-vostrebovaniya/2": ".pgr__a--next",
+      "#/poetry": ".pcard",
+      "#/poetry/poezd-vdol-stepi": ".pgr__a--next",
+      "#/music": "none",
+      "#/music/pereprava-pesnya": ".srcpoem",
+      "#/plays": "none",
+      "#/plays/zal-ozhidaniya": "none",
+      "#/scripts": ".tile",
+      "#/scripts/shest-sorok": ".tile",
+      "#/painting": ".ser",
+      "#/painting/series/step": ".wall a",
+      "#/painting/svet-naprotiv": ".pp__img",
+      "#/media": ".pile",
+      "#/media/vystavka-step-i-voda": ".photos2 button",
+      "#/listen": ".vcard2",
+      "#/archive": ".tile",
+      "#/search?q=степь": ".res2",
+      "#/search?q=вогла": ".res2",
+      "#/guests": "none",
+      "#/contacts": ".chan2",
+      "#/login": "none",
+      "#/login?invite=1": "none",
+      "#/login?mode=restore": "none",
+      "#/net-takoy-stranicy": "none",
+      "#/blog": "none",
+      "#/albums": "[data-calbum]:not([disabled])",
+      "#/vault": "none"
+    }
   },
   "routeSelector": "#dm-list a",
-  "notes": "Демо-переключатель роли — не настоящая авторизация. Панель демо (#demo) исключается из макета; её список ссылок используется как указатель страниц."
+  "notes": "Демо-переключатель роли — не настоящая авторизация. Панель демо (#demo) исключается из макета; её список ссылок используется как указатель страниц (обход при этом продолжается и показывает остальные найденные страницы неотмеченными). hoverPrefer — согласованный план поз наведения прежней сборки (22 страницы; на остальных поза не задаётся). Для страниц вне плана и при выключенном профиле цель выбирается общей эвристикой."
 }

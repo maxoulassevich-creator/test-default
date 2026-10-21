@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import type { Page } from 'playwright-core';
 import { aabb, decompose, IDENTITY, multiply, rotationOnly, translate } from '../../shared/matrix';
+import { faceFromPostScript } from '../../shared/fonts';
 import { fontKey, SCHEMA_VERSION, type AssetInfo, type Diagnostic, type FontRequirement, type FrameIR, type ImageIR, type Mat, type NodeIR, type PaintIR, type RouteSnapshot, type SvgIR, type TextIR } from '../../shared/schema';
 import { validateSnapshot } from '../../shared/validate';
 import type { AssetRef, RawCapture } from '../../capture/walk';
@@ -129,29 +130,56 @@ export async function finalizeRoute(run: CaptureRun, meta: { routeKey: string; l
   const route = meta.routeKey;
   const diags: Diagnostic[] = raw.diagnostics.map((d) => ({ ...d, route }));
   const stats: Record<string, number> = { ...raw.stats };
-  // ---- шрифты: универсальные семейства → системные
-  const generic = new Map<string, string>(); // '@serif' → 'DejaVu Serif'
-  const named = new Set(Object.values(raw.fonts).filter((f) => f.family).map((f) => f.family.toLowerCase()));
-  for (const m of raw.genericMarks) {
-    const fonts = run.platform[m.mark] ?? [];
-    const pick = fonts.filter((f) => !f.isCustomFont && !named.has(f.familyName.toLowerCase())).sort((a, b) => b.glyphCount - a.glyphCount)[0] ?? fonts.filter((f) => !named.has(f.familyName.toLowerCase()))[0];
-    if (pick && !generic.has('@' + m.generic)) generic.set('@' + m.generic, pick.familyName);
-  }
+  // ---- шрифты: универсальные и системные семейства → то, что браузер реально отрисовал
+  type PF = { familyName: string; postScriptName?: string; isCustomFont: boolean; glyphCount: number };
+  const named = new Set(Object.values(raw.fonts).filter((f) => f.family && f.source === 'webfont').map((f) => f.family.toLowerCase()));
+  const platformOf = (pred: (m: RawCapture['genericMarks'][number]) => boolean): PF[] => {
+    const acc = new Map<string, PF>();
+    for (const m of raw.genericMarks) {
+      if (!pred(m)) continue;
+      for (const f of (run.platform[m.mark] ?? []) as PF[]) {
+        if (f.isCustomFont || named.has(f.familyName.toLowerCase())) continue;
+        const k = f.familyName + '|' + (f.postScriptName ?? '');
+        const have = acc.get(k);
+        if (have) have.glyphCount += f.glyphCount; else acc.set(k, { ...f });
+      }
+    }
+    return [...acc.values()].sort((a, b) => b.glyphCount - a.glyphCount);
+  };
   const keyMap = new Map<string, string>();
   const fonts = new Map<string, FontRequirement>();
   for (const [k, f] of Object.entries(raw.fonts)) {
-    let family = f.family, source = f.source as FontRequirement['source'];
+    let family = f.family, source = f.source as FontRequirement['source'], weight = f.weight, italic = f.italic;
+    let synthetic = f.synthetic;
+    let pick: PF | undefined;
     if (!family && f.generic) {
-      family = generic.get('@' + f.generic) ?? '';
+      pick = platformOf((m) => m.generic === f.generic)[0];
+      family = pick?.familyName ?? '';
       if (!family) { family = f.generic === 'monospace' ? 'Courier New' : f.generic === 'serif' ? 'Times New Roman' : 'Arial'; diags.push({ level: 'warn', code: 'generic-font', message: `Не удалось определить системный шрифт для «${f.generic}»; предполагается ${family}`, route }); }
       else diags.push({ level: 'info', code: 'generic-font', message: `Универсальное семейство «${f.generic}» отрисовано браузером шрифтом ${family}`, route });
       source = 'system';
+    } else if (source === 'system') {
+      const list = platformOf((m) => !!m.system?.includes(k));
+      pick = list.find((x) => x.familyName.toLowerCase() === family.toLowerCase()) ?? list[0];
+      if (pick && pick.familyName.toLowerCase() !== family.toLowerCase()) {
+        diags.push({ level: 'info', code: 'font-alias', message: `«${family}» в этой системе — псевдоним: браузер отрисовал шрифтом ${pick.familyName}`, route });
+        family = pick.familyName;
+      }
     }
-    const nk = fontKey(family, f.weight, f.italic);
+    if (pick) {
+      // начертание, которое браузер подобрал среди установленных (CSS-подбор веса), а не запрошенный вес
+      const face = faceFromPostScript(pick.postScriptName);
+      if (face) {
+        if (f.weight >= 600 && face.weight < 600) synthetic = [...(synthetic ?? []), 'bold'];
+        if (f.italic && !face.italic) synthetic = [...(synthetic ?? []), 'italic'];
+        weight = face.weight; italic = face.italic;
+      }
+    }
+    const nk = fontKey(family, weight, italic);
     keyMap.set(k, nk);
     const have = fonts.get(nk);
     if (have) { have.chars += f.chars; continue; }
-    fonts.set(nk, { key: nk, family, weight: f.weight, italic: f.italic, source, variable: f.variable, synthetic: f.synthetic, chars: f.chars, sample: f.sample, routes: [route] });
+    fonts.set(nk, { key: nk, family, weight, italic, source, variable: f.variable, synthetic, chars: f.chars, sample: f.sample, routes: [route] });
   }
   // ---- ресурсы
   const refMap = new Map<string, { id: string; kind: 'image' | 'svg'; info?: AssetInfo; box?: [number, number, number, number]; raster?: boolean; tilePx?: number }>();

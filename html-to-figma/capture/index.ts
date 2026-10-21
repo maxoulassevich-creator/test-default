@@ -3,7 +3,7 @@
  * (через page.evaluate). Экспортирует API в window[__H2F_KEY__].
  */
 import { collectLinks, fingerprint, linkLabel } from './discover';
-import { clearHoverMarks, findHoverCandidates, hoverStyleSnapshot, installHoverPinning, pinHover, rewriteHoverSelector, uninstallHoverPinning, type HoverCandidateRaw } from './hover';
+import { clearHoverMarks, findHoverCandidates, hoverStyleSnapshot, installHoverPinning, labelOf, pinHover, rewriteHoverSelector, uninstallHoverPinning, type HoverCandidateRaw } from './hover';
 import { finishAnimations, scrollPass, settle, snapshotFixed, type RevealPose } from './settle';
 import { describe } from './style';
 import { beginCapture, cleanup, finish, measure, setNeutral, shotIsolation, type CaptureOptions, type PseudoBox } from './walk';
@@ -37,7 +37,7 @@ const api = {
   rewriteHoverSelector,
   hoverCandidates(exclude: string[]) {
     candidates = findHoverCandidates(excluder(exclude));
-    return candidates.map((c) => ({ index: c.index, selector: c.selector, label: c.label, score: +c.score.toFixed(3), box: c.box.map((v) => +v.toFixed(1)), changes: c.changes }));
+    return candidates.map((c) => ({ index: c.index, selector: c.selector, label: c.label, score: +c.score.toFixed(3), box: c.box.map((v) => +v.toFixed(1)), changes: c.changes, props: c.props }));
   },
   async pin(index: number | null, selector: string | null) {
     clearHoverMarks();
@@ -48,7 +48,7 @@ const api = {
     if (!card) return null;
     const r = await pinHover(card, describe);
     hoverState = { card, point: r.point };
-    return { ...r, label: (card as HTMLElement).innerText?.replace(/\s+/g, ' ').trim().slice(0, 80) ?? '' };
+    return { ...r, label: labelOf(card) };
   },
   /** Снимок стилей поддерева выбранной карточки (для сравнения с настоящим наведением). */
   hoverSnapshot(selector: string | null, index: number | null) {

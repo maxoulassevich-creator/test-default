@@ -67,6 +67,20 @@ export function styleWeight(style: string): number {
 }
 export const styleItalic = (style: string) => /italic|oblique|kursiv/i.test(style);
 
+/**
+ * Начертание по PostScript-имени системного шрифта: «LiberationSerif» → 400,
+ * «Arial-BoldItalicMT» → 700 курсив, «DejaVuSansMono-BoldOblique» → 700 курсив.
+ * Нет суффикса стиля → обычное начертание.
+ */
+export function faceFromPostScript(ps: string | undefined): { weight: number; italic: boolean } | null {
+  if (!ps) return null;
+  const i = ps.lastIndexOf('-');
+  const suffix = i > 0 ? ps.slice(i + 1).replace(/(MT|PS)+$/, '') : '';
+  if (!suffix) return { weight: 400, italic: false };
+  const italic = /italic|oblique|^it$|kursiv/i.test(suffix);
+  return { weight: styleWeight(suffix.replace(/italic|oblique|kursiv/gi, '') || 'regular'), italic };
+}
+
 const KNOWN_SUFFIX = /^(?:(?:hairline|thin|extralight|ultralight|light|regular|normal|book|roman|medium|semibold|demibold|bold|extrabold|ultrabold|black|heavy)(?:italic|oblique)?|italic|oblique)$/;
 
 const norm = (s: string) => s.toLowerCase().replace(/\s+/g, ' ').trim();

@@ -12,8 +12,13 @@ export function linkLabel(a: Element): string {
     if (n.nodeType === Node.TEXT_NODE) { acc.s += n.textContent ?? ''; return; }
     if (n.nodeType !== Node.ELEMENT_NODE) return;
     const el = n as Element;
-    if (getComputedStyle(el).display === 'none') return;
+    const display = getComputedStyle(el).display;
+    if (display === 'none') return;
+    // блочные части карточки разделяются пробелом («ЗаголовокОписание» → «Заголовок Описание»)
+    const block = !display.startsWith('inline') && display !== 'contents';
+    if (block || el.tagName === 'BR') acc.s += ' ';
     for (const c of Array.from(el.childNodes)) walk(c, acc);
+    if (block) acc.s += ' ';
   };
   for (const c of Array.from(a.childNodes)) {
     const acc = { s: '' };
