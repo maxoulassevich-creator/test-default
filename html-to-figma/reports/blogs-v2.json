@@ -3,8 +3,8 @@
   "source": "lidia-lozovaya-v2.html",
   "profile": "lozovaya-v2: owner, ru, light, day; 1440 px; демо-панель исключена",
   "seconds": {
-    "discover": 74.314,
-    "capture": 153.771,
+    "discover": 77.269,
+    "capture": 159.585,
     "quick": false
   },
   "discovery": {
@@ -45,7 +45,7 @@
     "texts": 2785,
     "nodes": 9233,
     "warnings": 0,
-    "set": "mviihqivhqi5t"
+    "set": "mvij9r96mcrmv"
   },
   "verify": {
     "ok": true,
@@ -65,8 +65,8 @@
       3787
     ],
     "sizeMatch": true,
-    "meanAbs": 2.19,
-    "changedRatio": 0.00909,
+    "meanAbs": 2.187,
+    "changedRatio": 0.00905,
     "scope": "Исходник в Chromium ↔ PNG, экспортированный из нативных нод Figma (exportAsync)"
   },
   "routes": [
