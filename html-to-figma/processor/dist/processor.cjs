@@ -724,6 +724,7 @@ function classifyHref(href, pageUrl, siteBase, ids, opts = {}) {
     return { kind: "invalid", reason: "неразборчивый адрес" };
   }
   const base = new URL(siteBase);
+  if (u.origin === base.origin && !u.pathname.startsWith(base.pathname) && !/^\/j\/[a-z0-9]+\//.test(u.pathname)) u = new URL(base.pathname + u.pathname.replace(/^\/+/, "") + u.search + u.hash, base);
   if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname)) return { kind: "external", url: u.toString() };
   if (opts.download || DOWNLOAD_EXT.test(u.pathname)) return { kind: "download", url: u.toString(), reason: "файл/загрузка" };
   const cur = new URL(pageUrl);
@@ -2235,7 +2236,7 @@ var Job = class {
         siteDir: this.siteDir,
         sitePrefix: this.prefix,
         rasterScale: this.profile.rasterScale,
-        readSiteFile: (u) => this.mgr.site.readUrl(u),
+        readSiteFile: (u) => this.mgr.site.readUrl(u, this.id),
         fetchExternal: (u) => this.mgr.fetchExternal(u, this.profile.blockExternal),
         cache: this.rasterCache
       });
@@ -2686,8 +2687,8 @@ var SiteServer = class {
     return `${this.origin()}/j/${jobId}/`;
   }
   /** Чтение файла сайта по URL (для ресурсов, без повторного HTTP). */
-  readUrl(url) {
-    const f = this.resolve(url);
+  readUrl(url, jobId) {
+    const f = this.resolve(url, jobId);
     if (!f) return null;
     try {
       return import_node_fs8.default.readFileSync(f);
@@ -2695,7 +2696,11 @@ var SiteServer = class {
       return null;
     }
   }
-  resolve(url) {
+  /**
+   * Файл по URL. Путь вне «/j/<задание>/» — путь от корня сайта («/css/a.css»): он относится
+   * к заданию fallbackJob (страница, с которой пришёл запрос, или задание финализации).
+   */
+  resolve(url, fallbackJob) {
     let u;
     try {
       u = new URL(url);
@@ -2703,7 +2708,8 @@ var SiteServer = class {
       return null;
     }
     if (u.origin !== this.origin()) return null;
-    const m = /^\/j\/([a-z0-9]+)\/(.*)$/.exec(u.pathname);
+    let m = /^\/j\/([a-z0-9]+)\/(.*)$/.exec(u.pathname);
+    if ((!m || !this.mounts.has(m[1])) && fallbackJob && this.mounts.has(fallbackJob)) m = [u.pathname, fallbackJob, u.pathname.replace(/^\/+/, "")];
     if (!m) return null;
     const mount = this.mounts.get(m[1]);
     if (!mount) return null;
@@ -2728,6 +2734,12 @@ var SiteServer = class {
       this.server = import_node_http2.default.createServer((req, res) => {
         if (req.method !== "GET" && req.method !== "HEAD") {
           res.writeHead(405);
+          res.end();
+          return;
+        }
+        const ref = /\/j\/([a-z0-9]+)\//.exec(String(req.headers.referer ?? ""));
+        if (!/^\/j\/[a-z0-9]+\//.test(req.url ?? "/") && ref && this.mounts.has(ref[1])) {
+          res.writeHead(307, { location: `/j/${ref[1]}/${(req.url ?? "/").replace(/^\/+/, "")}`, "cache-control": "no-store" });
           res.end();
           return;
         }

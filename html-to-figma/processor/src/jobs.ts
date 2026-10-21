@@ -493,7 +493,7 @@ export class Job {
       lap('shot');
       const fin = await finalizeRoute(run, { routeKey: key, label: info.label, hover, prune }, {
         store: this.store, renderer, page, apiKey, siteOrigin: this.mgr.site.origin() + '/', siteDir: this.siteDir, sitePrefix: this.prefix,
-        rasterScale: this.profile.rasterScale, readSiteFile: (u) => this.mgr.site.readUrl(u), fetchExternal: (u) => this.mgr.fetchExternal(u, this.profile.blockExternal),
+        rasterScale: this.profile.rasterScale, readSiteFile: (u) => this.mgr.site.readUrl(u, this.id), fetchExternal: (u) => this.mgr.fetchExternal(u, this.profile.blockExternal),
         cache: this.rasterCache,
       });
       lap('finalize');

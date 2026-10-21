@@ -29,17 +29,22 @@ export class SiteServer {
   prefix(jobId: string): string { return `${this.origin()}/j/${jobId}/`; }
 
   /** Чтение файла сайта по URL (для ресурсов, без повторного HTTP). */
-  readUrl(url: string): Buffer | null {
-    const f = this.resolve(url);
+  readUrl(url: string, jobId?: string): Buffer | null {
+    const f = this.resolve(url, jobId);
     if (!f) return null;
     try { return fs.readFileSync(f); } catch { return null; }
   }
 
-  resolve(url: string): string | null {
+  /**
+   * Файл по URL. Путь вне «/j/<задание>/» — путь от корня сайта («/css/a.css»): он относится
+   * к заданию fallbackJob (страница, с которой пришёл запрос, или задание финализации).
+   */
+  resolve(url: string, fallbackJob?: string): string | null {
     let u: URL;
     try { u = new URL(url); } catch { return null; }
     if (u.origin !== this.origin()) return null;
-    const m = /^\/j\/([a-z0-9]+)\/(.*)$/.exec(u.pathname);
+    let m = /^\/j\/([a-z0-9]+)\/(.*)$/.exec(u.pathname);
+    if ((!m || !this.mounts.has(m[1])) && fallbackJob && this.mounts.has(fallbackJob)) m = [u.pathname, fallbackJob, u.pathname.replace(/^\/+/, '')] as unknown as RegExpExecArray;
     if (!m) return null;
     const mount = this.mounts.get(m[1]);
     if (!mount) return null;
@@ -60,6 +65,14 @@ export class SiteServer {
     return new Promise((resolve, reject) => {
       this.server = http.createServer((req, res) => {
         if (req.method !== 'GET' && req.method !== 'HEAD') { res.writeHead(405); res.end(); return; }
+        // путь от корня сайта («/css/a.css») — перенаправляем в папку задания страницы-источника
+        // (Referer), чтобы и вложенные url(/img/…) этого файла разрешались от неё же
+        const ref = /\/j\/([a-z0-9]+)\//.exec(String(req.headers.referer ?? ''));
+        if (!/^\/j\/[a-z0-9]+\//.test(req.url ?? '/') && ref && this.mounts.has(ref[1])) {
+          res.writeHead(307, { location: `/j/${ref[1]}/${(req.url ?? '/').replace(/^\/+/, '')}`, 'cache-control': 'no-store' });
+          res.end();
+          return;
+        }
         const f = this.resolve(this.origin() + (req.url ?? '/'));
         if (!f) { res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }); res.end('Not found'); return; }
         const type = MIME[path.extname(f).toLowerCase()] ?? 'application/octet-stream';

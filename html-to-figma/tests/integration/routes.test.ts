@@ -46,6 +46,27 @@ test('ZIP с двумя HTML: страницы-файлы, относитель�
   assert.equal(v.frameOverlaps.length, 0);
 });
 
+test('ZIP с путями от корня сайта («/css/…», «/img/…», «/about.html», url(/img/…) в CSS)', async () => {
+  const { id, status } = await analyzeZip(t, zipWithFonts(path.join(FIX, 'rootpaths')), 'rootpaths.zip', { profile: TEST_PROFILE });
+  assert.equal(status.state, 'ready', JSON.stringify(status.error));
+  const routes = status.routes as R[];
+  const ok = routes.filter((r) => r.status === 'ok').map((r) => r.key).sort();
+  assert.deepEqual(ok, ['about.html', 'index.html'], JSON.stringify(routes.map((r) => [r.key, r.status, r.reason])));
+  assert.ok(!routes.some((r) => r.status === 'error'), 'нет «битых» страниц');
+  const c = await capture(t, id, ok);
+  assert.equal(c.state, 'captured', JSON.stringify(c.error));
+  const bad = (c.diagnostics as Array<{ code: string; message: string }>).filter((d) => /broken|resource-failed|asset/.test(d.code));
+  assert.equal(bad.length, 0, 'все ресурсы загружены: ' + JSON.stringify(bad));
+  const doc = await t.json(`/api/jobs/${id}/document`);
+  const snap = await processorSource(t, id, doc).snapshot('index.html');
+  const flat: Array<{ kind: string; text?: string; fills?: Array<{ type: string }>; src?: string }> = [];
+  const walk = (n: { kind: string; children?: unknown[] }) => { flat.push(n as never); (n.children as Array<typeof n> | undefined)?.forEach(walk); };
+  snap.children.forEach(walk as never);
+  assert.ok(flat.some((n) => n.kind === 'image'), 'картинка /img/logo.png');
+  assert.ok(flat.some((n) => (n.src ?? '').startsWith('section.hero') && n.fills?.some((f) => f.type === 'IMAGE')), 'фон url(/img/bg.png) из CSS');
+  assert.ok(flat.some((n) => n.kind === 'text' && (n.text ?? '').includes('выполнился')), 'скрипт /js/app.js выполнился');
+});
+
 test('SPA: hash-маршруты, значимые query, пагинация, редирект, якорь, 404', async () => {
   const { id, status } = await analyzeZip(t, zipWithFonts(path.join(FIX, 'spa')), 'catalog.zip', { profile: TEST_PROFILE, maxDepth: 3 });
   assert.equal(status.state, 'ready', JSON.stringify(status.error));

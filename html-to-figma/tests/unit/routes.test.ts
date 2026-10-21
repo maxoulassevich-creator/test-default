@@ -49,3 +49,17 @@ test('цель наведения из профиля: полный ключ, ч
   assert.equal(hoverPreferFor(map, 'site.html#/y'), null);
   assert.equal(hoverPreferFor(undefined, 'site.html'), null);
 });
+
+test('ссылка от корня сайта переносится в папку проекта, чужой сайт — внешний', () => {
+  const ids = new Set<string>();
+  const a = classifyHref('/about.html', page, base, ids);
+  assert.equal(a.kind, 'page');
+  assert.equal(a.key, 'about.html');
+  const root = classifyHref('/', base + 'about.html', base, ids);
+  assert.equal(root.kind, 'page');
+  assert.equal(root.url, base);
+  const q = classifyHref('/catalog/?p=2#top', page, base, ids);
+  assert.ok(q.url!.startsWith(base + 'catalog/?p=2'), q.url);
+  assert.equal(classifyHref('https://example.org/x', page, base, ids).kind, 'external');
+  assert.equal(classifyHref('http://127.0.0.1:5001/x', page, base, ids).kind, 'external', 'другой порт — другой сайт');
+});

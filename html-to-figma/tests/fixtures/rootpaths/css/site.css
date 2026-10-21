@@ -1,0 +1,5 @@
+body{margin:0;font:18px/1.5 'EB Garamond',serif;color:#222}
+header{display:flex;gap:20px;align-items:center;padding:16px 40px;background:#f4efe8}
+header img{width:48px;height:48px}
+.hero{height:420px;padding:40px;background:url(/img/bg.png) center/cover no-repeat;color:#fff}
+h1{font:600 48px 'Cormorant Garamond',serif;margin:0 0 12px}

@@ -59,6 +59,9 @@ export function classifyHref(href: string, pageUrl: string, siteBase: string, id
   let u: URL;
   try { u = new URL(raw, pageUrl); } catch { return { kind: 'invalid', reason: 'неразборчивый адрес' }; }
   const base = new URL(siteBase);
+  // путь от корня сайта («/about.html»): проект обслуживается из подпапки — переносим в неё
+  // (служебные адреса других заданий «/j/<id>/…» не переносятся — проекты изолированы)
+  if (u.origin === base.origin && !u.pathname.startsWith(base.pathname) && !/^\/j\/[a-z0-9]+\//.test(u.pathname)) u = new URL(base.pathname + u.pathname.replace(/^\/+/, '') + u.search + u.hash, base);
   if (u.origin !== base.origin || !u.pathname.startsWith(base.pathname)) return { kind: 'external', url: u.toString() };
   if (opts.download || DOWNLOAD_EXT.test(u.pathname)) return { kind: 'download', url: u.toString(), reason: 'файл/загрузка' };
   const cur = new URL(pageUrl);
