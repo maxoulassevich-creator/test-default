@@ -2768,13 +2768,19 @@ async function startProcessor(opts = {}) {
   const jobs = new JobManager(cfg, site, profileDirs);
   const webDir = opts.webDir ?? [here, import_node_path9.default.join(here, "web"), import_node_path9.default.join(here, "..", "dist")].find((d) => import_node_fs9.default.existsSync(import_node_path9.default.join(d, "index.html")) && import_node_fs9.default.existsSync(import_node_path9.default.join(d, "web.js"))) ?? here;
   const server = createServer({ cfg, jobs, webDir });
-  await new Promise((resolve, reject) => {
-    server.once("error", (e) => {
-      if (e.code === "EADDRINUSE") reject(Object.assign(new Error(`Порт ${cfg.port} уже занят — возможно, обработчик уже запущен в другом окне.`), { code: "EADDRINUSE" }));
-      else reject(e);
+  try {
+    await new Promise((resolve, reject) => {
+      server.once("error", (e) => {
+        if (e.code === "EADDRINUSE") reject(Object.assign(new Error(`Порт ${cfg.port} уже занят — возможно, обработчик уже запущен в другом окне.`), { code: "EADDRINUSE" }));
+        else reject(e);
+      });
+      server.listen(cfg.port, "127.0.0.1", () => resolve());
     });
-    server.listen(cfg.port, "127.0.0.1", () => resolve());
-  });
+  } catch (e) {
+    site.stop();
+    server.close();
+    throw e;
+  }
   const stop = async () => {
     server.close();
     site.stop();
@@ -2794,8 +2800,7 @@ async function main() {
   } catch (e) {
     console.error("\n ОШИБКА: " + e.message);
     console.error(" Закройте другое окно обработчика или измените порт: переменная H2F_PORT.\n");
-    process.exitCode = 1;
-    return;
+    process.exit(1);
   }
   const { cfg, stop } = started;
   console.log(` Адрес:            http://127.0.0.1:${cfg.port}`);

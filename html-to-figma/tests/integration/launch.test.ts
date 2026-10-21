@@ -74,8 +74,9 @@ for (const script of targets) {
       assert.equal(h2.paired, true);
       // второй экземпляр на том же порту — понятная ошибка, а не падение
       const second = launch(script, port, data);
-      const codeExit = await second.exited;
-      assert.equal(codeExit, 1);
+      const codeExit = await Promise.race([second.exited, new Promise<string>((r) => setTimeout(() => r('не завершился за 20 с'), 20000))]);
+      if (typeof codeExit === 'string') second.child.kill('SIGKILL');
+      assert.equal(codeExit, 1, 'второй экземпляр завершается с кодом 1');
       assert.match(second.out(), /уже занят/);
     } finally {
       p.child.kill('SIGTERM');

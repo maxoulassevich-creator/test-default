@@ -21,13 +21,20 @@ export async function startProcessor(opts: { port?: number; dataDir?: string; qu
   // страница резервного режима: index.html + web.js в одной папке (сборка кладёт их рядом с processor.cjs)
   const webDir = opts.webDir ?? [here, path.join(here, 'web'), path.join(here, '..', 'dist')].find((d) => fs.existsSync(path.join(d, 'index.html')) && fs.existsSync(path.join(d, 'web.js'))) ?? here;
   const server = createServer({ cfg, jobs, webDir });
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', (e: NodeJS.ErrnoException) => {
-      if (e.code === 'EADDRINUSE') reject(Object.assign(new Error(`Порт ${cfg.port} уже занят — возможно, обработчик уже запущен в другом окне.`), { code: 'EADDRINUSE' }));
-      else reject(e);
+  try {
+    await new Promise<void>((resolve, reject) => {
+      server.once('error', (e: NodeJS.ErrnoException) => {
+        if (e.code === 'EADDRINUSE') reject(Object.assign(new Error(`Порт ${cfg.port} уже занят — возможно, обработчик уже запущен в другом окне.`), { code: 'EADDRINUSE' }));
+        else reject(e);
+      });
+      server.listen(cfg.port, '127.0.0.1', () => resolve());
     });
-    server.listen(cfg.port, '127.0.0.1', () => resolve());
-  });
+  } catch (e) {
+    // освобождаем уже открытое (сервер сайта), иначе процесс не завершится
+    site.stop();
+    server.close();
+    throw e;
+  }
   const stop = async () => { server.close(); site.stop(); for (const j of jobs.jobs.values()) await j.cancel(); await closeBrowser(); };
   return { cfg, site, jobs, server, stop };
 }
@@ -43,8 +50,7 @@ export async function main() {
   } catch (e) {
     console.error('\n ОШИБКА: ' + (e as Error).message);
     console.error(' Закройте другое окно обработчика или измените порт: переменная H2F_PORT.\n');
-    process.exitCode = 1;
-    return;
+    process.exit(1);
   }
   const { cfg, stop } = started;
   console.log(` Адрес:            http://127.0.0.1:${cfg.port}`);

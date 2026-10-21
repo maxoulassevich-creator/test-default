@@ -74,17 +74,17 @@
     {
       "key": "index.html#/items?page=2",
       "status": "ok",
-      "label": "2"
+      "label": "Товары, страница 2 · 2"
     },
     {
       "key": "index.html#/items?page=3",
       "status": "ok",
-      "label": "3"
+      "label": "Товары, страница 3 · 3"
     },
     {
       "key": "index.html#/items?page=4",
       "status": "ok",
-      "label": "4"
+      "label": "Товары, страница 4 · 4"
     },
     {
       "key": "index.html#/item/9",
@@ -122,7 +122,7 @@
       "key": "index.html#/items?page=1",
       "status": "duplicate",
       "reason": "содержимое совпадает с index.html#/items",
-      "label": "1"
+      "label": "Товары, страница 1 · 1"
     },
     {
       "key": "index.html#help",
