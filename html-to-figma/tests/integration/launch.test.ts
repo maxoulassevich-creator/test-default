@@ -30,6 +30,8 @@ function launch(script: string, port: number, data: string): { child: ChildProce
     const tick = () => { if (/Обработчик работает/.test(buf)) res(); else if (Date.now() - t0 > 60000 || child.exitCode !== null) rej(new Error('не запустился: ' + buf)); else setTimeout(tick, 100); };
     tick();
   });
+  // второй экземпляр на занятом порту «готов» не станет — это ожидаемо, ждут его exited
+  ready.catch(() => { /* обрабатывает вызывающий */ });
   return { child, out: () => buf, ready, exited };
 }
 
