@@ -205,7 +205,7 @@
           }
           pos = r.end;
           if (!ctx.fonts.has(r.font)) out.push({ path, message: `шрифт ${r.font} не объявлен` });
-          if (!(fin(r.size) && r.size > 0)) out.push({ path, message: "размер шрифта" });
+          if (!(fin(r.size) && r.size >= 1)) out.push({ path, message: `размер шрифта ${r.size} (Figma принимает от 1 px)` });
           if (!fin(r.letterSpacing)) out.push({ path, message: "letterSpacing" });
           checkColor(r.color, path, out);
         }
@@ -235,6 +235,23 @@
 
   // plugin/src/build.ts
   var clamp01 = (v) => Math.max(0, Math.min(1, v));
+  var sameRgba = (a, b) => Math.abs(a.r - b.r) + Math.abs(a.g - b.g) + Math.abs(a.b - b.b) + Math.abs(a.a - b.a) < 0.01;
+  function warnOnce(ctx, code, message, node) {
+    const have = ctx.warnings.find((w) => w.code === code);
+    if (have) {
+      have.count = (have.count ?? 1) + 1;
+      have.message = `${message} (×${have.count})`;
+      return;
+    }
+    ctx.warnings.push({ code, message, node });
+  }
+  function optional(ctx, ir, what, fn) {
+    try {
+      fn();
+    } catch (e) {
+      warnOnce(ctx, "figma-rejected:" + what, `${what}: Figma не приняла значение (${String(e.message ?? e).slice(0, 140)})`, ir.src);
+    }
+  }
   function paint(p, ctx) {
     const blendMode = p.blend && p.blend !== "PASS_THROUGH" ? p.blend : void 0;
     if (p.type === "SOLID") {
@@ -267,6 +284,22 @@
     };
     return g;
   }
+  function setFills(n, list, ctx, ir) {
+    const ps = paints(list, ctx);
+    try {
+      n.fills = ps;
+      return;
+    } catch (e) {
+      const safe = ps.map((p) => {
+        if (p.type !== "GRADIENT_LINEAR" && p.type !== "GRADIENT_RADIAL" && p.type !== "GRADIENT_ANGULAR" && p.type !== "GRADIENT_DIAMOND") return p;
+        const st = p.gradientStops, k = st.length || 1;
+        const avg = st.reduce((a, s) => ({ r: a.r + s.color.r / k, g: a.g + s.color.g / k, b: a.b + s.color.b / k, a: a.a + s.color.a / k }), { r: 0, g: 0, b: 0, a: 0 });
+        return { type: "SOLID", color: { r: avg.r, g: avg.g, b: avg.b }, opacity: clamp01(avg.a * (p.opacity ?? 1)) };
+      });
+      n.fills = safe;
+      warnOnce(ctx, "fills-fallback", `Заливка не принята Figma — градиент заменён средним цветом (${String(e.message ?? e).slice(0, 120)})`, ir.src);
+    }
+  }
   function paints(list, ctx) {
     const out = [];
     for (const p of list ?? []) {
@@ -284,12 +317,13 @@
     }
     return out;
   }
-  function applyStroke(n, s) {
+  function applyStroke(n, s, uniformOnly = false) {
     if (!s) return;
     n.strokes = [{ type: "SOLID", color: { r: s.color.r, g: s.color.g, b: s.color.b }, opacity: clamp01(s.opacity) }];
     n.strokeAlign = s.align;
     const [t, r, b, l] = s.weights;
-    if (t === r && r === b && b === l) n.strokeWeight = t;
+    if (uniformOnly) n.strokeWeight = Math.max(t, r, b, l);
+    else if (t === r && r === b && b === l) n.strokeWeight = t;
     else {
       n.strokeTopWeight = t;
       n.strokeRightWeight = r;
@@ -350,28 +384,26 @@
       }
       if (r.decoration) {
         t.setRangeTextDecoration(r.start, r.end, r.decoration);
-        if (r.decorationStyle && r.decorationStyle !== "SOLID") t.setRangeTextDecorationStyle(r.start, r.end, r.decorationStyle);
-        if (r.decorationColor) t.setRangeTextDecorationColor(r.start, r.end, { value: { type: "SOLID", color: { r: r.decorationColor.r, g: r.decorationColor.g, b: r.decorationColor.b }, opacity: clamp01(r.decorationColor.a) } });
-        if (r.decorationThickness) t.setRangeTextDecorationThickness(r.start, r.end, { unit: "PIXELS", value: r.decorationThickness });
-      }
-      if (r.link) {
-        try {
-          t.setRangeHyperlink(r.start, r.end, { type: "URL", value: r.link });
-        } catch {
+        if (r.decoration === "UNDERLINE") {
+          if (r.decorationStyle && r.decorationStyle !== "SOLID") optional(ctx, ir, "Стиль подчёркивания", () => t.setRangeTextDecorationStyle(r.start, r.end, r.decorationStyle));
+          if (r.decorationColor) optional(ctx, ir, "Цвет подчёркивания", () => t.setRangeTextDecorationColor(r.start, r.end, { value: { type: "SOLID", color: { r: r.decorationColor.r, g: r.decorationColor.g, b: r.decorationColor.b }, opacity: clamp01(r.decorationColor.a) } }));
+          if (r.decorationThickness) optional(ctx, ir, "Толщина подчёркивания", () => t.setRangeTextDecorationThickness(r.start, r.end, { unit: "PIXELS", value: r.decorationThickness }));
+        } else if (r.decorationColor && !sameRgba(r.decorationColor, r.color) || r.decorationThickness) {
+          warnOnce(ctx, "strike-style", "Цвет и толщина линии зачёркивания в Figma не задаются — линия цвета текста", ir.src);
         }
       }
+      if (r.link) optional(ctx, ir, "Ссылка", () => t.setRangeHyperlink(r.start, r.end, { type: "URL", value: r.link }));
     }
-    if (ir.fills?.length) {
-      const f = paints(ir.fills, ctx);
-      if (f.length) t.fills = f;
-    }
+    if (ir.fills?.length && paints(ir.fills, ctx).length) setFills(t, ir.fills, ctx, ir);
     if (ir.textStroke && ir.textStroke.width > 0) {
       t.strokes = [{ type: "SOLID", color: { r: ir.textStroke.color.r, g: ir.textStroke.color.g, b: ir.textStroke.color.b }, opacity: clamp01(ir.textStroke.color.a) }];
       t.strokeWeight = ir.textStroke.width;
       t.strokeAlign = "CENTER";
     }
     applyCommon(t, ir, "PASS_THROUGH");
-    if (ir.effects?.length) t.effects = effects(ir.effects);
+    if (ir.effects?.length) optional(ctx, ir, "Тени и размытие", () => {
+      t.effects = effects(ir.effects);
+    });
     let dx = 0;
     if (ir.truncate) {
       t.textAutoResize = "NONE";
@@ -398,10 +430,12 @@
     parent.appendChild(n);
     n.name = ir.name;
     n.resize(size(ir.w), size(ir.h));
-    n.fills = paints(ir.fills, ctx);
+    setFills(n, ir.fills, ctx, ir);
     if (ir.kind === "rect") applyRadius(n, ir.radius);
-    applyStroke(n, ir.stroke);
-    if (ir.effects?.length) n.effects = effects(ir.effects);
+    optional(ctx, ir, "Обводка", () => applyStroke(n, ir.stroke, ir.kind === "ellipse"));
+    if (ir.effects?.length) optional(ctx, ir, "Тени и размытие", () => {
+      n.effects = effects(ir.effects);
+    });
     applyCommon(n, ir, "NORMAL");
     place(n, ir);
     return n;
@@ -421,8 +455,10 @@
       ctx.warnings.push({ code: "image-missing", message: "Изображение не передано в Figma — вставлена заглушка", node: ir.src });
     }
     applyRadius(n, ir.radius);
-    applyStroke(n, ir.stroke);
-    if (ir.effects?.length) n.effects = effects(ir.effects);
+    optional(ctx, ir, "Обводка", () => applyStroke(n, ir.stroke));
+    if (ir.effects?.length) optional(ctx, ir, "Тени и размытие", () => {
+      n.effects = effects(ir.effects);
+    });
     applyCommon(n, ir, "NORMAL");
     place(n, ir);
     if (ir.tags?.includes("raster")) n.setPluginData("raster", "1");
@@ -458,7 +494,9 @@
     if (Math.abs(n.width - ir.w) > 0.01 || Math.abs(n.height - ir.h) > 0.01) n.resizeWithoutConstraints(size(ir.w), size(ir.h));
     n.clipsContent = ir.clip;
     n.fills = [];
-    if (ir.effects?.length) n.effects = effects(ir.effects);
+    if (ir.effects?.length) optional(ctx, ir, "Тени и размытие", () => {
+      n.effects = effects(ir.effects);
+    });
     applyCommon(n, ir, "PASS_THROUGH");
     place(n, ir);
     return n;
@@ -469,11 +507,13 @@
     n.name = ir.name;
     n.layoutMode = "NONE";
     n.resizeWithoutConstraints(size(ir.w), size(ir.h));
-    n.fills = paints(ir.fills, ctx);
+    setFills(n, ir.fills, ctx, ir);
     n.clipsContent = ir.clip;
     applyRadius(n, ir.radius);
-    applyStroke(n, ir.stroke);
-    if (ir.effects?.length) n.effects = effects(ir.effects);
+    optional(ctx, ir, "Обводка", () => applyStroke(n, ir.stroke));
+    if (ir.effects?.length) optional(ctx, ir, "Тени и размытие", () => {
+      n.effects = effects(ir.effects);
+    });
     applyCommon(n, ir, "PASS_THROUGH");
     place(n, ir);
     for (const c of ir.children) await buildNode(n, c, ctx);
@@ -523,7 +563,7 @@
     root.name = name;
     root.layoutMode = "NONE";
     root.resizeWithoutConstraints(size(snapshot.width), size(snapshot.height));
-    root.fills = paints(snapshot.background, ctx);
+    setFills(root, snapshot.background, ctx, {});
     root.clipsContent = true;
     for (const c of snapshot.children) await buildNode(root, c, ctx);
     return root;
@@ -752,7 +792,7 @@
         j.positions.set(it.key, { ...pos, slot: slot ?? [-1, -1] });
       }
     }
-    post({ type: "plan", jobId: j.id, build: build.map((r) => r.key), skip, replace: [...j.replace.keys()] });
+    j.planMsg = { type: "plan", jobId: j.id, build: build.map((r) => r.key), skip, replace: [...j.replace.keys()] };
     return j;
   }
   async function loadFonts(j, choices) {
@@ -970,8 +1010,10 @@
           }
           const j = plan(msg);
           job = j;
+          j.ready = loadFonts(j, msg.fonts);
           try {
-            await loadFonts(j, msg.fonts);
+            await j.ready;
+            post(j.planMsg);
           } catch (e) {
             job = null;
             post({ type: "error", jobId: msg.jobId, message: e.message, action: e.action });
@@ -995,6 +1037,7 @@
           if (!j || j.id !== msg.jobId) return;
           j.busy = true;
           try {
+            await j.ready;
             await buildOne(j, msg.snapshot, msg.index);
           } catch (e) {
             j.busy = false;

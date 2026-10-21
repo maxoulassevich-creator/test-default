@@ -4,23 +4,23 @@
     "firstLetters": 1,
     "svgVector": 1,
     "svgRaster": 1,
-    "nodes": 46,
-    "chars": 411,
+    "nodes": 50,
+    "chars": 456,
     "fixed": 0,
-    "prunedWrappers": 10,
-    "irNodes": 58,
+    "prunedWrappers": 11,
+    "irNodes": 59,
     "transformMismatches": 0,
     "prepShift": 0,
-    "ms_load": 348,
-    "ms_settleHover": 851,
-    "ms_capture": 123,
-    "ms_shot": 117,
-    "ms_finalize": 193
+    "ms_load": 347,
+    "ms_settleHover": 836,
+    "ms_capture": 105,
+    "ms_shot": 110,
+    "ms_finalize": 227
   },
   "verify": {
     "frames": 1,
-    "texts": 20,
-    "checkedNodes": 58,
+    "texts": 21,
+    "checkedNodes": 59,
     "positionIssues": [],
     "textIssues": [],
     "newOverlaps": [],
@@ -31,15 +31,15 @@
   "compare": {
     "source": [
       1440,
-      1549
+      1602
     ],
     "figma": [
       1440,
-      1549
+      1602
     ],
     "sizeMatch": true,
-    "meanAbs": 0.174,
-    "changedRatio": 0.00158,
+    "meanAbs": 0.235,
+    "changedRatio": 0.00196,
     "scope": "Исходник в Chromium ↔ PNG, экспортированный из нативных нод Figma (exportAsync)"
   },
   "diagnostics": [

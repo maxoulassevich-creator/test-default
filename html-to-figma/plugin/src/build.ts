@@ -21,6 +21,22 @@ export interface BuildContext {
 }
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
+const sameRgba = (a: { r: number; g: number; b: number; a: number }, b: { r: number; g: number; b: number; a: number }) => Math.abs(a.r - b.r) + Math.abs(a.g - b.g) + Math.abs(a.b - b.b) + Math.abs(a.a - b.a) < 0.01;
+
+/** Одно предупреждение на страницу для однотипного случая (а не по слою на каждую цену). */
+function warnOnce(ctx: BuildContext, code: string, message: string, node?: string) {
+  const have = ctx.warnings.find((w) => w.code === code) as { message: string; count?: number } | undefined;
+  if (have) { have.count = (have.count ?? 1) + 1; have.message = `${message} (×${have.count})`; return; }
+  ctx.warnings.push({ code, message, node });
+}
+
+/**
+ * Необязательное оформление (цвет/стиль линии, ссылка, эффекты, штрих): если Figma его
+ * не принимает, слой остаётся, а в результат попадает предупреждение — страница не обрывается.
+ */
+function optional(ctx: BuildContext, ir: NodeIR, what: string, fn: () => void) {
+  try { fn(); } catch (e) { warnOnce(ctx, 'figma-rejected:' + what, `${what}: Figma не приняла значение (${String((e as Error).message ?? e).slice(0, 140)})`, ir.src); }
+}
 
 export function paint(p: PaintIR, ctx: BuildContext): Paint | null {
   const blendMode = p.blend && p.blend !== 'PASS_THROUGH' ? (p.blend as BlendMode) : undefined;
@@ -49,6 +65,24 @@ export function paint(p: PaintIR, ctx: BuildContext): Paint | null {
   return g;
 }
 
+/**
+ * Заливки слоя. Если Figma отклонит набор (например, вырожденный градиент), градиенты
+ * заменяются средним цветом их точек, и в результат попадает предупреждение.
+ */
+function setFills(n: MinimalFillsMixin, list: PaintIR[] | undefined, ctx: BuildContext, ir: { src?: string }) {
+  const ps = paints(list, ctx);
+  try { n.fills = ps; return; } catch (e) {
+    const safe = ps.map((p) => {
+      if (p.type !== 'GRADIENT_LINEAR' && p.type !== 'GRADIENT_RADIAL' && p.type !== 'GRADIENT_ANGULAR' && p.type !== 'GRADIENT_DIAMOND') return p;
+      const st = p.gradientStops, k = st.length || 1;
+      const avg = st.reduce((a, s) => ({ r: a.r + s.color.r / k, g: a.g + s.color.g / k, b: a.b + s.color.b / k, a: a.a + s.color.a / k }), { r: 0, g: 0, b: 0, a: 0 });
+      return { type: 'SOLID', color: { r: avg.r, g: avg.g, b: avg.b }, opacity: clamp01(avg.a * (p.opacity ?? 1)) } as SolidPaint;
+    });
+    n.fills = safe;
+    warnOnce(ctx, 'fills-fallback', `Заливка не принята Figma — градиент заменён средним цветом (${String((e as Error).message ?? e).slice(0, 120)})`, ir.src);
+  }
+}
+
 export function paints(list: PaintIR[] | undefined, ctx: BuildContext): Paint[] {
   const out: Paint[] = [];
   for (const p of list ?? []) { const f = paint(p, ctx); if (f) out.push(f); }
@@ -65,12 +99,14 @@ export function effects(list: EffectIR[] | undefined): Effect[] {
   return out;
 }
 
-function applyStroke(n: GeometryMixin & IndividualStrokesMixin & MinimalStrokesMixin, s: StrokeIR | undefined) {
+function applyStroke(n: GeometryMixin & IndividualStrokesMixin & MinimalStrokesMixin, s: StrokeIR | undefined, uniformOnly = false) {
   if (!s) return;
   n.strokes = [{ type: 'SOLID', color: { r: s.color.r, g: s.color.g, b: s.color.b }, opacity: clamp01(s.opacity) }];
   n.strokeAlign = s.align;
   const [t, r, b, l] = s.weights;
-  if (t === r && r === b && b === l) n.strokeWeight = t;
+  // у эллипса нет отдельных толщин сторон
+  if (uniformOnly) n.strokeWeight = Math.max(t, r, b, l);
+  else if (t === r && r === b && b === l) n.strokeWeight = t;
   else { n.strokeTopWeight = t; n.strokeRightWeight = r; n.strokeBottomWeight = b; n.strokeLeftWeight = l; }
   if (s.dash && s.dash.length) n.dashPattern = s.dash;
 }
@@ -134,20 +170,25 @@ async function buildText(parent: FrameNode, ir: TextIR, ctx: BuildContext): Prom
     }
     if (r.decoration) {
       t.setRangeTextDecoration(r.start, r.end, r.decoration);
-      if (r.decorationStyle && r.decorationStyle !== 'SOLID') t.setRangeTextDecorationStyle(r.start, r.end, r.decorationStyle);
-      if (r.decorationColor) t.setRangeTextDecorationColor(r.start, r.end, { value: { type: 'SOLID', color: { r: r.decorationColor.r, g: r.decorationColor.g, b: r.decorationColor.b }, opacity: clamp01(r.decorationColor.a) } });
-      if (r.decorationThickness) t.setRangeTextDecorationThickness(r.start, r.end, { unit: 'PIXELS', value: r.decorationThickness });
+      if (r.decoration === 'UNDERLINE') {
+        // стиль, цвет и толщина линии в Figma есть только у подчёркивания
+        if (r.decorationStyle && r.decorationStyle !== 'SOLID') optional(ctx, ir, 'Стиль подчёркивания', () => t.setRangeTextDecorationStyle(r.start, r.end, r.decorationStyle!));
+        if (r.decorationColor) optional(ctx, ir, 'Цвет подчёркивания', () => t.setRangeTextDecorationColor(r.start, r.end, { value: { type: 'SOLID', color: { r: r.decorationColor!.r, g: r.decorationColor!.g, b: r.decorationColor!.b }, opacity: clamp01(r.decorationColor!.a) } }));
+        if (r.decorationThickness) optional(ctx, ir, 'Толщина подчёркивания', () => t.setRangeTextDecorationThickness(r.start, r.end, { unit: 'PIXELS', value: r.decorationThickness! }));
+      } else if ((r.decorationColor && !sameRgba(r.decorationColor, r.color)) || r.decorationThickness) {
+        warnOnce(ctx, 'strike-style', 'Цвет и толщина линии зачёркивания в Figma не задаются — линия цвета текста', ir.src);
+      }
     }
-    if (r.link) { try { t.setRangeHyperlink(r.start, r.end, { type: 'URL', value: r.link }); } catch { /* ссылка необязательна */ } }
+    if (r.link) optional(ctx, ir, 'Ссылка', () => t.setRangeHyperlink(r.start, r.end, { type: 'URL', value: r.link! }));
   }
-  if (ir.fills?.length) { const f = paints(ir.fills, ctx); if (f.length) t.fills = f; }
+  if (ir.fills?.length && paints(ir.fills, ctx).length) setFills(t, ir.fills, ctx, ir);
   if (ir.textStroke && ir.textStroke.width > 0) {
     t.strokes = [{ type: 'SOLID', color: { r: ir.textStroke.color.r, g: ir.textStroke.color.g, b: ir.textStroke.color.b }, opacity: clamp01(ir.textStroke.color.a) }];
     t.strokeWeight = ir.textStroke.width;
     t.strokeAlign = 'CENTER';
   }
   applyCommon(t, ir, 'PASS_THROUGH');
-  if (ir.effects?.length) t.effects = effects(ir.effects);
+  if (ir.effects?.length) optional(ctx, ir, 'Тени и размытие', () => { t.effects = effects(ir.effects); });
   let dx = 0;
   if (ir.truncate) {
     // фиксированная коробка + многоточие средствами Figma
@@ -177,10 +218,10 @@ function buildShape(parent: FrameNode, ir: ShapeIR, ctx: BuildContext): SceneNod
   parent.appendChild(n);
   n.name = ir.name;
   n.resize(size(ir.w), size(ir.h));
-  n.fills = paints(ir.fills, ctx);
+  setFills(n, ir.fills, ctx, ir);
   if (ir.kind === 'rect') applyRadius(n as RectangleNode, ir.radius);
-  applyStroke(n as RectangleNode, ir.stroke);
-  if (ir.effects?.length) n.effects = effects(ir.effects);
+  optional(ctx, ir, 'Обводка', () => applyStroke(n as RectangleNode, ir.stroke, ir.kind === 'ellipse'));
+  if (ir.effects?.length) optional(ctx, ir, 'Тени и размытие', () => { n.effects = effects(ir.effects); });
   applyCommon(n, ir, 'NORMAL');
   place(n, ir);
   return n;
@@ -201,8 +242,8 @@ function buildImage(parent: FrameNode, ir: ImageIR, ctx: BuildContext): SceneNod
     ctx.warnings.push({ code: 'image-missing', message: 'Изображение не передано в Figma — вставлена заглушка', node: ir.src });
   }
   applyRadius(n, ir.radius);
-  applyStroke(n, ir.stroke);
-  if (ir.effects?.length) n.effects = effects(ir.effects);
+  optional(ctx, ir, 'Обводка', () => applyStroke(n, ir.stroke));
+  if (ir.effects?.length) optional(ctx, ir, 'Тени и размытие', () => { n.effects = effects(ir.effects); });
   applyCommon(n, ir, 'NORMAL');
   place(n, ir);
   if (ir.tags?.includes('raster')) n.setPluginData('raster', '1');
@@ -233,7 +274,7 @@ function buildSvg(parent: FrameNode, ir: SvgIR, ctx: BuildContext): SceneNode {
   if (Math.abs(n.width - ir.w) > 0.01 || Math.abs(n.height - ir.h) > 0.01) n.resizeWithoutConstraints(size(ir.w), size(ir.h));
   n.clipsContent = ir.clip;
   n.fills = [];
-  if (ir.effects?.length) n.effects = effects(ir.effects);
+  if (ir.effects?.length) optional(ctx, ir, 'Тени и размытие', () => { n!.effects = effects(ir.effects); });
   applyCommon(n, ir, 'PASS_THROUGH');
   place(n, ir);
   return n;
@@ -245,11 +286,11 @@ async function buildFrame(parent: FrameNode, ir: FrameIR, ctx: BuildContext): Pr
   n.name = ir.name;
   n.layoutMode = 'NONE';
   n.resizeWithoutConstraints(size(ir.w), size(ir.h));
-  n.fills = paints(ir.fills, ctx);
+  setFills(n, ir.fills, ctx, ir);
   n.clipsContent = ir.clip;
   applyRadius(n, ir.radius);
-  applyStroke(n, ir.stroke);
-  if (ir.effects?.length) n.effects = effects(ir.effects);
+  optional(ctx, ir, 'Обводка', () => applyStroke(n, ir.stroke));
+  if (ir.effects?.length) optional(ctx, ir, 'Тени и размытие', () => { n.effects = effects(ir.effects); });
   applyCommon(n, ir, 'PASS_THROUGH');
   place(n, ir);
   for (const c of ir.children) await buildNode(n, c, ctx);
@@ -290,7 +331,7 @@ export async function buildRoute(snapshot: RouteSnapshot, ctx: BuildContext, nam
   root.name = name;
   root.layoutMode = 'NONE';
   root.resizeWithoutConstraints(size(snapshot.width), size(snapshot.height));
-  root.fills = paints(snapshot.background, ctx);
+  setFills(root, snapshot.background, ctx, {});
   root.clipsContent = true;
   for (const c of snapshot.children) await buildNode(root, c, ctx);
   return root;

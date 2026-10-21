@@ -174,7 +174,8 @@ export async function buildInMock(mock: ReturnType<typeof createFigmaMock>, src:
     });
   }
   const planP = waitMsg(mock, ['plan', 'error'], jobId);
-  await mock.send({
+  // как в Figma: postMessage не ждёт окончания обработки (загрузки шрифтов) — ждём только ответ «plan»
+  void mock.send({
     type: 'begin', jobId, project: src.doc.projectKey, projectLabel: src.doc.sourceName, source: src.doc.sourceHash.slice(0, 16), mode: o.mode ?? 'missing',
     routes: routes.map((k) => { const s = snaps.get(k)!; return { key: k, label: s.label, width: s.width, height: s.height, viewportHeight: s.viewport.height, fixed: s.fixedCount }; }),
     columns: o.columns ?? 4, fonts: fonts.map((f) => ({ key: f.key, family: f.found!.family, style: f.found!.style, wght: f.found!.wght })), viewportMode: !!o.viewportMode,

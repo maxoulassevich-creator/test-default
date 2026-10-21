@@ -1,0 +1,33 @@
+{
+  "scope": "Chromium + модель Figma API (задержка loadFontAsync 40 мс)",
+  "diagnostics": [
+    "word-spacing: word-spacing учтён позициями строк, но в Figma не задаётся",
+    "rasterized: Элемент растрирован: системный элемент формы checkbox",
+    "font-alias: «-apple-system» в этой системе — псевдоним: браузер отрисовал шрифтом Inter",
+    "tiny-text: Текст с кеглем меньше 1 px (в браузере не виден; Figma такой кегль не принимает) не перенесён"
+  ],
+  "warnings": [
+    {
+      "code": "strike-style",
+      "message": "Цвет и толщина линии зачёркивания в Figma не задаются — линия цвета текста (×2)",
+      "node": "span.uc_old_price",
+      "count": 2
+    }
+  ],
+  "build": {
+    "created": 1,
+    "replaced": 0,
+    "kept": 0,
+    "skipped": 0,
+    "texts": 17,
+    "nodes": 34,
+    "warnings": 1,
+    "set": "mvikom6bh2h8v"
+  },
+  "verify": {
+    "ok": true,
+    "checked": 34,
+    "positionIssues": 0,
+    "textIssues": 0
+  }
+}

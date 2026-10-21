@@ -282,9 +282,16 @@ export async function finalizeRoute(run: CaptureRun, meta: { routeKey: string; l
     }
     return out;
   };
+  let tinyTexts = 0;
   const fixNode = (n: NodeIR): NodeIR | null => {
     if (n.kind === 'frame' || n.kind === 'rect' || n.kind === 'ellipse') n.fills = fixPaints(n.fills) ?? [];
-    if (n.kind === 'text') n.runs = n.runs.map((r) => ({ ...r, font: keyMap.get(r.font) ?? r.font }));
+    if (n.kind === 'text') {
+      n.runs = n.runs.map((r) => ({ ...r, font: keyMap.get(r.font) ?? r.font }));
+      // кегль меньше 1 px Figma не принимает; такой текст в браузере не виден (часто font-size: 0
+      // для пробелов между inline-block) — слой пропускается, а отдельные такие символы получают 1 px
+      if (n.runs.every((r) => r.size < 1)) { tinyTexts++; return null; }
+      if (n.runs.some((r) => r.size < 1)) { tinyTexts++; n.runs = n.runs.map((r) => (r.size < 1 ? { ...r, size: 1 } : r)); }
+    }
     if (n.kind === 'image') {
       n.fills = fixPaints(n.fills);
       const r = refMap.get(n.asset);
@@ -313,6 +320,7 @@ export async function finalizeRoute(run: CaptureRun, meta: { routeKey: string; l
   };
   const children = raw.children.map(fixNode).filter((c): c is NodeIR => !!c);
   const background = fixPaints(raw.background) ?? [];
+  if (tinyTexts) diags.push({ level: 'info', code: 'tiny-text', message: 'Текст с кеглем меньше 1 px (в браузере не виден; Figma такой кегль не принимает) не перенесён', route, count: tinyTexts });
   // fixed-дети — последние; пересчитываем количество после фильтрации
   let fixedCount = 0;
   for (let i = children.length - 1; i >= 0 && children[i].scroll === 'fixed'; i--) fixedCount++;

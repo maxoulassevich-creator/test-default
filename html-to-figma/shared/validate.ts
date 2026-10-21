@@ -80,7 +80,7 @@ export function validateNode(n: NodeIR, path: string, out: ValidationIssue[], ct
         if (r.start !== pos || r.end <= r.start || r.end > n.text.length) { out.push({ path, message: `run ${r.start}-${r.end} не покрывает текст последовательно` }); break; }
         pos = r.end;
         if (!ctx.fonts.has(r.font)) out.push({ path, message: `шрифт ${r.font} не объявлен` });
-        if (!(fin(r.size) && r.size > 0)) out.push({ path, message: 'размер шрифта' });
+        if (!(fin(r.size) && r.size >= 1)) out.push({ path, message: `размер шрифта ${r.size} (Figma принимает от 1 px)` });
         if (!fin(r.letterSpacing)) out.push({ path, message: 'letterSpacing' });
         checkColor(r.color, path, out);
       }

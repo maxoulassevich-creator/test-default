@@ -24,6 +24,8 @@ export interface MockOptions {
   textWidth?: (line: Array<{ ch: string; size: number; font: { family: string; style: string }; letterSpacing: number }>) => number;
   clientStorage?: Record<string, unknown>;
   render?: (html: string, width: number, height: number) => Promise<Uint8Array>;
+  /** задержка loadFontAsync, мс (по умолчанию 15) */
+  fontDelayMs?: number;
   /** искусственный сбой: бросить ошибку при создании N-го TEXT */
   failAtText?: number;
 }
@@ -192,6 +194,10 @@ export function createFigmaMock(opts: MockOptions) {
     numberOfFixedChildren: (v: unknown) => { fin(v, 'numberOfFixedChildren'); return v; } });
   class RectMock extends MockNode { constructor(t = 'RECTANGLE') { super(t); this._fills = [{ type: 'SOLID', color: { r: 0.85, g: 0.85, b: 0.85 } }]; this._blend = 'NORMAL'; } }
   defineProps(RectMock, geom);
+  // у EllipseNode нет отдельных толщин сторон и радиусов углов (IndividualStrokesMixin, RectangleCornerMixin)
+  class EllipseMock extends RectMock { constructor() { super('ELLIPSE'); } }
+  const noProp = (k: string) => () => fail(`ELLIPSE.${k}: у эллипса нет такого свойства`);
+  defineProps(EllipseMock, Object.fromEntries(['strokeTopWeight', 'strokeRightWeight', 'strokeBottomWeight', 'strokeLeftWeight', 'topLeftRadius', 'topRightRadius', 'bottomRightRadius', 'bottomLeftRadius'].map((k) => [k, noProp(k)])));
 
   class TextMock extends MockNode {
     _chars = '';
@@ -234,13 +240,17 @@ export function createFigmaMock(opts: MockOptions) {
       stats.setRange++;
     }
     setRangeFontName(s: number, e: number, f: { family: string; style: string }) { this.range(s, e, 'setRangeFontName'); this.needFont(f, 'setRangeFontName'); for (let i = s; i < e; i++) this.per[i].font = { ...f }; this.relayout(); }
-    setRangeFontSize(s: number, e: number, v: number) { this.range(s, e, 'setRangeFontSize'); fin(v, 'size'); for (let i = s; i < e; i++) this.per[i].size = v; this.relayout(); }
+    setRangeFontSize(s: number, e: number, v: number) { this.range(s, e, 'setRangeFontSize'); if (fin(v, 'size') < 1) fail('setRangeFontSize: размер меньше 1'); for (let i = s; i < e; i++) this.per[i].size = v; this.relayout(); }
     setRangeLetterSpacing(s: number, e: number, v: { value: number }) { this.range(s, e, 'setRangeLetterSpacing'); fin(v.value, 'ls'); for (let i = s; i < e; i++) this.per[i].ls = v.value; this.relayout(); }
     setRangeFills(s: number, e: number, v: unknown[]) { this.range(s, e, 'setRangeFills'); const p = checkPaints(v, 'setRangeFills'); for (let i = s; i < e; i++) this.per[i].fills = p; }
     setRangeTextDecoration(s: number, e: number, v: string) { this.range(s, e, 'setRangeTextDecoration'); oneOf('decoration', ['NONE', 'UNDERLINE', 'STRIKETHROUGH'])(v); for (let i = s; i < e; i++) this.per[i].dec = v; }
-    setRangeTextDecorationStyle(s: number, e: number, v: string) { this.range(s, e, 'decStyle'); oneOf('decorationStyle', ['SOLID', 'WAVY', 'DOTTED'])(v); }
-    setRangeTextDecorationColor(s: number, e: number, v: { value: unknown }) { this.range(s, e, 'decColor'); if (v.value !== 'AUTO') checkPaints([v.value], 'decColor'); }
-    setRangeTextDecorationThickness(s: number, e: number, v: { unit: string; value?: number }) { this.range(s, e, 'decThick'); if (v.unit !== 'AUTO') fin(v.value, 'thickness'); }
+    // как в Figma: стиль/цвет/толщина/отступ линии — только у подчёркнутого текста (не у зачёркнутого)
+    private underlined(s: number, e: number, what: string, prop: string) { for (let i = s; i < e; i++) if (this.per[i].dec !== 'UNDERLINE') fail(`in ${what}: Cannot set text decoration ${prop} on a non-underlined text range`); }
+    setRangeTextDecorationStyle(s: number, e: number, v: string) { this.range(s, e, 'decStyle'); this.underlined(s, e, 'setRangeTextDecorationStyle', 'style'); oneOf('decorationStyle', ['SOLID', 'WAVY', 'DOTTED'])(v); }
+    setRangeTextDecorationColor(s: number, e: number, v: { value: unknown }) { this.range(s, e, 'decColor'); this.underlined(s, e, 'setRangeTextDecorationColor', 'color'); if (v.value !== 'AUTO') checkPaints([v.value], 'decColor'); }
+    setRangeTextDecorationThickness(s: number, e: number, v: { unit: string; value?: number }) { this.range(s, e, 'decThick'); this.underlined(s, e, 'setRangeTextDecorationThickness', 'thickness'); if (v.unit !== 'AUTO') fin(v.value, 'thickness'); }
+    setRangeTextDecorationOffset(s: number, e: number, v: { unit: string; value?: number }) { this.range(s, e, 'decOffset'); this.underlined(s, e, 'setRangeTextDecorationOffset', 'offset'); if (v.unit !== 'AUTO') fin(v.value, 'offset'); }
+    setRangeTextDecorationSkipInk(s: number, e: number, v: boolean) { this.range(s, e, 'decSkipInk'); this.underlined(s, e, 'setRangeTextDecorationSkipInk', 'skip ink'); bool('skipInk')(v); }
     setRangeHyperlink(s: number, e: number, v: { type: string; value: string } | null) { this.range(s, e, 'hyperlink'); for (let i = s; i < e; i++) this.per[i].link = v; }
     getStyledTextSegments() { return []; }
     relayout() {
@@ -290,6 +300,8 @@ export function createFigmaMock(opts: MockOptions) {
     clientStorage: { getAsync: async (k: string) => storage[k], setAsync: async (k: string, v: unknown) => { storage[k] = v; } },
     listAvailableFontsAsync: async () => opts.fonts.map((f) => ({ fontName: { family: f.family, style: f.style } })),
     loadFontAsync: async (f: { family: string; style?: string }) => {
+      // как в Figma: загрузка занимает время (без задержки гонки с загрузкой шрифтов не видны)
+      await new Promise((r) => setTimeout(r, opts.fontDelayMs ?? 15));
       if (!f.style) { for (const x of opts.fonts) if (x.family === f.family) loaded.add(fontKey(x)); return; }
       if (!available.has(fontKey(f as { family: string; style: string }))) throw new Error(`The font "${f.family} ${f.style}" could not be loaded`);
       loaded.add(fontKey(f as { family: string; style: string }));
@@ -297,7 +309,7 @@ export function createFigmaMock(opts: MockOptions) {
     getFontFamilyVariationAxes: (fam: string) => (opts.variable?.includes(fam) ? ['wght'] : null),
     createFrame: () => created(new FrameMock()),
     createRectangle: () => created(new RectMock()),
-    createEllipse: () => created(new RectMock('ELLIPSE')),
+    createEllipse: () => created(new EllipseMock()),
     createText: () => { stats.texts++; return created(new TextMock()); },
     createImage: (bytes: Uint8Array) => {
       if (!(bytes instanceof Uint8Array)) fail('createImage: Uint8Array');

@@ -94,6 +94,9 @@ interface Job {
   cancel: boolean;
   busy: boolean;
   routes: Map<string, PlanRoute>;
+  planMsg?: Extract<CodeToUi, { type: 'plan' }>;
+  /** загрузка шрифтов завершена — сборка страниц ждёт её */
+  ready?: Promise<void>;
   stats: { texts: number; nodes: number; warnings: number };
 }
 let job: Job | null = null;
@@ -199,7 +202,9 @@ function plan(msg: Extract<UiToCode, { type: 'begin' }>): Job {
       j.positions.set(it.key, { ...pos, slot: slot ?? [-1, -1] });
     }
   }
-  post({ type: 'plan', jobId: j.id, build: build.map((r) => r.key), skip, replace: [...j.replace.keys()] });
+  // план уходит в UI только после загрузки шрифтов (см. 'begin'): иначе UI начнёт слать
+  // страницы, пока loadFontAsync ещё идёт, и проверка увидит «не объявленные» шрифты
+  j.planMsg = { type: 'plan', jobId: j.id, build: build.map((r) => r.key), skip, replace: [...j.replace.keys()] };
   return j;
 }
 
@@ -365,7 +370,8 @@ figma.ui.onmessage = async (msg: UiToCode) => {
         if (figma.editorType !== 'figma') { post({ type: 'error', jobId: msg.jobId, message: 'Плагин работает только в Figma Design.', action: 'Откройте файл Figma Design (не FigJam/Slides).' }); return; }
         const j = plan(msg);
         job = j;
-        try { await loadFonts(j, msg.fonts); }
+        j.ready = loadFonts(j, msg.fonts);
+        try { await j.ready; post(j.planMsg!); }
         catch (e) { job = null; post({ type: 'error', jobId: msg.jobId, message: (e as Error).message, action: (e as { action?: string }).action }); }
         return;
       }
@@ -385,7 +391,7 @@ figma.ui.onmessage = async (msg: UiToCode) => {
         const j = job;
         if (!j || j.id !== msg.jobId) return;
         j.busy = true;
-        try { await buildOne(j, msg.snapshot, msg.index); }
+        try { await j.ready; await buildOne(j, msg.snapshot, msg.index); }
         catch (e) {
           j.busy = false;
           if (e instanceof CancelError) { await rollback(j, e.message); return; }

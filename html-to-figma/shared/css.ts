@@ -49,9 +49,11 @@ export function parseFontFamilies(value: string): string[] {
     .filter(Boolean);
 }
 
+// «-apple-system» и «BlinkMacSystemFont» — не ключевые слова CSS, а имена семейств: Chrome в
+// Windows их не находит и идёт дальше по списку («Segoe UI», «Roboto»…) — так же и захват
 export const GENERIC_FAMILIES = new Set([
   'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'system-ui', 'ui-serif', 'ui-sans-serif',
-  'ui-monospace', 'ui-rounded', 'emoji', 'math', 'fangsong', '-apple-system', 'blinkmacsystemfont',
+  'ui-monospace', 'ui-rounded', 'emoji', 'math', 'fangsong',
 ]);
 export const isGeneric = (f: string) => GENERIC_FAMILIES.has(f.toLowerCase());
 

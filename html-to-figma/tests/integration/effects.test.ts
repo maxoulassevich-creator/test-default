@@ -131,6 +131,18 @@ test('текст: псевдоэлементы, буквица, маленьки
   assert.ok(coverTitle && coverTitle.runs[0].size === 6);
 });
 
+test('зачёркнутая цена с цветом линии и цветное волнистое подчёркивание', () => {
+  const ts = texts();
+  const old = ts.find((x) => x.text.includes('1 490,00'));
+  assert.ok(old, 'старая цена');
+  const r = old!.runs.find((x) => old!.text.slice(x.start, x.end).includes('1 490'))!;
+  assert.equal(r.decoration, 'STRIKETHROUGH');
+  const w = ts.find((x) => x.text.includes('волнистое'))!;
+  const rw = w.runs.find((x) => w.text.slice(x.start, x.end).includes('волнистое'))!;
+  assert.equal(rw.decoration, 'UNDERLINE');
+  assert.equal(rw.decorationStyle, 'WAVY');
+});
+
 test('модель Figma: сборка без ошибок API, геометрия и визуальное сравнение', async () => {
   const mock = newMock({ render: renderHtml });
   const r = await buildInMock(mock, processorSource(t, id, doc), ['index.html']);
