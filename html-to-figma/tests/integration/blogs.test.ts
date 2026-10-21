@@ -117,13 +117,14 @@ test('V2: геометрия трансформаций, высоты относ
     const auto = s.hover.candidates[0];
     rows.push({ route: h, label: s.label, height: s.height, refHeight: ref.height, dh: s.height - ref.height, hover: s.hover.active ? s.hover.selector : null, hoverLabel: s.hover.label?.slice(0, 40), hit: s.hover.hit, autoCandidate: auto && auto.score >= 0.5 ? `${auto.selector} | ${auto.label.slice(0, 30)}` : null, irNodes: s.stats.irNodes, fixed: s.fixedCount });
   }
+  (run as unknown as { rows: unknown[] }).rows = rows;
   if (!QUICK) assert.equal(active, 22, 'поза наведения на 22 страницах');
   const home = run.snaps.get(V2)!;
   assert.ok(home.hover.label?.includes('Проза'), 'на главной — карточка «Проза»: ' + home.hover.label);
-  const paths = all(home.children).filter((n) => /^(a|div)\.path(\.|$)/.test(n.src ?? '')) as FrameIR[];
+  // src = «тег#id.класс1.класс2»: карточки с классом ровно «path» (не path__link, не paths__list)
+  const paths = all(home.children).filter((n) => n.kind === 'frame' && /\.path(\.|$)/.test(n.src ?? '')) as FrameIR[];
   const wide = paths.filter((p) => p.w > 500);
   assert.equal(wide.length, 1, 'расширена только одна карточка: ' + paths.map((p) => Math.round(p.w)).join(','));
-  (run as unknown as { rows: unknown[] }).rows = rows;
 });
 
 test('V2: поза «Проза» совпадает с настоящим наведением курсора в исходном CSS', async () => {
@@ -184,7 +185,7 @@ test('V2: все страницы в модели Figma API — одна стр�
     source: V2, profile: 'lozovaya-v2: owner, ru, light, day; 1440 px; демо-панель исключена',
     seconds: { ...run.seconds, quick: QUICK },
     discovery: { index: run.index.length, extraFound: run.extra.length, extraSample: run.extra.slice(0, 12).map((x) => rel(V2, x.key) + ' — ' + x.label), limited: run.routes.filter((x) => x.status === 'limit').length, duplicates: run.routes.filter((x) => x.status === 'duplicate').length },
-    heights: { within2px: (run as unknown as { rows: Array<{ dh: number }> }).rows.filter((x) => Math.abs(x.dh) <= 2).length, of: run.snaps.size, note: 'Высоты старого индекса — ориентир. В нашем Chromium высоты детерминированы; расхождения 27–72 px на отдельных страницах зависят от переносов строк (ширина раскладки ±15 px меняет их), то есть от окружения старой сборки.' },
+    heights: { within2px: ((run as unknown as { rows?: Array<{ dh: number }> }).rows ?? []).filter((x) => Math.abs(x.dh) <= 2).length, of: run.snaps.size, note: 'Высоты старого индекса — ориентир. В нашем Chromium высоты детерминированы; расхождения 27–72 px на отдельных страницах зависят от переносов строк (ширина раскладки ±15 px меняет их), то есть от окружения старой сборки.' },
     pointerCompare: (run as unknown as { pointer: unknown }).pointer,
     build: r.done!.summary, verify: { ok: v.ok, frames: v.frames, checked: v.checkedNodes, positionIssues: v.positionIssues.length, textIssues: v.textIssues.length, overlaps: v.frameOverlaps.length },
     homeCompare: cmp,
