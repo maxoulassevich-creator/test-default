@@ -1,10 +1,10 @@
 {
   "scope": "Chromium + модель API",
   "diagnostics": [
-    "resource-failed: Ресурс не загружен (HTTP 404): http://127.0.0.1:45293/j/9ff8c03b8aa5785452/missing.png",
-    "resource-failed: Ресурс не загружен (HTTP 404): http://127.0.0.1:45293/j/9ff8c03b8aa5785452/missing-bg.jpg",
-    "broken-image: Изображение не загрузилось: http://127.0.0.1:45293/j/9ff8c03b8aa5785452/missing.png",
-    "broken-image: Изображение не загрузилось: http://127.0.0.1:45293/j/9ff8c03b8aa5785452/corrupt.png",
-    "asset-failed: ресурс недоступен: http://127.0.0.1:45293/j/9ff8c03b8aa5785452/missing-bg.jpg"
+    "resource-failed: Ресурс не загружен (HTTP 404): http://127.0.0.1:39033/j/ff713b49f53317dfdb/missing.png",
+    "resource-failed: Ресурс не загружен (HTTP 404): http://127.0.0.1:39033/j/ff713b49f53317dfdb/missing-bg.jpg",
+    "broken-image: Изображение не загрузилось: http://127.0.0.1:39033/j/ff713b49f53317dfdb/missing.png",
+    "broken-image: Изображение не загрузилось: http://127.0.0.1:39033/j/ff713b49f53317dfdb/corrupt.png",
+    "asset-failed: ресурс недоступен: http://127.0.0.1:39033/j/ff713b49f53317dfdb/missing-bg.jpg"
   ]
 }

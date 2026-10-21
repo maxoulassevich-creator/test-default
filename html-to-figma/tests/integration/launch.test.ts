@@ -10,14 +10,9 @@ import assert from 'node:assert/strict';
 import { spawn, type ChildProcess } from 'node:child_process';
 import fs from 'node:fs';
 import http from 'node:http';
-import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
-import { ROOT } from '../support/env';
-
-function freePort(): Promise<number> {
-  return new Promise((res) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const p = (s.address() as net.AddressInfo).port; s.close(() => res(p)); }); });
-}
+import { freePort, ROOT } from '../support/env';
 
 function launch(script: string, port: number, data: string): { child: ChildProcess; out: () => string; ready: Promise<void>; exited: Promise<number | null> } {
   let buf = '';

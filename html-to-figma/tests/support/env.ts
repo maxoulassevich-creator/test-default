@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import http from 'node:http';
+import net from 'node:net';
 import path from 'node:path';
 import { startProcessor } from '../../processor/src/main';
 import { createZip } from '../../processor/src/zip';
@@ -21,11 +22,24 @@ export const BLOGS = path.join(FIX, 'blogs');
 
 if (!process.env.H2F_CHROMIUM && fs.existsSync('/opt/pw-browsers/chromium-1194/chrome-linux/chrome')) process.env.H2F_CHROMIUM = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 
+export function freePort(): Promise<number> {
+  return new Promise((res, rej) => {
+    const srv = net.createServer();
+    srv.once('error', rej);
+    srv.listen(0, '127.0.0.1', () => { const port = (srv.address() as net.AddressInfo).port; srv.close(() => res(port)); });
+  });
+}
+
 export async function startTestProcessor(extra: { concurrency?: number } = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'h2f-test-'));
   process.env.H2F_EPHEMERAL = '1';
-  const port = 47900 + Math.floor(Math.random() * 500);
-  const p = await startProcessor({ port, dataDir, profilesDirs: [path.join(ROOT, 'processor', 'profiles')], webDir: path.join(ROOT, 'processor', 'web') });
+  // свободный порт выдаёт ОС; случайный порт из эфемерного диапазона мог быть занят чужим сокетом
+  let p: Awaited<ReturnType<typeof startProcessor>> | null = null;
+  for (let attempt = 0; !p; attempt++) {
+    const port = await freePort();
+    try { p = await startProcessor({ port, dataDir, profilesDirs: [path.join(ROOT, 'processor', 'profiles')], webDir: path.join(ROOT, 'processor', 'dist') }); }
+    catch (e) { if ((e as { code?: string }).code !== 'EADDRINUSE' || attempt >= 4) throw e; }
+  }
   if (extra.concurrency) p.cfg.limits.concurrency = extra.concurrency;
   const base = `http://127.0.0.1:${p.cfg.port}`;
   const pair = await fetch(base + '/api/pair', { method: 'POST', body: JSON.stringify({ code: p.cfg.pairingCode }), headers: { 'content-type': 'application/json' } });

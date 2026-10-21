@@ -3,8 +3,8 @@
   "source": "blog-v1.html",
   "profile": "lozovaya-v1: owner, ru; 1440 px; демо-панель исключена",
   "seconds": {
-    "discover": 50.123,
-    "capture": 70.416,
+    "discover": 51.81,
+    "capture": 73.319,
     "quick": false
   },
   "discovery": {
@@ -20,7 +20,7 @@
     "texts": 3053,
     "nodes": 8353,
     "warnings": 0,
-    "set": "mviibgzv53rpo"
+    "set": "mviikqw2s0tkn"
   },
   "verify": {
     "ok": true,
