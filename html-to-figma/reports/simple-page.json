@@ -1,0 +1,93 @@
+{
+  "scope": "Chromium + модель Figma API (не настоящая Figma)",
+  "snapshot": {
+    "svgVector": 1,
+    "nodes": 19,
+    "chars": 273,
+    "fixed": 0,
+    "prunedWrappers": 6,
+    "irNodes": 19,
+    "transformMismatches": 0,
+    "prepShift": 0,
+    "ms_load": 355,
+    "ms_settleHover": 755,
+    "ms_capture": 163,
+    "ms_shot": 142,
+    "ms_finalize": 14
+  },
+  "verify": {
+    "frames": 1,
+    "texts": 10,
+    "checkedNodes": 19,
+    "positionIssues": [],
+    "textIssues": [
+      {
+        "route": "index.html",
+        "node": "Мастерская",
+        "problem": "шире исходного на 21.3 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "О насРаботыКонтакты",
+        "problem": "шире исходного на 7.4 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "О насРаботыКонтакты",
+        "problem": "шире исходного на 6.8 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "О насРаботыКонтакты",
+        "problem": "шире исходного на 6.9 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "Добрый день, читатель",
+        "problem": "шире исходного на 103.3 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "Это простая страница для проверки переноса: текс",
+        "problem": "шире исходного на 195.9 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "Читать дальше",
+        "problem": "шире исходного на 19.7 px (метрики шрифта в Figma)"
+      },
+      {
+        "route": "index.html",
+        "node": "© 2026 Мастерская",
+        "problem": "шире исходного на 21.6 px (метрики шрифта в Figma)"
+      }
+    ],
+    "newOverlaps": [],
+    "frameOverlaps": [],
+    "ok": true,
+    "scope": "Проверка в Figma: абсолютные рамки нативных слоёв сравниваются с рамками модели; пересечения фреймов на странице."
+  },
+  "compare": {
+    "source": [
+      1440,
+      1000
+    ],
+    "figma": [
+      1440,
+      1000
+    ],
+    "sizeMatch": true,
+    "meanAbs": 1.647,
+    "changedRatio": 0.01187,
+    "scope": "Исходник в Chromium ↔ PNG, экспортированный из нативных нод Figma (exportAsync)"
+  },
+  "mockStats": {
+    "created": 22,
+    "texts": 10,
+    "setRange": 13,
+    "svg": 1,
+    "images": 1,
+    "removed": 0,
+    "apiErrors": 0
+  }
+}

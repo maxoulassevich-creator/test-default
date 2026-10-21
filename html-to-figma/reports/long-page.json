@@ -1,0 +1,23 @@
+{
+  "scope": "Chromium + модель API",
+  "height": 16335,
+  "texts": 342,
+  "stats": {
+    "nodes": 350,
+    "chars": 19598,
+    "fixed": 1,
+    "prunedWrappers": 341,
+    "irNodes": 351,
+    "transformMismatches": 0,
+    "prepShift": 0,
+    "ms_load": 5351,
+    "ms_settleHover": 3018,
+    "ms_capture": 1997,
+    "ms_shot": 1775,
+    "ms_finalize": 229
+  },
+  "verify": {
+    "ok": true,
+    "checked": 351
+  }
+}

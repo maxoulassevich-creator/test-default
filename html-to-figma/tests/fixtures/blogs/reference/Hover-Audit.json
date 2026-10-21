@@ -1,0 +1,2056 @@
+{
+  "scope": "One real source hover pose per relevant page; no separate state frames, components or interactions.",
+  "pages": [
+    {
+      "id": "p01",
+      "label": "Главная",
+      "active": true,
+      "selector": ".path",
+      "title": "013 произведения Проза Повести и рассказы по главам — с оглавлением, закладкой и поиском внутри текста. Одна линия2025Мо",
+      "markedCards": 1,
+      "hitTag": "A",
+      "hitClass": "path__link",
+      "changes": [
+        {
+          "cls": "path is-in",
+          "properties": [
+            "width",
+            "background-color",
+            "box-shadow"
+          ],
+          "before": {
+            "width": "319.5px",
+            "background-color": "color(srgb 0.96549 0.927373 0.870745)",
+            "box-shadow": "rgba(111, 90, 80, 0.16) 0px 0px 0px 1px inset"
+          },
+          "after": {
+            "width": "547.547px",
+            "background-color": "color(srgb 0.951373 0.89349 0.809098)",
+            "box-shadow": "color(srgb 0.529412 0.337255 0.121569 / 0.3) 0px 0px 0px 1px inset, rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        },
+        {
+          "cls": "path__wash",
+          "properties": [
+            "transform",
+            "width",
+            "height"
+          ],
+          "before": {
+            "transform": "none",
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "transform": "matrix(1.16207, 0.204905, -0.204905, 1.16207, 0, 0)",
+            "width": "821.312px",
+            "height": "821.312px"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "821.312px",
+            "height": "821.312px"
+          }
+        },
+        {
+          "cls": "path__top",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "path__art",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "263.5px",
+            "height": "425.125px"
+          },
+          "after": {
+            "width": "491.547px",
+            "height": "233.406px"
+          }
+        },
+        {
+          "cls": "sheetp",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.994522, -0.104528, 0.104528, 0.994522, -7.95618, 0.836228)"
+          },
+          "after": {
+            "transform": "matrix(0.984808, -0.173648, 0.173648, 0.984808, -17.7265, 3.12567)"
+          }
+        },
+        {
+          "cls": "sheetp",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.999848, -0.0174524, 0.0174524, 0.999848, -0.0698096, -3.99939)"
+          },
+          "after": {
+            "transform": "matrix(0.999848, -0.0174524, 0.0174524, 0.999848, -0.104714, -5.99909)"
+          }
+        },
+        {
+          "cls": "sheetp",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.997564, 0.0697565, -0.0697565, 0.997564, 8.53856, -7.42246)"
+          },
+          "after": {
+            "transform": "matrix(0.990268, 0.139173, -0.139173, 0.990268, 19.4949, -9.3781)"
+          }
+        },
+        {
+          "cls": "path__body",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "263.5px",
+            "height": "131.203px"
+          },
+          "after": {
+            "width": "491.547px",
+            "height": "322.922px"
+          }
+        },
+        {
+          "cls": "path__title",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "path__text",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "448px"
+          }
+        },
+        {
+          "cls": "path__more",
+          "properties": [
+            "transform",
+            "opacity",
+            "width",
+            "height",
+            "max-height",
+            "margin-top"
+          ],
+          "before": {
+            "transform": "matrix(1, 0, 0, 1, 0, 10)",
+            "opacity": "0",
+            "width": "263.5px",
+            "height": "0px",
+            "max-height": "0px",
+            "margin-top": "0px"
+          },
+          "after": {
+            "transform": "none",
+            "opacity": "1",
+            "width": "491.547px",
+            "height": "183.719px",
+            "max-height": "260px",
+            "margin-top": "8px"
+          }
+        },
+        {
+          "cls": "UL",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "491.547px"
+          }
+        },
+        {
+          "cls": "path is-in",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "319.5px"
+          },
+          "after": {
+            "width": "243.484px"
+          }
+        },
+        {
+          "cls": "path__wash",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "path__top",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__art",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "pa-poem",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "P",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "260px"
+          },
+          "after": {
+            "width": "255px"
+          }
+        },
+        {
+          "cls": "path__body",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__title",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__text",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__more",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "UL",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path is-in",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "319.5px"
+          },
+          "after": {
+            "width": "243.484px"
+          }
+        },
+        {
+          "cls": "path__wash",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "path__top",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__art",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "pa-song",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "pa-song__bar",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "INPUT",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "wave ",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "wave-fg",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "wave",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__body",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path is-in",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "319.5px"
+          },
+          "after": {
+            "width": "243.484px"
+          }
+        },
+        {
+          "cls": "path__wash",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "width",
+            "height"
+          ],
+          "before": {
+            "width": "479.25px",
+            "height": "479.25px"
+          },
+          "after": {
+            "width": "365.219px",
+            "height": "365.219px"
+          }
+        },
+        {
+          "cls": "path__top",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__art",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__body",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__title",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__text",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "path__more",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "187.484px"
+          }
+        },
+        {
+          "cls": "UL",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "208px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "208px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "208px"
+          }
+        },
+        {
+          "cls": "LI",
+          "properties": [
+            "width"
+          ],
+          "before": {
+            "width": "263.5px"
+          },
+          "after": {
+            "width": "208px"
+          }
+        }
+      ],
+      "beforeHeight": 3787,
+      "afterHeight": 3787
+    },
+    {
+      "id": "p02",
+      "label": "Об авторе",
+      "active": true,
+      "selector": ".dirs2 a",
+      "title": "ПрозаПовести, рассказы, эссе3",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "A",
+          "properties": [
+            "transform",
+            "background-color",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "background-color": "color(srgb 0.96549 0.927373 0.870745)",
+            "box-shadow": "none"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -3)",
+            "background-color": "color(srgb 0.951373 0.89349 0.809098)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 3563,
+      "afterHeight": 3563
+    },
+    {
+      "id": "p03",
+      "label": "Творчество",
+      "active": true,
+      "selector": ".bento__i--prose",
+      "title": "3 ПрозаПовести, рассказы и эссе: оглавление, закладка, поиск по главам и настройки чтения. ЭссеОдна линияЗаметки о том, ",
+      "markedCards": 1,
+      "hitTag": "A",
+      "hitClass": "bento__link",
+      "changes": [
+        {
+          "cls": "bento__i bento__i--prose is-in",
+          "properties": [
+            "box-shadow"
+          ],
+          "before": {
+            "box-shadow": "rgba(111, 90, 80, 0.16) 0px 0px 0px 1px inset"
+          },
+          "after": {
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        },
+        {
+          "cls": "bento__wash",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "none"
+          },
+          "after": {
+            "transform": "matrix(1.06733, 0.266114, -0.266114, 1.06733, 0, 0)"
+          }
+        },
+        {
+          "cls": "bento__link",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        }
+      ],
+      "beforeHeight": 2701,
+      "afterHeight": 2701
+    },
+    {
+      "id": "p04",
+      "label": "Проза",
+      "active": true,
+      "selector": ".book",
+      "title": "ЭссеОдна линияЗаметки о том, как начинается картинаЛидия Лозовая ЭссеОдна линияЗаметки о том, как начинается картина Каж",
+      "markedCards": 1,
+      "hitTag": "P",
+      "hitClass": "book__sub",
+      "changes": [
+        {
+          "cls": "book__cv",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.999391, -0.0348995, 0.0348995, 0.999391, 0, 0)"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -6)"
+          }
+        }
+      ],
+      "beforeHeight": 2152,
+      "afterHeight": 2152
+    },
+    {
+      "id": "p05",
+      "label": "· повесть",
+      "active": true,
+      "selector": ".toc__a",
+      "title": "1Шесть сорокПоезд пришёл в шесть сорок, как и было написано в билете, и это почему-то удивило меня больше всего. Я отвык",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "toc__a ",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 4, 0)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 2845,
+      "afterHeight": 2845
+    },
+    {
+      "id": "p06",
+      "label": "· глава с настройками чтения",
+      "active": true,
+      "selector": ".pgr__a--next",
+      "title": "Следующая главаКоробка из-под обуви",
+      "markedCards": 1,
+      "hitTag": "SMALL",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "pgr__a pgr__a--next",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -2)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 2839,
+      "afterHeight": 2839
+    },
+    {
+      "id": "p07",
+      "label": "Поэзия",
+      "active": true,
+      "selector": ".pcard",
+      "title": "Полынь Полынь растёт, где некому полоть,где степь не помнит, кто её делил.Я привезла домой её щепоть —и запах всю дорогу",
+      "markedCards": 1,
+      "hitTag": "SPAN",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "pcard",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -4)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 3089,
+      "afterHeight": 3089
+    },
+    {
+      "id": "p08",
+      "label": "· стихотворение + EN",
+      "active": true,
+      "selector": ".pgr__a--next",
+      "title": "Следующее в циклеНочная кухня",
+      "markedCards": 1,
+      "hitTag": "SMALL",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "pgr__a pgr__a--next",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -2)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 2782,
+      "afterHeight": 2782
+    },
+    {
+      "id": "p09",
+      "label": "Поэзия в музыке",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p10",
+      "label": "· песня",
+      "active": true,
+      "selector": ".srcpoem",
+      "title": "Исходное стихотворение«Переправа»Переправа. Канат и вода. / Полчаса — и другая страна,",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "srcpoem",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "ic ",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "none"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 5, 0)"
+          }
+        }
+      ],
+      "beforeHeight": 2347,
+      "afterHeight": 2347
+    },
+    {
+      "id": "p11",
+      "label": "Пьесы",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p12",
+      "label": "· пьеса",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p13",
+      "label": "Сценарии",
+      "active": true,
+      "selector": ".tile",
+      "title": "СценарийШесть сорокВ разработке≈ 15 минутВ разработкеШесть сорокПриехав продавать дом умершей бабушки, тридцатилетняя Ве",
+      "markedCards": 1,
+      "hitTag": "SMALL",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "tile tile--row",
+          "properties": [
+            "transform",
+            "box-shadow",
+            "color"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px",
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -3)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px",
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "cv cv--script ",
+          "properties": [
+            "box-shadow",
+            "color"
+          ],
+          "before": {
+            "box-shadow": "rgba(111, 90, 80, 0.16) 0px 0px 0px 1px inset",
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "box-shadow": "none",
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "cv__wash",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "g",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "cv__gl",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "gl ",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        },
+        {
+          "cls": "B",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(81, 76, 72)"
+          }
+        }
+      ],
+      "beforeHeight": 1600,
+      "afterHeight": 1600
+    },
+    {
+      "id": "p14",
+      "label": "· сценарий",
+      "active": true,
+      "selector": ".tile",
+      "title": "ПовестьДо востребованияПовесть в пяти главахЛидия ЛозоваяПрозаДо востребования",
+      "markedCards": 1,
+      "hitTag": "path",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "tile",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "cv cv--prose ",
+          "properties": [
+            "transform",
+            "box-shadow",
+            "color"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(111, 90, 80, 0.16) 0px 0px 0px 1px inset",
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "transform": "matrix(0.999848, -0.0174524, 0.0174524, 0.999848, 0, -5)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px",
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "cv__wash",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "g",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "cv__gl",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "gl ",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        },
+        {
+          "cls": "B",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(135, 86, 31)"
+          }
+        }
+      ],
+      "beforeHeight": 5141,
+      "afterHeight": 5141
+    },
+    {
+      "id": "p15",
+      "label": "Живопись",
+      "active": true,
+      "selector": ".ser",
+      "title": "2019–2022 · 4Степь и рекаПервая серия, начатая после возвращения в Заволжье. Горизонт как единственная прямая в мире, гд",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "ser",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -4)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.990268, -0.139173, 0.139173, 0.990268, -107.255, -36.4183)"
+          },
+          "after": {
+            "transform": "matrix(0.997564, -0.0697565, 0.0697565, 0.997564, -131.533, -37.9374)"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.990268, 0.139173, -0.139173, 0.990268, -16.1508, -69.473)"
+          },
+          "after": {
+            "transform": "matrix(0.997564, 0.0697565, -0.0697565, 0.997564, 8.12636, -70.992)"
+          }
+        }
+      ],
+      "beforeHeight": 4158,
+      "afterHeight": 4158
+    },
+    {
+      "id": "p16",
+      "label": "· серия",
+      "active": true,
+      "selector": ".wall a",
+      "title": "Июль. Левый берег2019 · Масло, холст · 60 × 90 см",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "pa-svg ",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "none"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -6)"
+          }
+        }
+      ],
+      "beforeHeight": 2030,
+      "afterHeight": 2030
+    },
+    {
+      "id": "p17",
+      "label": "· картина",
+      "active": true,
+      "selector": ".pp__img",
+      "title": "Увеличить",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "pp__zoom",
+          "properties": [
+            "transform",
+            "opacity"
+          ],
+          "before": {
+            "transform": "matrix(1, 0, 0, 1, 0, 6)",
+            "opacity": "0"
+          },
+          "after": {
+            "transform": "none",
+            "opacity": "1"
+          }
+        }
+      ],
+      "beforeHeight": 3560,
+      "afterHeight": 3560
+    },
+    {
+      "id": "p18",
+      "label": "Фото и видео",
+      "active": true,
+      "selector": ".pile",
+      "title": "Выставки · 6 фотоВыставка «Степь и вода»2025 · Волгоград",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "SPAN",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.996195, -0.0871557, 0.0871557, 0.996195, -7.96956, 0.697246)"
+          },
+          "after": {
+            "transform": "matrix(0.987688, -0.156434, 0.156434, 0.987688, -25.6799, 4.0673)"
+          }
+        },
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "filter"
+          ],
+          "before": {
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "filter": "none"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(1, 0, 0, 1, 0, -3)"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -6)"
+          }
+        },
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "filter"
+          ],
+          "before": {
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "filter": "none"
+          }
+        },
+        {
+          "cls": "SPAN",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(0.996195, 0.0871557, -0.0871557, 0.996195, 8.49249, -5.27992)"
+          },
+          "after": {
+            "transform": "matrix(0.987688, 0.156434, -0.156434, 0.987688, 27.5571, -7.78496)"
+          }
+        },
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "filter"
+          ],
+          "before": {
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "filter": "none"
+          }
+        },
+        {
+          "cls": "B",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(111, 90, 80)"
+          }
+        }
+      ],
+      "beforeHeight": 3006,
+      "afterHeight": 3006
+    },
+    {
+      "id": "p19",
+      "label": "· альбом",
+      "active": true,
+      "selector": ".photos2 button",
+      "title": "Первый зал: степная серия",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "transform",
+            "filter"
+          ],
+          "before": {
+            "transform": "none",
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "transform": "matrix(1.03, 0, 0, 1.03, 0, 0)",
+            "filter": "none"
+          }
+        }
+      ],
+      "beforeHeight": 2534,
+      "afterHeight": 2534
+    },
+    {
+      "id": "p20",
+      "label": "Слушать и смотреть",
+      "active": true,
+      "selector": ".vcard2",
+      "title": "6:40 Чтения · 8 октября 2025Чтение у реки",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "transform",
+            "filter"
+          ],
+          "before": {
+            "transform": "none",
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "transform": "matrix(1.04, 0, 0, 1.04, 0, 0)",
+            "filter": "none"
+          }
+        },
+        {
+          "cls": "vcard2__play",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "matrix(1, 0, 0, 1, -33, -33)"
+          },
+          "after": {
+            "transform": "matrix(1.1, 0, 0, 1.1, -33, -33)"
+          }
+        },
+        {
+          "cls": "B",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(76, 106, 61)"
+          }
+        }
+      ],
+      "beforeHeight": 2472,
+      "afterHeight": 2472
+    },
+    {
+      "id": "p21",
+      "label": "Избранное и архив",
+      "active": true,
+      "selector": ".tile",
+      "title": "Левый берегПереправа. Канат и вода.Полчаса — и другая страна,ПереправаСтихотворениеПереправа",
+      "markedCards": 1,
+      "hitTag": "path",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "tile",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "cv cv--poem ",
+          "properties": [
+            "transform",
+            "box-shadow",
+            "color"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(111, 90, 80, 0.16) 0px 0px 0px 1px inset",
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "transform": "matrix(0.999848, -0.0174524, 0.0174524, 0.999848, 0, -5)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px",
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "cv__wash",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "svg",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "g",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "cv__gl",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "gl ",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "path",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(44, 35, 31)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        },
+        {
+          "cls": "B",
+          "properties": [
+            "color"
+          ],
+          "before": {
+            "color": "rgb(30, 23, 20)"
+          },
+          "after": {
+            "color": "rgb(52, 80, 127)"
+          }
+        }
+      ],
+      "beforeHeight": 3181,
+      "afterHeight": 3181
+    },
+    {
+      "id": "p22",
+      "label": "Поиск: «степь»",
+      "active": true,
+      "selector": ".res2",
+      "title": "ЭссеОдна линияЗаметки о том, как начинается картинаЛидия Лозовая Проза2025Волгоград Одна линия…лгоград После моря, 2024–",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "res2",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 4, 0)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 3718,
+      "afterHeight": 3718
+    },
+    {
+      "id": "p23",
+      "label": "Поиск с опечаткой",
+      "active": true,
+      "selector": ".res2",
+      "title": "Левый берегПереправа. Канат и вода.Полчаса — и другая страна,Переправа Стихотворение2020Средняя Ахтуба Переправа… берег ",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "res2",
+          "properties": [
+            "transform",
+            "box-shadow"
+          ],
+          "before": {
+            "transform": "none",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 1px 2px 0px, rgba(44, 35, 31, 0.32) 0px 12px 32px -18px"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 4, 0)",
+            "box-shadow": "rgba(44, 35, 31, 0.06) 0px 2px 6px 0px, rgba(44, 35, 31, 0.45) 0px 30px 60px -30px"
+          }
+        }
+      ],
+      "beforeHeight": 2335,
+      "afterHeight": 2335
+    },
+    {
+      "id": "p24",
+      "label": "Для гостей",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p25",
+      "label": "Контакты",
+      "active": true,
+      "selector": ".chan2",
+      "title": "TelegramАнонсы новых публикаций",
+      "markedCards": 1,
+      "hitTag": "B",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "chan2",
+          "properties": [
+            "transform"
+          ],
+          "before": {
+            "transform": "none"
+          },
+          "after": {
+            "transform": "matrix(1, 0, 0, 1, 0, -2)"
+          }
+        }
+      ],
+      "beforeHeight": 2154,
+      "afterHeight": 2154
+    },
+    {
+      "id": "p26",
+      "label": "Вход по приглашению",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p27",
+      "label": "Активация приглашения",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p28",
+      "label": "Восстановление пароля",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p29",
+      "label": "Страница 404",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p30",
+      "label": "Рабочий блог",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    },
+    {
+      "id": "p31",
+      "label": "Альбомы гостей",
+      "active": true,
+      "selector": "[data-calbum]:not([disabled])",
+      "title": "3 Работа · 20242024 · Офис Гости: Анна К.",
+      "markedCards": 1,
+      "hitTag": "rect",
+      "hitClass": "",
+      "changes": [
+        {
+          "cls": "ph-svg sepia-media ",
+          "properties": [
+            "filter"
+          ],
+          "before": {
+            "filter": "sepia(0.85) saturate(0.6) contrast(0.95) brightness(1.03)"
+          },
+          "after": {
+            "filter": "none"
+          }
+        }
+      ],
+      "beforeHeight": 2755,
+      "afterHeight": 2755
+    },
+    {
+      "id": "p32",
+      "label": "Личный архив",
+      "active": false,
+      "reason": "В этом представлении нет карточки с эффектом наведения."
+    }
+  ]
+}

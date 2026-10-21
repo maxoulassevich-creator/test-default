@@ -1,0 +1,242 @@
+{
+  "scope": "Chromium: обход SPA",
+  "routes": [
+    {
+      "key": "index.html",
+      "status": "ok",
+      "label": "Главная"
+    },
+    {
+      "key": "index.html#/items",
+      "status": "ok",
+      "label": "Товары"
+    },
+    {
+      "key": "index.html#/search?q=лампа",
+      "status": "ok",
+      "label": "Поиск «лампа»"
+    },
+    {
+      "key": "index.html#/search?q=стол",
+      "status": "ok",
+      "label": "Поиск «стол»"
+    },
+    {
+      "key": "index.html#/login",
+      "status": "ok",
+      "label": "Вход"
+    },
+    {
+      "key": "index.html#/login?mode=restore",
+      "status": "ok",
+      "label": "Забыли пароль?"
+    },
+    {
+      "key": "index.html#/item/1",
+      "status": "ok",
+      "label": "первый товар"
+    },
+    {
+      "key": "index.html#/item/2",
+      "status": "ok",
+      "label": "Стол 2"
+    },
+    {
+      "key": "index.html#/item/3",
+      "status": "ok",
+      "label": "Кресло 3"
+    },
+    {
+      "key": "index.html#/item/4",
+      "status": "ok",
+      "label": "Полка 4"
+    },
+    {
+      "key": "index.html#/item/5",
+      "status": "ok",
+      "label": "Лампа 5"
+    },
+    {
+      "key": "index.html#/item/6",
+      "status": "ok",
+      "label": "Стол 6"
+    },
+    {
+      "key": "index.html#/item/7",
+      "status": "ok",
+      "label": "Кресло 7"
+    },
+    {
+      "key": "index.html#/item/8",
+      "status": "ok",
+      "label": "Полка 8"
+    },
+    {
+      "key": "index.html#/items?page=2",
+      "status": "ok",
+      "label": "2"
+    },
+    {
+      "key": "index.html#/items?page=3",
+      "status": "ok",
+      "label": "3"
+    },
+    {
+      "key": "index.html#/items?page=4",
+      "status": "ok",
+      "label": "4"
+    },
+    {
+      "key": "index.html#/item/9",
+      "status": "ok",
+      "label": "Следующий"
+    },
+    {
+      "key": "index.html#/item/10",
+      "status": "ok",
+      "label": "Стол 10"
+    },
+    {
+      "key": "index.html#/item/11",
+      "status": "ok",
+      "label": "Кресло 11"
+    },
+    {
+      "key": "index.html#/item/12",
+      "status": "ok",
+      "label": "Полка 12"
+    },
+    {
+      "key": "index.html#/",
+      "status": "duplicate",
+      "reason": "содержимое совпадает с index.html",
+      "label": "Главная"
+    },
+    {
+      "key": "index.html#/old-catalog",
+      "status": "duplicate",
+      "reason": "перенаправляет на index.html#/items",
+      "label": "Старый каталог"
+    },
+    {
+      "key": "index.html#/items?page=1",
+      "status": "duplicate",
+      "reason": "содержимое совпадает с index.html#/items",
+      "label": "1"
+    },
+    {
+      "key": "index.html#help",
+      "status": "anchor",
+      "reason": "якорь #help на этой странице",
+      "label": "Помощь"
+    },
+    {
+      "key": "index.html#/item/13",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Лампа 13"
+    },
+    {
+      "key": "index.html#/item/14",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Стол 14"
+    },
+    {
+      "key": "index.html#/item/15",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Кресло 15"
+    },
+    {
+      "key": "index.html#/item/16",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Полка 16"
+    },
+    {
+      "key": "index.html#/item/17",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Лампа 17"
+    },
+    {
+      "key": "index.html#/item/18",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Стол 18"
+    },
+    {
+      "key": "index.html#/item/19",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Кресло 19"
+    },
+    {
+      "key": "index.html#/item/20",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Полка 20"
+    },
+    {
+      "key": "index.html#/item/21",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Лампа 21"
+    },
+    {
+      "key": "index.html#/item/22",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Стол 22"
+    },
+    {
+      "key": "index.html#/item/23",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Кресло 23"
+    },
+    {
+      "key": "index.html#/item/24",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Полка 24"
+    },
+    {
+      "key": "index.html#/item/25",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Лампа 25"
+    },
+    {
+      "key": "index.html#/item/26",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Стол 26"
+    },
+    {
+      "key": "index.html#/item/27",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Кресло 27"
+    },
+    {
+      "key": "index.html#/item/28",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Полка 28"
+    },
+    {
+      "key": "index.html#/item/29",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Лампа 29"
+    },
+    {
+      "key": "index.html#/item/30",
+      "status": "limit",
+      "reason": "однотипных адресов больше 12 (пагинация/календарь)",
+      "label": "Стол 30"
+    }
+  ]
+}

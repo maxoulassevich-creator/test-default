@@ -1,0 +1,14 @@
+{
+  "id": "lozovaya-v1",
+  "label": "Блог Лидии Лозовой, вариант 1 — вид владельца",
+  "match": { "allOf": ["'ll-role'", "demo-list"] },
+  "profile": {
+    "storage": { "ll-role": "owner", "ll-lang": "ru" },
+    "exclude": ["#demo-slot", "#demo"],
+    "colorScheme": "light",
+    "locale": "ru-RU",
+    "viewportWidth": 1440
+  },
+  "routeSelector": "#demo-list a",
+  "notes": "Демо-переключатель роли — не настоящая авторизация. Панель демо (#demo-slot) исключается; её ссылки используются как указатель страниц."
+}

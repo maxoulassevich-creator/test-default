@@ -1,0 +1,39 @@
+{
+  "scope": "Модель Figma API (не настоящая Figma)",
+  "routes": 5,
+  "created": {
+    "created": 5,
+    "replaced": 0,
+    "kept": 0,
+    "skipped": 0,
+    "texts": 87,
+    "nodes": 130,
+    "warnings": 0,
+    "set": "mvi7g1mrzyn7v"
+  },
+  "replaced": {
+    "created": 5,
+    "replaced": 4,
+    "kept": 1,
+    "skipped": 0,
+    "texts": 87,
+    "nodes": 130,
+    "warnings": 0,
+    "set": "mvi7g1mrzyn7v"
+  },
+  "copy": {
+    "created": 5,
+    "replaced": 0,
+    "kept": 0,
+    "skipped": 0,
+    "texts": 87,
+    "nodes": 130,
+    "warnings": 0,
+    "set": "mvi7g2ifchyys"
+  },
+  "verify": {
+    "ok": true,
+    "frames": 11,
+    "overlaps": 0
+  }
+}

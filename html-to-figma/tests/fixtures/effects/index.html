@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Эффекты</title>
+<style>
+  body{margin:0;font-family:'EB Garamond',serif;background:#f6f1ea;color:#2a221e}
+  section{padding:30px 40px;position:relative}
+  h2{font-family:'Cormorant Garamond';font-weight:500;font-size:30px;margin:0 0 16px}
+  /* transforms */
+  .fan{position:relative;height:260px}
+  .sheet{position:absolute;left:120px;top:20px;width:150px;height:200px;background:#fff;border-radius:6px;box-shadow:0 10px 24px -10px rgba(0,0,0,.35);transform-origin:50% 90%;display:flex;align-items:center;justify-content:center;font-size:18px}
+  .sheet:nth-child(1){transform:rotate(-14deg)}
+  .sheet:nth-child(2){transform:rotate(-2deg) translate(6px,-6px)}
+  .sheet:nth-child(3){transform:rotate(11deg) translate(14px,-4px)}
+  .nest{position:absolute;left:520px;top:30px;width:220px;height:140px;background:#e8dccd;transform:translate(10px,8px) rotate(8deg);transform-origin:0 0}
+  .nest .inner{position:absolute;left:30px;top:30px;width:120px;height:60px;background:#b85;color:#fff;transform:scale(1.25) rotate(-20deg);transform-origin:center;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .scaled{position:absolute;left:860px;top:40px;width:160px;height:100px;background:#345;color:#fff;transform:scale(1.5);transform-origin:0 0;padding:10px;box-sizing:border-box;border-radius:8px;font-size:12px}
+  /* colors, opacity, shadows, radii */
+  .chips{display:flex;gap:16px;flex-wrap:wrap}
+  .chip{width:120px;height:70px;border-radius:24px 8px 40px 2px;background:color-mix(in srgb, #c96 60%, #36c);box-shadow:0 1px 2px rgba(0,0,0,.2),0 8px 16px -6px rgba(40,20,0,.4),inset 0 0 0 2px rgba(255,255,255,.5)}
+  .chip.p3{background:color(display-p3 0.2 0.6 0.3)}
+  .chip.ok{background:oklch(0.7 0.12 40)}
+  .chip.ghost{opacity:0}
+  .chip.spread{box-shadow:0 0 0 6px rgba(200,60,60,.35)}
+  .pill{display:inline-block;padding:6px 16px;border-radius:999px;background:#2a221e;color:#fff;font-size:13px}
+  .clip{width:200px;height:100px;overflow:hidden;border-radius:16px;position:relative;background:#ddd}
+  .clip .big{position:absolute;left:-40px;top:-30px;width:300px;height:160px;background:radial-gradient(circle at 30% 40%,#f90 0%,#f90 20%,rgba(255,153,0,0) 60%)}
+  /* pseudo, drop cap, tiny text */
+  .label{position:relative;padding-left:16px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#a44}
+  .label::before{content:"";position:absolute;left:0;top:50%;width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#e9a}
+  .arrow::after{content:" →";color:#a44}
+  .dropcap::first-letter{float:left;font-family:'Cormorant Garamond';font-size:64px;line-height:.8;padding:6px 8px 0 0;color:#a44}
+  .dropcap{max-width:540px;font-size:17px;line-height:1.55}
+  .tiny{font-size:2.772px;line-height:3.2px;width:60px}
+  .cover{width:90px;height:120px;background:#244;color:#fff;padding:6px;box-sizing:border-box}
+  .cover b{display:block;font-size:6px;letter-spacing:.2em;text-transform:uppercase}
+  .cover i{display:block;font-size:4.5px;margin-top:4px}
+  .strip{display:flex;gap:10px;overflow-x:auto;width:500px}
+  .strip div{flex:none;width:140px;height:60px;background:#cbd;border-radius:8px}
+  .sticky{position:sticky;top:0;background:#fff;padding:6px 10px;z-index:3}
+  .grad-text{font-size:28px;font-family:'Cormorant Garamond';background:linear-gradient(90deg,#c33,#36c);-webkit-background-clip:text;background-clip:text;color:transparent}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="watercolor" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="3"/><feDisplacementMap in="SourceGraphic" scale="18"/><feGaussianBlur stdDeviation="1.2"/></filter>
+    <linearGradient id="g1" x1="0" x2="1"><stop offset="0" stop-color="#e96"/><stop offset="1" stop-color="#69c"/></linearGradient>
+  </defs>
+</svg>
+<section><h2>Повороты и веер</h2>
+  <div class="fan"><div class="sheet">Лист 1</div><div class="sheet">Лист 2</div><div class="sheet">Лист 3</div>
+  <div class="nest"><div class="inner">Вложенный</div></div>
+  <div class="scaled">Масштаб 1.5 — текст и радиусы масштабируются вместе</div></div>
+</section>
+<section><h2>Цвета, тени, радиусы</h2>
+  <div class="chips"><div class="chip"></div><div class="chip p3"></div><div class="chip ok"></div><div class="chip ghost" id="ghost"></div><div class="chip spread"></div></div>
+  <p><span class="pill">Метка-пилюля</span></p>
+  <div class="clip"><div class="big"></div></div>
+</section>
+<section><h2>SVG</h2>
+  <svg width="120" height="120" viewBox="0 0 120 120"><rect x="10" y="10" width="100" height="100" rx="16" fill="url(#g1)"/><circle cx="60" cy="60" r="22" fill="none" stroke="#fff" stroke-width="4"/></svg>
+  <svg width="200" height="140" viewBox="0 0 200 140" style="overflow:visible;margin-left:60px"><ellipse cx="100" cy="70" rx="110" ry="60" fill="#d9a" filter="url(#watercolor)" opacity=".8"/></svg>
+</section>
+<section><h2>Текст</h2>
+  <div class="label arrow">Обращение к читателю · день</div>
+  <p class="dropcap">Когда-то давно, в маленьком доме у реки, жила художница. Она писала акварелью свет, который падал на воду, и никогда не повторяла один и тот же час дважды.</p>
+  <div class="cover"><b>Шесть сорок</b><i>сценарий · 2026</i><div class="tiny">крошечная подпись 2.772px</div></div>
+  <div class="grad-text">Градиентный текст</div>
+  <div class="strip"><div></div><div></div><div></div><div></div><div></div></div>
+</section>
+</body>
+</html>

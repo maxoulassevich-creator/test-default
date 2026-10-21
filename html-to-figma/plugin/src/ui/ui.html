@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">HTML → Figma</div>
+    <div id="conn" class="conn conn--unknown" title="Состояние локального обработчика"><span class="dot"></span><span id="connText">Проверяю обработчик…</span></div>
+  </header>
+
+  <section id="connPanel" class="card hidden">
+    <h2>Подключение к обработчику</h2>
+    <p id="connHelp" class="muted"></p>
+    <ol id="connSteps" class="steps"></ol>
+    <label class="field">Адрес обработчика<input id="procUrl" type="text" value="http://127.0.0.1:47821" spellcheck="false"></label>
+    <div id="pairBox" class="hidden">
+      <label class="field">Код подключения из окна обработчика<input id="pairCode" type="text" placeholder="XXXXX-XXXXX" maxlength="16" spellcheck="false" autocomplete="off"></label>
+      <button id="pairBtn" class="btn">Подключить</button>
+    </div>
+    <div class="row">
+      <button id="retryBtn" class="btn btn--ghost">Проверить снова</button>
+      <label class="btn btn--ghost file-btn">Открыть пакет импорта (.h2f.zip)<input id="pkgInput" type="file" accept=".zip,.h2f.zip" hidden></label>
+    </div>
+  </section>
+
+  <section id="filePanel" class="card">
+    <h2>1. Исходник</h2>
+    <div id="drop" class="drop" tabindex="0">
+      <div class="drop__title">Перетащите HTML или ZIP сюда</div>
+      <div class="drop__sub">или <label class="link">выберите файл<input id="fileInput" type="file" accept=".html,.htm,.zip" hidden></label></div>
+      <div id="fileName" class="drop__file"></div>
+    </div>
+    <div class="row">
+      <button id="analyzeBtn" class="btn btn--primary" disabled>Анализировать</button>
+      <button id="cancelBtn" class="btn btn--danger hidden">Отмена</button>
+    </div>
+    <div id="progress" class="progress hidden"><div class="progress__bar"><i id="progressBar"></i></div><div id="progressText" class="progress__text"></div></div>
+    <div id="errorBox" class="error hidden"></div>
+  </section>
+
+  <section id="pagesPanel" class="card hidden">
+    <h2>2. Страницы <span id="pagesCount" class="badge"></span></h2>
+    <div id="adapterBox" class="note hidden"></div>
+    <div id="entryBox" class="field hidden">Входная страница <select id="entrySel"></select></div>
+    <div class="row row--tight">
+      <button id="selAll" class="btn btn--small btn--ghost">Выбрать все</button>
+      <button id="selNone" class="btn btn--small btn--ghost">Снять выбор</button>
+      <label class="check"><input id="showAll" type="checkbox"> показать дубликаты и исключённые</label>
+    </div>
+    <ul id="pages" class="pages"></ul>
+    <details class="sub">
+      <summary>Добавить пропущенный маршрут</summary>
+      <div class="row"><input id="extraRoute" type="text" placeholder="#/about, other.html или /path" spellcheck="false"><button id="addRoute" class="btn btn--small">Добавить и проверить</button></div>
+    </details>
+  </section>
+
+  <section id="settingsPanel" class="card hidden">
+    <h2>3. Настройки</h2>
+    <div class="grid2">
+      <label class="field">Ширина экрана
+        <select id="vw"><option>1440</option><option>1920</option><option>1680</option><option>1366</option><option>1280</option><option>1024</option><option>768</option><option>430</option><option>390</option><option>360</option></select>
+      </label>
+      <label class="field">Высота экрана<input id="vh" type="number" min="300" max="3000" value="1000"></label>
+      <label class="field">Цветовая схема
+        <select id="scheme"><option value="light">светлая</option><option value="dark">тёмная</option><option value="no-preference">как в системе</option></select>
+      </label>
+      <label class="field">Колонок в сетке<select id="cols"><option>2</option><option>3</option><option selected>4</option><option>6</option><option>8</option></select></label>
+    </div>
+    <div id="stateBox" class="state hidden">
+      <div class="state__title">Состояние приложения (роль, язык, тема демо) <span class="muted">— значения localStorage до запуска страницы</span></div>
+      <div id="stateFields"></div>
+    </div>
+    <label class="check"><input id="hover" type="checkbox" checked> Показать одну карточку при наведении (где есть эффект)</label>
+    <label class="check"><input id="cursor" type="checkbox" checked> Добавить небольшой курсор (обычный слой, можно удалить)</label>
+    <label class="check"><input id="viewportMode" type="checkbox"> Режим просмотра: экран с вертикальной прокруткой</label>
+    <label class="check"><input id="blockExt" type="checkbox"> Не загружать внешние ресурсы (офлайн)</label>
+    <label class="check"><input id="useAdapter" type="checkbox" checked> Использовать профиль проекта</label>
+    <div class="field">Если макеты этого проекта уже есть на странице
+      <select id="mode"><option value="missing">добавить только недостающие</option><option value="update">обновить (неизменённые заменить, изменённые сохранить)</option><option value="copy">создать новую копию рядом</option></select>
+    </div>
+    <div class="row row--tight"><button id="reanalyze" class="btn btn--small btn--ghost">Применить и проверить страницы заново</button><button id="saveProfile" class="btn btn--small btn--ghost">Запомнить настройки проекта</button></div>
+  </section>
+
+  <section id="fontsPanel" class="card hidden">
+    <h2>Шрифты</h2>
+    <p id="fontsHelp" class="muted"></p>
+    <ul id="fonts" class="fonts"></ul>
+  </section>
+
+  <section id="buildPanel" class="card hidden">
+    <button id="createBtn" class="btn btn--primary btn--big">Создать макеты</button>
+    <div id="buildProgress" class="progress hidden"><div class="progress__bar"><i id="buildBar"></i></div><div id="buildText" class="progress__text"></div></div>
+    <button id="buildCancel" class="btn btn--danger hidden">Отмена</button>
+    <div id="buildError" class="error hidden"></div>
+    <div id="summary" class="summary hidden"></div>
+  </section>
+
+  <section id="resultPanel" class="card hidden">
+    <h2>4. Готово</h2>
+    <div class="row">
+      <button id="showAllBtn" class="btn btn--small">Показать все макеты</button>
+      <button id="verifyBtn" class="btn btn--small">Проверить геометрию</button>
+      <button id="compareBtn" class="btn btn--small">Сравнить с исходником</button>
+    </div>
+    <div class="row">
+      <button id="modeBtn" class="btn btn--small btn--ghost">Режим: экран с прокруткой</button>
+      <button id="reportBtn" class="btn btn--small btn--ghost">Скачать отчёт</button>
+      <button id="pkgBtn" class="btn btn--small btn--ghost">Скачать пакет импорта</button>
+    </div>
+    <div id="verifyBox" class="verify hidden"></div>
+    <div id="warnBox" class="warns hidden"></div>
+  </section>
+
+  <section id="diagPanel" class="card hidden">
+    <details>
+      <summary>Диагностика <span id="diagCount" class="badge"></span></summary>
+      <ul id="diags" class="diags"></ul>
+    </details>
+  </section>
+
+  <footer class="foot muted">Макеты создаются обычными фреймами на текущей странице. Компоненты, варианты и связи прототипа не создаются.</footer>
+</div>
+<script>/*__JS__*/</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:400;src:url("Fonts/CormorantGaramond-Italic.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:500;src:url("Fonts/CormorantGaramond-MediumItalic.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:400;src:url("Fonts/CormorantGaramond-Regular.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:500;src:url("Fonts/CormorantGaramond-Medium.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:600;src:url("Fonts/CormorantGaramond-SemiBold.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Courier Prime';font-style:italic;font-weight:400;src:url("Fonts/CourierPrime-Italic.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Courier Prime';font-style:normal;font-weight:400;src:url("Fonts/CourierPrime-Regular.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Courier Prime';font-style:normal;font-weight:700;src:url("Fonts/CourierPrime-Bold.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cousine';font-style:italic;font-weight:400;src:url("Fonts/Cousine-Italic.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cousine';font-style:normal;font-weight:400;src:url("Fonts/Cousine-Regular.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Cousine';font-style:normal;font-weight:700;src:url("Fonts/Cousine-Bold.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'EB Garamond';font-style:italic;font-weight:400;src:url("Fonts/EBGaramond-Italic.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:400;src:url("Fonts/EBGaramond-Regular.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:500;src:url("Fonts/EBGaramond-Medium.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:600;src:url("Fonts/EBGaramond-SemiBold.ttf") format("truetype");font-display:block;}
+@font-face{font-family:'Marck Script';font-style:normal;font-weight:400;src:url("Fonts/MarckScript-Regular.ttf") format("truetype");font-display:block;}
+@font-face{font-family:"DejaVu Sans";font-style:normal;font-weight:400;src:url("Fonts/DejaVuSans.ttf") format("truetype");font-display:block;}

@@ -1,0 +1,27 @@
+{
+  "name": "html-to-figma-importer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Универсальный импортёр HTML/ZIP в редактируемые макеты Figma Design: плагин + локальный обработчик на Chromium",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.15"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.dom.json && tsc -p tsconfig.node.json && tsc -p tsconfig.plugin.json",
+    "test": "node scripts/build.mjs --tests && node --test --test-concurrency=1 build/tests/unit/",
+    "test:integration": "node scripts/build.mjs --tests && node --test --test-concurrency=1 build/tests/integration/",
+    "start": "node processor/dist/processor.cjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.56.1"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "1.142.0",
+    "@types/node": "22.19.1",
+    "esbuild": "0.28.2",
+    "typescript": "6.0.2"
+  }
+}

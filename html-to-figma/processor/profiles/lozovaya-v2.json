@@ -1,0 +1,14 @@
+{
+  "id": "lozovaya-v2",
+  "label": "Блог Лидии Лозовой, вариант 2 «Акварельный час» — вид владельца",
+  "match": { "allOf": ["'ll2-role'", "dm-list"] },
+  "profile": {
+    "storage": { "ll2-role": "owner", "ll2-lang": "ru", "ll2-theme": "light", "ll2-tod": "day" },
+    "exclude": ["#demo"],
+    "colorScheme": "light",
+    "locale": "ru-RU",
+    "viewportWidth": 1440
+  },
+  "routeSelector": "#dm-list a",
+  "notes": "Демо-переключатель роли — не настоящая авторизация. Панель демо (#demo) исключается из макета; её список ссылок используется как указатель страниц."
+}

@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<style>:root{--bg:var(--figma-color-bg,#fff);--fg:var(--figma-color-text,#1e1e1e);--muted:var(--figma-color-text-secondary,#6b6b6b);--line:var(--figma-color-border,#e6e6e6);--card:var(--figma-color-bg-secondary,#f7f7f7);--brand:var(--figma-color-bg-brand,#0d99ff);--brand-fg:var(--figma-color-text-onbrand,#fff);--danger:var(--figma-color-bg-danger,#f24822);--ok:#14ae5c;--warn:#e0a100}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:12px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+#app{padding:10px 12px 18px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.brand{font-weight:700;font-size:13px}
+.conn{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;max-width:70%;text-align:right}
+.conn .dot{width:8px;height:8px;border-radius:50%;background:#bbb;flex:none}
+.conn--ok .dot{background:var(--ok)}.conn--bad .dot{background:var(--danger)}.conn--warn .dot{background:var(--warn)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0}
+h2{font-size:12px;margin:0 0 8px;font-weight:700;display:flex;align-items:center;gap:6px}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.row--tight{margin-top:4px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;padding:6px 10px;font:inherit;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:default}
+.btn--primary{background:var(--brand);border-color:var(--brand);color:var(--brand-fg);font-weight:600}
+.btn--danger{background:transparent;border-color:var(--danger);color:var(--danger)}
+.btn--ghost{background:transparent}
+.btn--small{padding:4px 8px;font-size:11px}
+.btn--big{width:100%;padding:10px;font-size:13px}
+.file-btn{display:inline-block}
+.link{color:var(--brand);cursor:pointer;text-decoration:underline}
+.field{display:flex;flex-direction:column;gap:3px;margin:6px 0;font-size:11px;color:var(--muted)}
+.field input,.field select,input[type=text],select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:5px 6px;min-width:0}
+input[type=text]{flex:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.check{display:flex;gap:6px;align-items:flex-start;margin:5px 0;font-size:11.5px}
+.drop{border:1.5px dashed var(--line);border-radius:8px;padding:16px;text-align:center;background:var(--bg)}
+.drop--over{border-color:var(--brand);background:rgba(13,153,255,.06)}
+.drop__title{font-weight:600}.drop__sub{color:var(--muted);margin-top:2px}.drop__file{margin-top:6px;font-weight:600;word-break:break-all}
+.progress{margin-top:8px}.progress__bar{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.progress__bar i{display:block;height:100%;width:0;background:var(--brand);transition:width .2s}
+.progress__text{margin-top:4px;color:var(--muted);font-size:11px;word-break:break-word}
+.error{margin-top:8px;padding:8px;border-radius:6px;background:rgba(242,72,34,.08);border:1px solid rgba(242,72,34,.35);font-size:11.5px}
+.error b{display:block;margin-bottom:3px}
+.note{padding:6px 8px;border-radius:6px;background:rgba(13,153,255,.07);font-size:11px;margin-bottom:6px}
+.badge{font-weight:500;color:var(--muted);font-size:11px}
+.pages{list-style:none;margin:6px 0 0;padding:0;max-height:300px;overflow:auto;border-top:1px solid var(--line)}
+.pages li{display:grid;grid-template-columns:18px 1fr auto;gap:6px;padding:5px 2px;border-bottom:1px solid var(--line);align-items:start}
+.pages li.off{opacity:.55}
+.page__label{font-weight:600;word-break:break-word}
+.page__url{color:var(--muted);font-size:10.5px;word-break:break-all}
+.page__meta{font-size:10.5px;color:var(--muted)}
+.page__thumb{width:120px;border:1px solid var(--line);border-radius:3px;margin-top:4px;display:block}
+.page__hover{margin-top:3px;font-size:10.5px}
+.page__hover select{font-size:10.5px;padding:2px;max-width:100%}
+.tag{display:inline-block;padding:0 5px;border-radius:8px;font-size:10px;background:var(--line);color:var(--muted);margin-left:4px}
+.tag--ok{background:rgba(20,174,92,.15);color:var(--ok)}.tag--warn{background:rgba(224,161,0,.15);color:#a37500}.tag--bad{background:rgba(242,72,34,.15);color:var(--danger)}
+.fonts{list-style:none;margin:0;padding:0}
+.fonts li{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid var(--line);align-items:center}
+.fonts li .ff{font-weight:600}.fonts li .st{font-size:10.5px}
+.fonts select{max-width:150px;font-size:10.5px}
+.state__title{font-weight:600;margin:6px 0 2px;font-size:11px}
+.state .kv{display:grid;grid-template-columns:110px 1fr;gap:4px;align-items:center;margin:3px 0;font-size:11px}
+.summary{margin-top:8px;font-size:11.5px}
+.verify,.warns{margin-top:8px;font-size:11px;max-height:220px;overflow:auto}
+.diags{list-style:none;padding:0;margin:6px 0 0;max-height:240px;overflow:auto}
+.diags li{padding:3px 0;border-bottom:1px solid var(--line);font-size:10.5px;word-break:break-word}
+.diags li.warn{color:#a37500}.diags li.error{color:var(--danger)}
+.steps{margin:4px 0 6px 16px;padding:0;font-size:11px}
+.foot{margin-top:10px;font-size:10.5px}
+.sub summary{cursor:pointer;color:var(--muted);margin-top:8px;font-size:11px}
+details summary{cursor:pointer}
+table.cmp{border-collapse:collapse;width:100%;font-size:10.5px}table.cmp td,table.cmp th{border-bottom:1px solid var(--line);padding:2px 3px;text-align:left}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <div class="brand">HTML → Figma</div>
+    <div id="conn" class="conn conn--unknown" title="Состояние локального обработчика"><span class="dot"></span><span id="connText">Проверяю обработчик…</span></div>
+  </header>
+
+  <section id="connPanel" class="card hidden">
+    <h2>Подключение к обработчику</h2>
+    <p id="connHelp" class="muted"></p>
+    <ol id="connSteps" class="steps"></ol>
+    <label class="field">Адрес обработчика<input id="procUrl" type="text" value="http://127.0.0.1:47821" spellcheck="false"></label>
+    <div id="pairBox" class="hidden">
+      <label class="field">Код подключения из окна обработчика<input id="pairCode" type="text" placeholder="XXXXX-XXXXX" maxlength="16" spellcheck="false" autocomplete="off"></label>
+      <button id="pairBtn" class="btn">Подключить</button>
+    </div>
+    <div class="row">
+      <button id="retryBtn" class="btn btn--ghost">Проверить снова</button>
+      <label class="btn btn--ghost file-btn">Открыть пакет импорта (.h2f.zip)<input id="pkgInput" type="file" accept=".zip,.h2f.zip" hidden></label>
+    </div>
+  </section>
+
+  <section id="filePanel" class="card">
+    <h2>1. Исходник</h2>
+    <div id="drop" class="drop" tabindex="0">
+      <div class="drop__title">Перетащите HTML или ZIP сюда</div>
+      <div class="drop__sub">или <label class="link">выберите файл<input id="fileInput" type="file" accept=".html,.htm,.zip" hidden></label></div>
+      <div id="fileName" class="drop__file"></div>
+    </div>
+    <div class="row">
+      <button id="analyzeBtn" class="btn btn--primary" disabled>Анализировать</button>
+      <button id="cancelBtn" class="btn btn--danger hidden">Отмена</button>
+    </div>
+    <div id="progress" class="progress hidden"><div class="progress__bar"><i id="progressBar"></i></div><div id="progressText" class="progress__text"></div></div>
+    <div id="errorBox" class="error hidden"></div>
+  </section>
+
+  <section id="pagesPanel" class="card hidden">
+    <h2>2. Страницы <span id="pagesCount" class="badge"></span></h2>
+    <div id="adapterBox" class="note hidden"></div>
+    <div id="entryBox" class="field hidden">Входная страница <select id="entrySel"></select></div>
+    <div class="row row--tight">
+      <button id="selAll" class="btn btn--small btn--ghost">Выбрать все</button>
+      <button id="selNone" class="btn btn--small btn--ghost">Снять выбор</button>
+      <label class="check"><input id="showAll" type="checkbox"> показать дубликаты и исключённые</label>
+    </div>
+    <ul id="pages" class="pages"></ul>
+    <details class="sub">
+      <summary>Добавить пропущенный маршрут</summary>
+      <div class="row"><input id="extraRoute" type="text" placeholder="#/about, other.html или /path" spellcheck="false"><button id="addRoute" class="btn btn--small">Добавить и проверить</button></div>
+    </details>
+  </section>
+
+  <section id="settingsPanel" class="card hidden">
+    <h2>3. Настройки</h2>
+    <div class="grid2">
+      <label class="field">Ширина экрана
+        <select id="vw"><option>1440</option><option>1920</option><option>1680</option><option>1366</option><option>1280</option><option>1024</option><option>768</option><option>430</option><option>390</option><option>360</option></select>
+      </label>
+      <label class="field">Высота экрана<input id="vh" type="number" min="300" max="3000" value="1000"></label>
+      <label class="field">Цветовая схема
+        <select id="scheme"><option value="light">светлая</option><option value="dark">тёмная</option><option value="no-preference">как в системе</option></select>
+      </label>
+      <label class="field">Колонок в сетке<select id="cols"><option>2</option><option>3</option><option selected>4</option><option>6</option><option>8</option></select></label>
+    </div>
+    <div id="stateBox" class="state hidden">
+      <div class="state__title">Состояние приложения (роль, язык, тема демо) <span class="muted">— значения localStorage до запуска страницы</span></div>
+      <div id="stateFields"></div>
+    </div>
+    <label class="check"><input id="hover" type="checkbox" checked> Показать одну карточку при наведении (где есть эффект)</label>
+    <label class="check"><input id="cursor" type="checkbox" checked> Добавить небольшой курсор (обычный слой, можно удалить)</label>
+    <label class="check"><input id="viewportMode" type="checkbox"> Режим просмотра: экран с вертикальной прокруткой</label>
+    <label class="check"><input id="blockExt" type="checkbox"> Не загружать внешние ресурсы (офлайн)</label>
+    <label class="check"><input id="useAdapter" type="checkbox" checked> Использовать профиль проекта</label>
+    <div class="field">Если макеты этого проекта уже есть на странице
+      <select id="mode"><option value="missing">добавить только недостающие</option><option value="update">обновить (неизменённые заменить, изменённые сохранить)</option><option value="copy">создать новую копию рядом</option></select>
+    </div>
+    <div class="row row--tight"><button id="reanalyze" class="btn btn--small btn--ghost">Применить и проверить страницы заново</button><button id="saveProfile" class="btn btn--small btn--ghost">Запомнить настройки проекта</button></div>
+  </section>
+
+  <section id="fontsPanel" class="card hidden">
+    <h2>Шрифты</h2>
+    <p id="fontsHelp" class="muted"></p>
+    <ul id="fonts" class="fonts"></ul>
+  </section>
+
+  <section id="buildPanel" class="card hidden">
+    <button id="createBtn" class="btn btn--primary btn--big">Создать макеты</button>
+    <div id="buildProgress" class="progress hidden"><div class="progress__bar"><i id="buildBar"></i></div><div id="buildText" class="progress__text"></div></div>
+    <button id="buildCancel" class="btn btn--danger hidden">Отмена</button>
+    <div id="buildError" class="error hidden"></div>
+    <div id="summary" class="summary hidden"></div>
+  </section>
+
+  <section id="resultPanel" class="card hidden">
+    <h2>4. Готово</h2>
+    <div class="row">
+      <button id="showAllBtn" class="btn btn--small">Показать все макеты</button>
+      <button id="verifyBtn" class="btn btn--small">Проверить геометрию</button>
+      <button id="compareBtn" class="btn btn--small">Сравнить с исходником</button>
+    </div>
+    <div class="row">
+      <button id="modeBtn" class="btn btn--small btn--ghost">Режим: экран с прокруткой</button>
+      <button id="reportBtn" class="btn btn--small btn--ghost">Скачать отчёт</button>
+      <button id="pkgBtn" class="btn btn--small btn--ghost">Скачать пакет импорта</button>
+    </div>
+    <div id="verifyBox" class="verify hidden"></div>
+    <div id="warnBox" class="warns hidden"></div>
+  </section>
+
+  <section id="diagPanel" class="card hidden">
+    <details>
+      <summary>Диагностика <span id="diagCount" class="badge"></span></summary>
+      <ul id="diags" class="diags"></ul>
+    </details>
+  </section>
+
+  <footer class="foot muted">Макеты создаются обычными фреймами на текущей странице. Компоненты, варианты и связи прототипа не создаются.</footer>
+</div>
+<script>(()=>{function G(t){let n={100:"Thin",200:"ExtraLight",300:"Light",400:"Regular",500:"Medium",600:"SemiBold",700:"Bold",800:"ExtraBold",900:"Black"}[Math.round(t.weight/100)*100]??String(t.weight);return`${t.family} ${n}${t.italic?" Italic":""}`.replace("Regular Italic","Italic")}function H(t){let e=2166136261;for(let s=0;s<t.length;s++)e^=t.charCodeAt(s),e=Math.imul(e,16777619);return`${t.replace(/[^a-zA-Z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||"root"}-${(e>>>0).toString(36)}`}var b=class extends Error{constructor(n,s,i,c){super(n);this.action=s;this.status=i;this.kind=c}action;status;kind},A=class{constructor(e,n){this.base=e;this.token=n}base;token;async req(e,n={},s=!1){let i={"x-h2f-protocol":String(1),...n.headers??{}};this.token&&(i.authorization="Bearer "+this.token);let c;try{c=await fetch(this.base.replace(/\/+$/,"")+e,{...n,headers:i})}catch{throw new b("Нет связи с обработчиком.","Запустите обработчик (start-windows.cmd) и нажмите «Проверить снова». Если он запущен, а связи нет — Figma может блокировать доступ к локальным программам: используйте режим «пакет импорта» (см. README).",0,"offline")}if(!c.ok&&!s){let u={};try{u=await c.json()}catch{}throw c.status===401?new b(u.error??"Нужен код подключения.",u.action??"Введите код из окна обработчика.",401,"auth"):c.status===409&&/протокол/i.test(u.error??"")?new b(u.error,u.action??"Обновите плагин и обработчик.",409,"protocol"):new b(u.error??`Ошибка обработчика (HTTP ${c.status})`,u.action??"Повторите действие.",c.status,c.status>=500?"server":"user")}return c}async health(e=!1){return(await this.req("/api/health"+(e?"?browser=1":""))).json()}async pair(e){let n=await fetch(this.base.replace(/\/+$/,"")+"/api/pair",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({code:e})}).catch(()=>{throw new b("Нет связи с обработчиком.","Проверьте, что окно обработчика открыто.",0,"offline")}),s=await n.json().catch(()=>({}));if(!n.ok)throw new b(s.error??"Не удалось подключиться",s.action??"Проверьте код.",n.status,"auth");return this.token=s.token,s.token}async upload(e,n,s){return(await(await this.req("/api/jobs?options="+encodeURIComponent(JSON.stringify(s)),{method:"POST",body:e,headers:{"x-file-name":encodeURIComponent(n),"content-type":"application/octet-stream"}})).json()).id}async status(e){return(await this.req("/api/jobs/"+e)).json()}async analyze(e,n){await this.req(`/api/jobs/${e}/analyze`,{method:"POST",body:JSON.stringify(n),headers:{"content-type":"application/json"}})}async capture(e,n){await this.req(`/api/jobs/${e}/capture`,{method:"POST",body:JSON.stringify(n),headers:{"content-type":"application/json"}})}async cancel(e){await this.req(`/api/jobs/${e}/cancel`,{method:"POST"}).catch(()=>{})}async document(e){return(await this.req(`/api/jobs/${e}/document`)).json()}async snapshot(e,n){return(await this.req(`/api/jobs/${e}/routes/${H(n)}`)).json()}async asset(e,n){return new Uint8Array(await(await this.req(`/api/jobs/${e}/assets/${n}`)).arrayBuffer())}async thumb(e,n){let s=await this.req(`/api/jobs/${e}/thumbs/${H(n)}`,{},!0);return s.ok?URL.createObjectURL(await s.blob()):null}async blob(e){return(await this.req(e)).blob()}async verify(e,n,s){return(await this.req(`/api/jobs/${e}/verify/${H(n)}`,{method:"POST",body:s,headers:{"content-type":"image/png"}})).json()}};function te(t,e){return{document:()=>t.document(e),snapshot:n=>t.snapshot(e,n),asset:n=>t.asset(e,n)}}async function de(t){let e=new DecompressionStream("deflate-raw"),n=new Blob([t]).stream().pipeThrough(e);return new Uint8Array(await new Response(n).arrayBuffer())}async function pe(t){let e=new Uint8Array(t),n=new DataView(t),s=-1;for(let f=e.length-22;f>=Math.max(0,e.length-65557);f--)if(n.getUint32(f,!0)===101010256){s=f;break}if(s<0)throw new Error("Файл не является ZIP-архивом.");let i=n.getUint16(s+10,!0),c=n.getUint32(s+16,!0),u=new Map,p=new TextDecoder;for(let f=0;f<i;f++){if(n.getUint32(c,!0)!==33639248)throw new Error("Повреждённый ZIP.");let v=n.getUint16(c+10,!0),L=n.getUint32(c+20,!0),x=n.getUint16(c+28,!0),D=n.getUint16(c+30,!0),N=n.getUint16(c+32,!0),g=n.getUint32(c+42,!0),B=p.decode(e.subarray(c+46,c+46+x));u.set(B,async()=>{let C=n.getUint16(g+26,!0),R=n.getUint16(g+28,!0),P=e.subarray(g+30+C+R,g+30+C+R+L);if(v===0)return P.slice();if(v===8)return de(P);throw new Error("Метод сжатия не поддерживается: "+v)}),c+=46+x+D+N}return u}async function ne(t){let e=await pe(await t.arrayBuffer()),n=e.get("h2f-package.json");if(!n)throw new Error("Это не пакет импорта HTML → Figma (нет h2f-package.json).");let s=JSON.parse(new TextDecoder().decode(await n()));if(s.protocol!==1)throw new Error(`Пакет создан другой версией (протокол ${s.protocol}).`);let i=JSON.parse(new TextDecoder().decode(await e.get("document.json")()));return{source:{document:async()=>i,snapshot:async u=>{let p=e.get(`routes/${H(u)}.json`);if(!p)throw new Error("В пакете нет страницы "+u);return JSON.parse(new TextDecoder().decode(await p()))},asset:async u=>{let p=e.get(`assets/${u}`);if(!p)throw new Error("В пакете нет ресурса "+u);return p()}},doc:i}}var o=t=>document.getElementById(t),l=(t,e=!0)=>t.classList.toggle("hidden",!e),a=t=>t.replace(/[&<>"]/g,e=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[e]),m=t=>parent.postMessage({pluginMessage:t},"*"),J=0,W=new Map,M=[];function K(t){return new Promise(e=>{W.set(t.id,e),m(t)})}window.onmessage=t=>{let e=t.data?.pluginMessage;if(e){if(e.type==="tick"){m({type:"tock",n:e.n});return}if("id"in e&&typeof e.id=="number"&&(e.type==="storage"||e.type==="fonts-result"||e.type==="export-result")){let n=W.get(e.id);W.delete(e.id),n?.(e);return}for(let n of[...M])n(e)}};function E(t,e){return new Promise(n=>{let s=i=>{t.includes(i.type)&&(e&&"jobId"in i&&i.jobId&&i.jobId!==e||(M.splice(M.indexOf(s),1),n(i)))};M.push(s)})}var q=(t,e)=>K({type:"storage-set",id:++J,key:t,value:e}),r={proc:new A("http://127.0.0.1:47821",null),connected:!1,file:null,jobId:null,status:null,selected:new Set,hoverChoice:{},dirty:new Set,capturedWith:"",sets:[],fonts:[],families:[],subs:{},pkg:null,building:null,lastProject:"",builtRoutes:[],verify:null,compare:[],thumbs:new Map,profiles:{}};function F(t,e){let n=o("conn");n.className="conn conn--"+t,o("connText").textContent=e}function k(t,e){let n=e instanceof b?e.message:e?.message??String(e),s=e instanceof b?e.action:e?.action??"";t.innerHTML=`<b>${a(n)}</b>${s?a(s):""}`,l(t,!0)}function U(){let t={};for(let e of Array.from(document.querySelectorAll("[data-skey]")))e.value!==""&&(t[e.dataset.skey]=e.value);return{viewportWidth:Number(o("vw").value)||1440,viewportHeight:Math.max(300,Math.min(3e3,Number(o("vh").value)||1e3)),colorScheme:o("scheme").value,hover:o("hover").checked,cursor:o("cursor").checked,blockExternal:o("blockExt").checked,storage:t}}var ge=()=>JSON.stringify(U());async function V(){F("unknown","Проверяю обработчик…"),r.proc.base=o("procUrl").value.trim()||"http://127.0.0.1:47821";try{let t=await r.proc.health(!0);if(t.protocol!==1)throw new b(`Версия обработчика ${t.version} несовместима (протокол ${t.protocol}).`,"Установите плагин и обработчик из одного архива.",409,"protocol");if(!t.paired)F("warn","Обработчик найден — нужен код подключения"),o("connHelp").textContent="Обработчик запущен. Введите код подключения из его окна (делается один раз).",o("connSteps").innerHTML="",l(o("pairBox"),!0),l(o("connPanel"),!0),r.connected=!1;else{r.connected=!0;let e=t.browser;F(e&&!e.ok?"warn":"ok",e&&!e.ok?"Обработчик подключён, но браузер не найден":`Обработчик подключён · ${t.version}`),l(o("connPanel"),!!(e&&!e.ok)),e&&!e.ok&&(o("connHelp").textContent="Обработчику нужен Microsoft Edge, Google Chrome или Chromium.",o("connSteps").innerHTML="<li>Установите Microsoft Edge или Google Chrome, либо запустите install-browser.cmd из папки обработчика.</li><li>Перезапустите обработчик.</li>",l(o("pairBox"),!1))}}catch(t){r.connected=!1;let e=t;F("bad",e.kind==="offline"?"Обработчик не запущен":e.message),o("connHelp").textContent=e.kind==="offline"?"Плагину нужен локальный обработчик — он открывает HTML в браузере и измеряет страницу.":e.message,o("connSteps").innerHTML=e.kind==="offline"?"<li>Откройте папку обработчика и запустите <b>start-windows.cmd</b> (окно должно остаться открытым).</li><li>Нажмите «Проверить снова».</li><li>Если обработчик запущен, но связи нет — подготовьте пакет на странице http://127.0.0.1:47821 в браузере и откройте его кнопкой ниже.</li>":`<li>${a(e.action??"")}</li>`,l(o("pairBox"),e.kind==="auth"),l(o("connPanel"),!0)}w()}async function me(){try{let t=await r.proc.pair((o("pairCode").value||"").trim());await q("token",t),await q("processorUrl",r.proc.base),m({type:"notify",text:"Обработчик подключён"}),await V()}catch(t){k(o("errorBox"),t)}}function w(){o("analyzeBtn").disabled=!r.connected||!r.file||r.status?.state==="analyzing"||r.status?.state==="capturing"||!!r.building,o("createBtn").disabled=!!r.building||!r.pkg&&(!r.connected||!r.status||r.status.state==="analyzing"||r.status.state==="capturing"||!r.selected.size),l(o("buildPanel"),!!r.pkg||!!r.status&&r.status.state!=="analyzing"&&r.status.routes.length>0)}function re(t){r.file=t,r.pkg=null,o("fileName").textContent=t?`${t.name} · ${(t.size/1024/1024).toFixed(2)} МБ`:"",w()}function oe(){let t=U(),e=o("extraRoute").value.trim();return{useAdapter:o("useAdapter").checked,entry:o("entrySel").value||void 0,extraRoutes:e?[e]:[],profile:{viewportWidth:t.viewportWidth,viewportHeight:t.viewportHeight,colorScheme:t.colorScheme,hover:t.hover,cursor:t.cursor,blockExternal:t.blockExternal,...Object.keys(t.storage).length?{storage:t.storage}:{}}}}async function O(t=!1){l(o("errorBox"),!1);try{if(!t||!r.jobId){if(!r.file)return;let e=r.profiles[r.file.name];e&&he(e),r.jobId=await r.proc.upload(r.file,r.file.name,oe())}else await r.proc.analyze(r.jobId,oe());if(r.selected.clear(),r.hoverChoice={},r.capturedWith="",await ae(["analyzing"]),r.status?.state==="ready"){for(let e of r.status.routes)e.status==="ok"&&r.selected.add(e.key);Y()}}catch(e){k(o("errorBox"),e)}w()}async function ae(t,e){for(l(o("progress"),!0),l(o("cancelBtn"),!0);;){let n=await r.proc.status(r.jobId);r.status=n;let s=n.progress.total?Math.round(n.progress.done/n.progress.total*100):0;if(o("progressBar").style.width=(t.includes(n.state)?Math.max(4,s):100)+"%",o("progressText").textContent=n.progress.message,e?.(n),!t.includes(n.state))break;await new Promise(i=>setTimeout(i,600))}l(o("cancelBtn"),!1),(r.status?.state==="error"||r.status?.state==="cancelled")&&k(o("errorBox"),{message:r.status.error?.message??"Ошибка",action:r.status.error?.action}),Y(),w()}function he(t){t.viewportWidth&&(o("vw").value=String(t.viewportWidth)),t.viewportHeight&&(o("vh").value=String(t.viewportHeight)),t.colorScheme&&(o("scheme").value=String(t.colorScheme))}function fe(t){let e={ok:["",""],duplicate:["дубликат","warn"],anchor:["якорь",""],excluded:["исключено",""],error:["ошибка","bad"],limit:["лимит","warn"]},[n,s]=e[t.status]??[t.status,""];return n?`<span class="tag tag--${s}">${n}</span>`:""}function j(){let t=r.status,e=o("showAll").checked,n=t.routes.filter(i=>i.status==="ok");o("pagesCount").textContent=`найдено ${n.length}${t.routes.length>n.length?`, ещё ${t.routes.length-n.length} исключено/дубликаты`:""} · выбрано ${r.selected.size}`;let s=o("pages");s.innerHTML="";for(let i of t.routes){if(i.status!=="ok"&&!e)continue;let c=document.createElement("li");i.status!=="ok"&&(c.className="off");let u=t.captured.includes(i.key),p=i.hover,f="";if(u&&p){let L=['<option value="auto">авто</option>',...p.candidates.map(x=>`<option value="${x.index}">${a(x.label.slice(0,50))} (${a(x.selector.slice(0,30))})</option>`),'<option value="none">без наведения</option>'];f=`<div class="page__hover">Наведение: ${p.active?"<b>"+a((p.label??"").slice(0,40))+"</b>":a(p.reason)} ${p.candidates.length?`<select data-hover="${a(i.key)}">${L.join("")}</select>`:""}</div>`}c.innerHTML=`<input type="checkbox" ${r.selected.has(i.key)?"checked":""} ${i.status!=="ok"?"disabled":""} data-key="${a(i.key)}">
+      <div><div class="page__label">${a(i.label||i.title||i.key)}${fe(i)}${u?'<span class="tag tag--ok">снято</span>':""}</div>
+      <div class="page__url">${a(i.key)}</div>
+      ${i.reason?`<div class="page__meta">${a(i.reason)}</div>`:""}${i.height?`<div class="page__meta">${t.profile.viewportWidth} × ${i.height} px</div>`:""}${f}
+      <img class="page__thumb hidden" data-thumb="${a(i.key)}" alt=""></div>
+      <button class="btn btn--small btn--ghost" data-preview="${a(i.key)}" title="Показать превью">👁</button>`,s.appendChild(c);let v=c.querySelector("select[data-hover]");v&&(v.value=String(r.hoverChoice[i.key]??p?.chosenIndex??"auto"))}}function be(){let t=r.status,e=o("stateFields");e.innerHTML="";let n=t.storage.filter(s=>s.read||t.profile.storage[s.key]!==void 0);for(let s of Object.keys(t.profile.storage))n.some(i=>i.key===s)||n.push({key:s,values:[],read:!1});l(o("stateBox"),n.length>0);for(let s of n){let i=t.profile.storage[s.key]??"",c=[...new Set([i,...s.values].filter(Boolean))],u=document.createElement("div");u.className="kv",u.innerHTML=`<span title="${a(s.key)}">${a(s.key)}</span>`+(c.length?`<select data-skey="${a(s.key)}"><option value="">(не задавать)</option>${c.map(p=>`<option ${p===i?"selected":""}>${a(p)}</option>`).join("")}</select>`:`<input type="text" data-skey="${a(s.key)}" value="${a(i)}" placeholder="значение">`),e.appendChild(u)}}function ye(){let t=r.status?.diagnostics??[];l(o("diagPanel"),t.length>0),o("diagCount").textContent=String(t.length),o("diags").innerHTML=t.map(e=>`<li class="${e.level}">${e.level==="error"?"⛔":e.level==="warn"?"⚠️":"ℹ️"} ${a(e.message)}${e.route?` <span class="muted">[${a(e.route)}]</span>`:""}${e.count&&e.count>1?` ×${e.count}`:""}</li>`).join("")}function ce(){let t=r.status?.fontsPreview??[];if(!r.fonts.length&&!t.length){l(o("fontsPanel"),!1);return}if(l(o("fontsPanel"),!0),!r.fonts.length){o("fontsHelp").textContent="Предварительно (по стилям страниц). Точный список с fallback-диапазонами появится после снятия страниц.",o("fonts").innerHTML=t.slice(0,30).map(n=>`<li><span class="ff">${a(n)}</span></li>`).join("");return}let e=r.fonts.filter(n=>!n.found);o("fontsHelp").innerHTML=e.length?`<b style="color:var(--danger)">Недоступно в Figma: ${e.length}.</b> Установите шрифты в систему и перезапустите Figma, либо явно выберите замену (будет указана в отчёте). Холст не изменяется, пока шрифты не готовы.`:"Все шрифты доступны в Figma.",o("fonts").innerHTML=r.fonts.map(n=>{let s=G(n);return n.found?`<li><span><span class="ff">${a(s)}</span><br><span class="st muted">→ ${a(n.found.family)} ${a(n.found.style)}${n.found.wght?" (wght "+n.found.wght+")":""}${n.note?" · "+a(n.note):""}</span></span><span class="tag tag--ok">есть</span></li>`:`<li><span><span class="ff">${a(s)}</span><br><span class="st" style="color:var(--danger)">${a(n.note??"нет в Figma")}</span></span><select data-sub="${a(n.key)}"><option value="">заменить на…</option>${r.families.slice(0,2e3).map(i=>`<option ${r.subs[n.key]===i?"selected":""}>${a(i)}</option>`).join("")}</select></li>`}).join("")}function Y(){let t=r.status;if(l(o("pagesPanel"),!!t&&t.routes.length>0),l(o("settingsPanel"),!!t),!t)return;let e=o("adapterBox");l(e,!!t.adapter),t.adapter&&(e.innerHTML=`<b>Профиль проекта:</b> ${a(t.adapter.label)}${t.adapter.notes?"<br>"+a(t.adapter.notes):""}`);let n=o("entrySel");l(o("entryBox"),t.entries.length>1),n.innerHTML=t.entries.map(s=>`<option ${s===t.entry?"selected":""}>${a(s)}</option>`).join(""),o("vw").value=String(t.profile.viewportWidth??1440),o("vh").value=String(t.profile.viewportHeight??1e3),o("scheme").value=String(t.profile.colorScheme??"light"),j(),be(),ye(),ce()}async function we(){let t=r.status,e=ge(),n=[...r.selected].filter(i=>!t.captured.includes(i)||r.dirty.has(i)||r.capturedWith!==e);if(!n.length)return;let s=U();if(await r.proc.capture(r.jobId,{routes:n,hover:r.hoverChoice,profile:{viewportWidth:s.viewportWidth,viewportHeight:s.viewportHeight,colorScheme:s.colorScheme,hover:s.hover,cursor:s.cursor,blockExternal:s.blockExternal}}),I(2,`Снимаю страницы в браузере: 0 из ${n.length}`),await ae(["capturing"],i=>I(2+Math.round(i.progress.done/Math.max(1,i.progress.total)*38),i.progress.message)),r.status?.state!=="captured")throw new Error(r.status?.error?.message??"Страницы не сняты");for(let i of n)r.dirty.delete(i);r.capturedWith=e}function I(t,e){l(o("buildProgress"),!0),o("buildBar").style.width=Math.max(2,Math.min(100,t))+"%",o("buildText").textContent=e}async function ke(){l(o("buildError"),!1),l(o("summary"),!1);let t="b"+Date.now().toString(36);r.building=t,w(),l(o("buildCancel"),!0);let e=!1;try{let n,s;if(r.pkg?(n=r.pkg.source,s=r.pkg.doc.routes.map(d=>d.key)):(await we(),n=te(r.proc,r.jobId),s=[...r.selected].filter(d=>r.status.captured.includes(d))),r.building!==t)return;let i=await n.document(),c=new Set,u=new Map;I(42,"Проверяю шрифты в Figma (до изменения холста)…");for(let d of s){let y=await n.snapshot(d);u.set(d,y),y.fonts.forEach(S=>c.add(S))}let p=i.fonts.filter(d=>c.has(d.key)),f=await K({type:"fonts-check",id:++J,fonts:p,substitutions:r.subs});r.fonts=f.results,r.families=f.families,ce();let v=f.results.filter(d=>!d.found);if(v.length)throw Object.assign(new Error(`В Figma недоступны шрифты: ${v.map(d=>G(d)).join(", ")}.`),{action:"Установите их в систему и перезапустите Figma (или выберите замену в списке «Шрифты»). Холст не изменён."});let L=f.results.map(d=>({key:d.key,family:d.found.family,style:d.found.style,wght:d.found.wght})),x=i.projectKey;r.lastProject=x;let D=s.map(d=>{let y=u.get(d);return{key:d,label:y.label,width:y.width,height:y.height,viewportHeight:y.viewport.height,fixed:y.fixedCount}}),N=o("mode").value;m({type:"begin",jobId:t,project:x,projectLabel:i.sourceName.replace(/\.(zip|html?)$/i,""),source:i.sourceHash.slice(0,16),mode:N,routes:D,columns:Number(o("cols").value)||4,fonts:L,viewportMode:o("viewportMode").checked});let g=await E(["plan","error"],t);if(g.type==="error")throw Object.assign(new Error(g.message),{action:g.action});if(e=!0,!g.build.length){I(100,"Все выбранные страницы уже есть в комплекте — копии не созданы. Выберите «создать новую копию» или «обновить», если нужно."),m({type:"commit",jobId:t}),await E(["done"],t);return}let B=new Set,C=new Map(i.assets.map(d=>[d.id,d])),R=[];for(let d=0;d<g.build.length;d++){if(r.building!==t)throw new Error("Создание отменено.");let y=g.build[d],S=u.get(y),_=45+Math.round(d/g.build.length*53);I(_,`Страница ${d+1} из ${g.build.length}: ${S.label} — ресурсы`);for(let h of S.assets){if(B.has(h))continue;B.add(h);let ue=C.get(h),X=await n.asset(h),z=ue?.kind??(h.startsWith("s")?"svg":"image");m(z==="svg"?{type:"asset",jobId:t,id:h,kind:z,text:new TextDecoder().decode(X)}:{type:"asset",jobId:t,id:h,kind:z,bytes:X});let Q=await E(["asset-ok","asset-error"],t);Q.type==="asset-error"&&R.push(`Ресурс ${h} не принят Figma: ${Q.message}`)}I(_,`Страница ${d+1} из ${g.build.length}: ${S.label} — создаю слои`);let Z=h=>{h.type==="progress"&&h.jobId===t&&I(_+Math.round(h.nodes/Math.max(1,h.total)*(53/g.build.length)),`Страница ${d+1} из ${g.build.length}: ${S.label} — слоёв ${h.nodes} из ${h.total}`)};M.push(Z),m({type:"route",jobId:t,snapshot:S,index:d});let T=await E(["route-done","aborted","error"],t);if(M.splice(M.indexOf(Z),1),T.type==="aborted"){I(0,T.reason),l(o("buildProgress"),!1),k(o("buildError"),{message:T.reason,action:`Удалено новых объектов этой попытки: ${T.removed}. Старые макеты не затронуты.`}),e=!1;return}if(T.type==="error")throw e=!1,Object.assign(new Error(T.message),{action:T.action});for(let h of T.warnings)R.push(`${S.label}: ${h.message}`)}m({type:"commit",jobId:t});let P=await E(["done"],t);e=!1,r.builtRoutes=g.build,I(100,"Готово");let $=P.summary;o("summary").innerHTML=`<b>Создано макетов: ${$.created}</b>${$.replaced?`, заменено неизменённых: ${$.replaced}`:""}${$.kept?`, сохранено изменённых вручную: ${$.kept}`:""}. Слоёв: ${$.nodes}, текстовых: ${$.texts}. ${g.skip.length?`Пропущено (уже есть): ${g.skip.length}.`:""}<br><span class="muted">Все элементы — обычные слои; компонентов и состояний не создано.</span>`,l(o("summary"),!0),l(o("resultPanel"),!0),o("warnBox").innerHTML=R.length?`<b>Предупреждения (${R.length}):</b><br>${R.slice(0,80).map(a).join("<br>")}`:"",l(o("warnBox"),R.length>0),m({type:"notify",text:`Создано макетов: ${$.created}`})}catch(n){e&&(m({type:"abort",jobId:t,reason:"Прервано: "+(n.message??n)}),await E(["aborted"],t)),k(o("buildError"),n),l(o("buildProgress"),!1)}finally{r.building=null,l(o("buildCancel"),!1),w(),Y()}}async function se(){let t=r.building;r.jobId&&(r.status?.state==="capturing"||r.status?.state==="analyzing")&&await r.proc.cancel(r.jobId),t&&(m({type:"cancel",jobId:t}),r.building=null)}async function ve(){m({type:"verify",project:r.lastProject||void 0});let t=await E(["verify-result"]);r.verify=t.report;let e=t.report;o("verifyBox").innerHTML=`<b>${e.ok?"✅ Геометрия в Figma совпадает с моделью":"⚠️ Найдены отличия"}</b><br>Макетов: ${e.frames}, проверено слоёв: ${e.checkedNodes} (текстовых ${e.texts}).<br>
+    Смещения: ${e.positionIssues.length}, проблемы текста: ${e.textIssues.length}, новые наложения текстов: ${e.newOverlaps.length}, пересечения фреймов: ${e.frameOverlaps.length}.<br>
+    ${e.positionIssues.slice(0,12).map(n=>`• ${a(n.route)} · ${a(n.node)}: dx ${n.dx}, dy ${n.dy}`).join("<br>")}
+    ${e.textIssues.slice(0,12).map(n=>`• ${a(n.route)} · ${a(n.node)}: ${a(n.problem)}`).join("<br>")}
+    ${e.newOverlaps.slice(0,12).map(n=>`• ${a(n.route)}: «${a(n.a)}» ↔ «${a(n.b)}»`).join("<br>")}<br><span class="muted">${a(e.scope)}</span>`,l(o("verifyBox"),!0)}async function xe(){if(!r.connected||!r.jobId){k(o("buildError"),{message:"Сравнение требует подключённого обработчика.",action:"Запустите обработчик и снимите страницы."});return}r.compare=[];let t=r.builtRoutes.length?r.builtRoutes:[...r.selected];o("verifyBox").innerHTML="Экспортирую макеты из Figma и сравниваю с исходником…",l(o("verifyBox"),!0);for(let e of t){let n=await K({type:"export",id:++J,project:r.lastProject,route:e});if(!n.bytes){r.compare.push({route:e,error:n.error});continue}try{let s=await r.proc.verify(r.jobId,e,n.bytes);r.compare.push({route:e,meanAbs:s.meanAbs,changed:s.changedRatio,size:s.sizeMatch})}catch(s){r.compare.push({route:e,error:s.message})}o("verifyBox").innerHTML=ie()}o("verifyBox").innerHTML=ie()}function ie(){return`<b>Исходник (Chromium) ↔ экспорт нативных фреймов Figma</b><table class="cmp"><tr><th>Страница</th><th>Ср. разница</th><th>Отличается пикселей</th><th>Размер</th></tr>${r.compare.map(t=>`<tr><td>${a(t.route)}</td>${t.error?`<td colspan="3">${a(t.error)}</td>`:`<td>${t.meanAbs.toFixed(2)}</td><td>${(t.changed*100).toFixed(2)}%</td><td>${t.size?"совпадает":"<b>отличается</b>"}</td>`}</tr>`).join("")}</table><span class="muted">Разница вызвана в основном сглаживанием текста и метриками шрифтов; крупные значения указывают на реальные расхождения.</span>`}async function le(t,e){let n=document.createElement("a");n.href=URL.createObjectURL(t),n.download=e,document.body.appendChild(n),n.click(),setTimeout(()=>{URL.revokeObjectURL(n.href),n.remove()},2e3)}async function Re(){try{let t=r.jobId&&r.connected?await(await r.proc.blob(`/api/jobs/${r.jobId}/report`)).text():JSON.stringify(r.pkg?.doc??{}),e={processor:JSON.parse(t),figma:{verify:r.verify,compare:r.compare,sets:r.sets,fonts:r.fonts,substitutions:r.subs},createdAt:new Date().toISOString()};await le(new Blob([JSON.stringify(e,null,2)],{type:"application/json"}),`html-to-figma-report-${Date.now()}.json`)}catch(t){k(o("buildError"),t)}}function Ie(){o("retryBtn").onclick=()=>{V()},o("conn").onclick=()=>l(o("connPanel"),o("connPanel").classList.contains("hidden")),o("pairBtn").onclick=()=>{me()},o("fileInput").onchange=n=>re(n.target.files?.[0]??null);let t=o("drop");t.ondragover=n=>{n.preventDefault(),t.classList.add("drop--over")},t.ondragleave=()=>t.classList.remove("drop--over"),t.ondrop=n=>{n.preventDefault(),t.classList.remove("drop--over");let s=n.dataTransfer?.files?.[0];s&&re(s)},o("analyzeBtn").onclick=()=>{O(!1)},o("cancelBtn").onclick=()=>{se()},o("buildCancel").onclick=()=>{se()},o("reanalyze").onclick=()=>{O(!0)},o("addRoute").onclick=()=>{O(!0)},o("entrySel").onchange=()=>{O(!0)},o("showAll").onchange=()=>j(),o("selAll").onclick=()=>{for(let n of r.status?.routes??[])n.status==="ok"&&r.selected.add(n.key);j(),w()},o("selNone").onclick=()=>{r.selected.clear(),j(),w()},o("pages").addEventListener("change",n=>{let s=n.target;if(s.dataset.key&&(s.checked?r.selected.add(s.dataset.key):r.selected.delete(s.dataset.key),j(),w()),s.dataset.hover){let i=s.value;r.hoverChoice[s.dataset.hover]=i==="auto"||i==="none"?i:Number(i),r.dirty.add(s.dataset.hover),m({type:"notify",text:"Наведение изменено — страница будет снята заново при создании"})}}),o("pages").addEventListener("click",async n=>{let s=n.target.closest("[data-preview]");if(!s||!r.jobId)return;let i=s.dataset.preview,c=o("pages").querySelector(`img[data-thumb="${CSS.escape(i)}"]`);if(!c)return;if(!c.classList.contains("hidden")){l(c,!1);return}let u=r.thumbs.get(i);u||(u=await r.proc.thumb(r.jobId,i)??"",r.thumbs.set(i,u)),u&&(c.src=u,l(c,!0))}),o("fonts").addEventListener("change",n=>{let s=n.target;s.dataset.sub&&(s.value?r.subs[s.dataset.sub]=s.value:delete r.subs[s.dataset.sub])}),o("createBtn").onclick=()=>{ke()},o("showAllBtn").onclick=()=>m({type:"show",project:r.lastProject||void 0}),o("verifyBtn").onclick=()=>{ve()},o("compareBtn").onclick=()=>{xe()};let e=!1;o("modeBtn").onclick=()=>{e=!e,m({type:"mode",project:r.lastProject,viewport:e}),o("modeBtn").textContent=e?"Режим: полная высота":"Режим: экран с прокруткой"},o("reportBtn").onclick=()=>{Re()},o("pkgBtn").onclick=async()=>{try{if(!r.jobId)return;await le(await r.proc.blob(`/api/jobs/${r.jobId}/package`),(r.status?.sourceName??"project").replace(/\.(zip|html?)$/i,"")+".h2f.zip")}catch(n){k(o("buildError"),n)}},o("saveProfile").onclick=async()=>{r.file&&(r.profiles[r.file.name]=U(),await q("profiles",r.profiles),m({type:"notify",text:"Настройки проекта сохранены"}))},o("pkgInput").onchange=async n=>{let s=n.target.files?.[0];if(s)try{r.pkg=await ne(s),r.status=null,o("fileName").textContent=`Пакет: ${s.name} · страниц ${r.pkg.doc.routes.length}`,l(o("buildPanel"),!0),w(),m({type:"notify",text:"Пакет импорта открыт. Нажмите «Создать макеты»."})}catch(i){k(o("errorBox"),i)}},M.push(n=>{n.type==="sets"&&(r.sets=n.sets),n.type==="status"&&m({type:"notify",text:n.text}),n.type==="error"&&!n.jobId&&k(o("buildError"),{message:n.message,action:n.action})})}async function $e(){Ie(),m({type:"init"});let t=await E(["init"]);r.sets=t.sets;let e=t.storage;e.processorUrl&&(o("procUrl").value=e.processorUrl),r.proc.token=e.token??null,r.profiles=e.profiles??{},t.sets.length&&(r.lastProject=t.sets[0].project,l(o("resultPanel"),!0)),await V()}$e();})();
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Карточки с наведением</title>
+<style>
+  body{margin:0;font-family:'EB Garamond',serif;background:#faf7f2;color:#222}
+  nav{display:flex;gap:16px;padding:16px 40px}
+  nav a{color:#555;text-decoration:none}
+  nav a:hover{color:#c33}
+  .row{display:flex;gap:16px;padding:20px 40px}
+  .card{position:relative;flex:1 1 0;min-width:0;height:360px;border-radius:16px;background:#fff;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);padding:20px;overflow:hidden;transition:flex-grow .4s,box-shadow .3s,background .3s}
+  .card h3{font-family:'Cormorant Garamond';font-size:28px;margin:0 0 8px}
+  .card .more{opacity:0;max-height:0;overflow:hidden;transition:opacity .3s}
+  .card .art{position:absolute;right:20px;bottom:20px;width:90px;height:110px}
+  .card .art i{position:absolute;inset:0;background:#e8d9c8;border-radius:6px;box-shadow:0 6px 14px -6px rgba(0,0,0,.3);transition:transform .4s}
+  .card a.link{color:inherit;text-decoration:none}
+  .card a.link::after{content:"";position:absolute;inset:0}
+  @media (min-width:1100px) and (hover:hover){
+    .row:hover .card:not(:hover){flex-grow:.8}
+    .card:hover{flex-grow:2.2;background:#fff6ea;box-shadow:inset 0 0 0 1px rgba(160,90,30,.3),0 30px 60px -30px rgba(40,30,20,.45)}
+    .card:hover .more{opacity:1;max-height:200px}
+    .card:hover .art i:nth-child(1){transform:rotate(-12deg) translate(-12px,2px)}
+    .card:hover .art i:nth-child(3){transform:rotate(10deg) translate(14px,-4px)}
+    .card:hover a.link{color:#a33}
+  }
+  .card:not(:hover) h3{letter-spacing:0}
+  .note[data-x=":hover"]{color:green}
+</style>
+</head>
+<body>
+<nav><a href="#">Главная</a><a href="#">Каталог</a></nav>
+<div class="row">
+  <div class="card"><h3><a class="link" href="#prose">Проза</a></h3><p>Повести по главам.</p><div class="more"><p>Одна линия · 2025</p><p>Море после сезона · 2024</p></div><div class="art"><i></i><i></i><i></i></div></div>
+  <div class="card"><h3><a class="link" href="#poetry">Стихи</a></h3><p>Циклы и строфы.</p><div class="more"><p>Последний день</p></div><div class="art"><i></i><i></i><i></i></div></div>
+  <div class="card"><h3><a class="link" href="#music">Песни</a></h3><p>Музыка на стихи.</p><div class="more"><p>Переправа</p></div><div class="art"><i></i><i></i><i></i></div></div>
+  <div class="card"><h3><a class="link" href="#painting">Живопись</a></h3><p>Масло и акварель.</p><div class="more"><p>Свет напротив</p></div><div class="art"><i></i><i></i><i></i></div></div>
+</div>
+<p class="note" data-x=":hover" style="padding:0 40px">Атрибут со строкой «:hover» не должен меняться.</p>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Простая страница</title>
+<style>
+  body{margin:0;font-family:'EB Garamond',serif;background:#f7f3ed;color:#2c231f}
+  header{display:flex;align-items:center;justify-content:space-between;padding:20px 40px;background:#fff;border-bottom:1px solid #e2d9cf}
+  .logo{font-family:'Cormorant Garamond';font-weight:500;font-size:28px}
+  nav a{margin-left:24px;color:#6f5a50;text-decoration:none;font-size:16px}
+  main{padding:48px 40px;display:grid;grid-template-columns:1fr 320px;gap:40px}
+  h1{font-family:'Cormorant Garamond';font-weight:500;font-size:46px;line-height:1.1;margin:0 0 16px}
+  p{font-size:18px;line-height:1.6;margin:0 0 14px;max-width:620px}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;background:#2c231f;color:#fff;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,.12),0 12px 24px -12px rgba(0,0,0,.4)}
+  .btn svg{width:16px;height:16px}
+  .card{background:linear-gradient(135deg,#fff 0%,#f1e6d8 100%);border-radius:18px 18px 4px 4px;padding:18px;box-shadow:inset 0 0 0 1px rgba(111,90,80,.16)}
+  .card img{width:100%;height:180px;object-fit:cover;border-radius:10px;display:block}
+  .card small{display:block;margin-top:10px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8a6f60}
+  .mono{font-family:'Courier Prime','Cousine','Courier New',monospace;font-size:14px}
+</style>
+</head>
+<body>
+<header><div class="logo">Мастерская</div><nav><a href="#about">О нас</a><a href="#work">Работы</a><a href="#contact">Контакты</a></nav></header>
+<main>
+  <section id="about">
+    <h1>Добрый день, читатель</h1>
+    <p>Это простая страница для проверки переноса: текст, <em>курсив</em>, <a href="https://example.com/">ссылка</a> и кнопка. Строки должны переноситься ровно так же, как в браузере.</p>
+    <p class="mono">Сценарий: ИНТ. КУХНЯ — НОЧЬ. Шесть сорок.</p>
+    <a class="btn" href="#work">Читать дальше <svg viewBox="0 0 16 16"><path d="M2 8h10M8 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></a>
+  </section>
+  <aside id="work" class="card"><img src="photo.png" alt="Фото"><small>Новая работа · 2026</small></aside>
+</main>
+<footer id="contact" style="padding:24px 40px;color:#8a6f60;font-size:13px">© 2026 Мастерская</footer>
+</body>
+</html>

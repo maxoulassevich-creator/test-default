@@ -1,0 +1,9 @@
+{
+  "scope": "Chromium: исходный CSS + настоящий курсор ↔ закреплённая поза (переписаны только селекторы)",
+  "samples": 33,
+  "differences": 0,
+  "media": [
+    "(min-width: 1100px) and (hover: hover)"
+  ],
+  "hit": "a.link"
+}
